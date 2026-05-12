@@ -798,6 +798,106 @@
       .oval-grid,.hero-stats{grid-template-columns:1fr}
       .hero-stats div{border-right:none;border-bottom:1px solid rgba(237,228,217,.16);padding-left:0!important}
     }
+    
+    /* Correctif hero PC portable - Data challenge */
+    @media (min-width: 951px) and (max-width: 1599px) {
+      .container {
+        width: min(1080px, calc(100% - 56px));
+      }
+    
+      .nav-inner {
+        min-height: 60px;
+      }
+    
+      .nav-logo {
+        font-size: 1.45rem;
+      }
+    
+      .nav-links {
+        gap: 13px;
+      }
+    
+      .nav-links a {
+        font-size: 0.6rem;
+      }
+    
+      .hero {
+        min-height: calc(100svh - 60px);
+        padding: 28px 0;
+      }
+    
+      .hero-layout {
+        grid-template-columns: minmax(0, 1fr) 390px;
+        gap: 42px;
+        align-items: center;
+      }
+    
+      .hero h1 {
+        font-size: clamp(3rem, 5.2vw, 4.8rem);
+        line-height: 0.92;
+        margin: 14px 0 18px;
+      }
+    
+      .hero p {
+        font-size: 0.92rem;
+        line-height: 1.55;
+        max-width: 620px;
+      }
+    
+      .hero-angle {
+        margin: 20px 0 22px;
+        font-size: 1.25rem !important;
+        line-height: 1.28 !important;
+      }
+    
+      .btn-mag {
+        margin-top: 14px;
+      }
+    
+      .hero-card {
+        min-height: auto;
+        padding: 28px;
+      }
+    
+      .hero-card::after {
+        display: none;
+      }
+    
+      .hero-card h3 {
+        font-size: 1.9rem;
+        margin-bottom: 18px;
+      }
+    
+      .meta-item {
+        grid-template-columns: 100px 1fr;
+        gap: 14px;
+        padding: 11px 0;
+      }
+    
+      .meta-item strong {
+        font-size: 0.58rem;
+      }
+    
+      .meta-item span {
+        font-size: 0.86rem;
+      }
+    
+      .hero-stats {
+        margin-top: 22px;
+      }
+    
+      .hero-stats div {
+        padding: 14px 10px 12px 0;
+      }
+    
+      .hero-stats strong {
+        font-size: 1.75rem;
+      }
+    
+      .hero-stats span {
+        font-size: 0.56rem;
+      }
+    }
   </style>
 </head>
 
@@ -1432,6 +1532,7 @@
       const ordered = order.map(level => {
         const index = labels.indexOf(level);
         const value = index >= 0 ? values[index] : 0;
+    
         return {
           label: level,
           value,
@@ -1439,93 +1540,44 @@
         };
       });
     
-      const domains = [
-        { x: [0.02, 0.48], y: [0.56, 0.98] },
-        { x: [0.52, 0.98], y: [0.56, 0.98] },
-        { x: [0.02, 0.48], y: [0.04, 0.46] },
-        { x: [0.52, 0.98], y: [0.04, 0.46] }
-      ];
-    
       const colors = ["#1a3c40", "#417d7a", "#ff9741", "#c06c84"];
     
-      const traces = ordered.map((item, index) => ({
-        type: "pie",
-        values: [item.percent, 100 - item.percent, 100],
-        labels: [item.label, "Reste", ""],
-        hole: 0.62,
-        rotation: 270,
-        direction: "clockwise",
-        sort: false,
-        textinfo: "none",
-        hoverinfo: "label+value",
-        hovertemplate:
-          `<b>${item.label}</b><br>` +
-          `Part : ${item.percent.toFixed(1).replace(".", ",")} %<br>` +
-          `Effectif réel : ${item.value}<extra></extra>`,
+      const traces = [{
+        type: "bar",
+        x: ordered.map(item => item.label),
+        y: ordered.map(item => item.percent),
+        text: ordered.map(item => item.percent.toFixed(1).replace(".", ",") + " %"),
+        textposition: "outside",
         marker: {
-          colors: [colors[index], "rgba(26,60,64,.10)", "rgba(0,0,0,0)"],
-          line: { color: "#fffdf9", width: 3 }
+          color: colors
         },
-        domain: domains[index],
-        showlegend: false
-      }));
-    
-      const annotations = ordered.flatMap((item, index) => {
-      const d = domains[index];
-      const cx = (d.x[0] + d.x[1]) / 2;
-      const baseY = d.y[0] - 0.02;
-    
-      return [
-        {
-          x: cx,
-          y: baseY + 0.10,
-          text: `${item.percent.toFixed(1).replace(".", ",")} %`,
-          showarrow: false,
-          xref: "paper",
-          yref: "paper",
-          xanchor: "center",
-          yanchor: "middle",
-          font: {
-            family: "Cormorant Garamond, serif",
-            size: 26,
-            color: "#1a3c40"
-          }
-        },
-        {
-          x: cx,
-          y: baseY + 0.02,
-          text: item.label,
-          showarrow: false,
-          xref: "paper",
-          yref: "paper",
-          xanchor: "center",
-          yanchor: "middle",
-          font: {
-            family: "Montserrat, sans-serif",
-            size: 10,
-            color: "#666"
-          }
-        }
-      ];
-    });
+        hovertemplate: "<b>%{x}</b><br>Part : %{y:.1f}%<extra></extra>"
+      }];
     
       Plotly.newPlot("experienceChart", traces, {
         paper_bgcolor: "rgba(0,0,0,0)",
         plot_bgcolor: "#fffdf9",
-        margin: { t: 70, r: 20, b: 20, l: 20 },
+        margin: { t: 70, r: 20, b: 70, l: 50 },
         title: {
           text: "Proportion par niveau d’expérience",
           x: 0.5,
           font: {
-            family:"Cormorant Garamond, serif",
-            size:24,
-            color:"#1a3c40"
+            family: "Cormorant Garamond, serif",
+            size: 24,
+            color: "#1a3c40"
           }
         },
-        annotations,
+        xaxis: {
+          tickangle: -15
+        },
+        yaxis: {
+          title: "Part (%)",
+          range: [0, Math.max(...ordered.map(item => item.percent)) + 10],
+          gridcolor: "rgba(26,60,64,.08)"
+        },
         font: {
-          family:"Montserrat, sans-serif",
-          color:"#1d1d1d"
+          family: "Montserrat, sans-serif",
+          color: "#1d1d1d"
         }
       }, plotConfig);
     }

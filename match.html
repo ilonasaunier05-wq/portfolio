@@ -1231,6 +1231,134 @@
         padding-left: 0 !important;
       }
     }
+    
+    /* Correctif hero PC portable + boutons modèles sur une ligne */
+    @media (min-width: 951px) and (max-width: 1599px) {
+      .container {
+        width: min(1080px, calc(100% - 56px));
+      }
+    
+      .nav-inner {
+        min-height: 60px;
+      }
+    
+      .nav-logo {
+        font-size: 1.45rem;
+      }
+    
+      .nav-links {
+        gap: 13px;
+      }
+    
+      .nav-links a {
+        font-size: 0.6rem;
+      }
+    
+      .hero {
+        min-height: calc(100svh - 60px);
+        padding: 26px 0;
+      }
+    
+      .hero-layout {
+        grid-template-columns: minmax(0, 1fr) 390px;
+        gap: 40px;
+        align-items: center;
+      }
+    
+      .hero h1 {
+        font-size: clamp(2.8rem, 4.8vw, 4.5rem);
+        line-height: 0.92;
+        margin: 14px 0 18px;
+      }
+    
+      .hero p {
+        font-size: 0.9rem;
+        line-height: 1.52;
+        max-width: 620px;
+      }
+    
+      .hero-angle {
+        margin: 18px 0 20px;
+        font-size: 1.22rem !important;
+        line-height: 1.25 !important;
+      }
+    
+      .btn-mag {
+        margin-top: 12px;
+      }
+    
+      .hero-card {
+        min-height: auto;
+        padding: 26px;
+      }
+    
+      .hero-card::after {
+        display: none;
+      }
+    
+      .hero-card h3 {
+        font-size: 1.85rem;
+        margin-bottom: 16px;
+      }
+    
+      .meta-item {
+        grid-template-columns: 100px 1fr;
+        gap: 14px;
+        padding: 10px 0;
+      }
+    
+      .meta-item strong {
+        font-size: 0.58rem;
+      }
+    
+      .meta-item span {
+        font-size: 0.84rem;
+      }
+    
+      .hero-stats {
+        margin-top: 20px;
+      }
+    
+      .hero-stats div {
+        padding: 13px 9px 11px 0;
+      }
+    
+      .hero-stats strong {
+        font-size: 1.7rem;
+      }
+    
+      .hero-stats span {
+        font-size: 0.54rem;
+      }
+    
+      .model-tabs {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 8px;
+        width: 100%;
+      }
+    
+      .model-tab {
+        flex: 1 1 0;
+        min-width: 0;
+        padding: 10px 6px;
+        font-size: 0.58rem;
+        letter-spacing: 0.035em;
+        white-space: normal;
+        text-align: center;
+        line-height: 1.15;
+  }
+    }
+    
+    @media (min-width: 1600px) {
+      .model-tabs {
+        flex-wrap: nowrap;
+      }
+    
+      .model-tab {
+        white-space: nowrap;
+      }
+    }
   </style>
 </head>
 
