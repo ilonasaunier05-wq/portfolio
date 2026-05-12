@@ -1,0 +1,1970 @@
+<!-- fichier complet : data_challenge.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projet — Data challenge climat</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600&family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #fcfaf7;
+      --paper: #fffdf9;
+      --deep-teal: #1a3c40;
+      --accent: #417d7a;
+      --sand: #ede4d9;
+      --sand-2: #f5eee6;
+      --text: #1d1d1d;
+      --muted: #666;
+      --line: rgba(26, 60, 64, .12);
+      --shadow: 0 24px 70px rgba(26, 60, 64, .12);
+      --ease: cubic-bezier(.16, 1, .3, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background: var(--bg);
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Montserrat', sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(65, 125, 122, .12), transparent 30vw),
+        var(--bg);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 600;
+      line-height: 1.05;
+      margin: 0;
+    }
+
+    p {
+      margin-top: 0;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .container {
+      width: min(1180px, calc(100% - 48px));
+      margin: 0 auto;
+    }
+
+    .caps {
+      text-transform: uppercase;
+      letter-spacing: .16em;
+      font-size: .72rem;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    .progress-bar {
+      position: fixed;
+      inset: 0 auto auto 0;
+      width: 0%;
+      height: 3px;
+      background: var(--accent);
+      z-index: 500;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      background: rgba(252, 250, 247, .9);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .nav-inner {
+      min-height: 74px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 28px;
+    }
+
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.8rem;
+      font-style: italic;
+      font-weight: 700;
+      color: var(--deep-teal);
+      white-space: nowrap;
+    }
+
+    .nav-links {
+      display: flex;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+      gap: 18px;
+    }
+
+    .nav-links a {
+      color: var(--text);
+      font-size: .69rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      transition: .3s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--accent);
+    }
+
+    .hero {
+      min-height: calc(100svh - 74px);
+      display: grid;
+      align-items: center;
+      padding: clamp(42px, 6vh, 78px) 0;
+      border-bottom: 1px solid var(--line);
+      background:
+        linear-gradient(90deg, transparent 0 64%, rgba(237, 228, 217, .62) 64% 100%),
+        var(--bg);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: "CLIMATE DATA";
+      position: absolute;
+      right: -40px;
+      top: 50%;
+      transform: translateY(-50%) rotate(90deg);
+      font-size: clamp(4rem, 10vw, 9rem);
+      font-family: 'Cormorant Garamond', serif;
+      color: rgba(26, 60, 64, .045);
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    .hero-layout {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(320px, .82fr);
+      gap: clamp(36px, 5vw, 70px);
+      align-items: center;
+    }
+
+    .hero h1 {
+      margin: 18px 0 22px;
+      font-size: clamp(3.2rem, 6.7vw, 6rem);
+      color: var(--deep-teal);
+      letter-spacing: -.055em;
+      max-width: 820px;
+    }
+
+    .hero p {
+      max-width: 690px;
+      color: var(--muted);
+      font-size: clamp(.98rem, 1.15vw, 1.08rem);
+      line-height: 1.75;
+    }
+
+    .hero-angle {
+      margin: 28px 0;
+      padding-left: 18px;
+      border-left: 3px solid var(--accent);
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: clamp(1.25rem, 2vw, 1.55rem) !important;
+      color: var(--deep-teal) !important;
+      line-height: 1.35 !important;
+    }
+
+    .btn-mag {
+      display: inline-block;
+      margin-top: 24px;
+      font-weight: 800;
+      font-size: .75rem;
+      text-transform: uppercase;
+      color: var(--accent);
+      border-bottom: 2px solid var(--accent);
+      letter-spacing: .08em;
+      transition: transform .28s var(--ease);
+    }
+
+    .btn-mag:hover {
+      transform: translateY(-3px);
+    }
+
+    .hero-card {
+      background: var(--deep-teal);
+      color: var(--sand);
+      border: 1px solid var(--deep-teal);
+      padding: clamp(30px, 4vw, 44px);
+      min-height: clamp(380px, 53vh, 480px);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card::before {
+      content: "";
+      position: absolute;
+      inset: 18px;
+      border: 1px solid rgba(237, 228, 217, .18);
+      pointer-events: none;
+    }
+
+    .hero-card::after {
+      content: "DATA CHALLENGE";
+      position: absolute;
+      right: 18px;
+      bottom: 18px;
+      color: rgba(237, 228, 217, .22);
+      font-size: .68rem;
+      font-weight: 800;
+      letter-spacing: .18em;
+    }
+
+    .hero-card h3 {
+      color: var(--sand);
+      font-size: clamp(1.8rem, 3vw, 2.25rem);
+      margin-bottom: 24px;
+    }
+
+    .meta-list {
+      display: grid;
+      border-top: 1px solid rgba(237, 228, 217, .22);
+    }
+
+    .meta-item {
+      display: grid;
+      grid-template-columns: 125px 1fr;
+      gap: 18px;
+      border-bottom: 1px solid rgba(237, 228, 217, .16);
+      padding: 16px 0;
+    }
+
+    .meta-item strong {
+      color: rgba(237, 228, 217, .62);
+      font-size: .65rem;
+      text-transform: uppercase;
+      letter-spacing: .14em;
+    }
+
+    .meta-item span {
+      color: rgba(237, 228, 217, .9);
+      font-weight: 600;
+      font-size: .92rem;
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      margin-top: 30px;
+      border-top: 1px solid rgba(237, 228, 217, .18);
+      border-bottom: 1px solid rgba(237, 228, 217, .18);
+    }
+
+    .hero-stats div {
+      padding: 18px 14px 16px 0;
+      border-right: 1px solid rgba(237, 228, 217, .16);
+    }
+
+    .hero-stats div:not(:first-child) {
+      padding-left: 14px;
+    }
+
+    .hero-stats div:last-child {
+      border-right: none;
+    }
+
+    .hero-stats strong {
+      display: block;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      line-height: 1;
+      color: var(--sand);
+    }
+
+    .hero-stats span {
+      display: block;
+      margin-top: 8px;
+      color: rgba(237, 228, 217, .68);
+      font-size: .62rem;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      line-height: 1.4;
+    }
+
+    .section {
+      padding: clamp(82px, 9vw, 112px) 0;
+      border-bottom: 1px solid var(--line);
+      scroll-margin-top: 95px;
+    }
+
+    .section-title {
+      display: grid;
+      grid-template-columns: .85fr 1.15fr;
+      gap: 50px;
+      align-items: end;
+      margin-bottom: 58px;
+    }
+
+    .section-title h2 {
+      margin-top: 14px;
+      font-size: clamp(2.6rem, 5vw, 4rem);
+      color: var(--deep-teal);
+      letter-spacing: -.03em;
+    }
+
+    .section-title p {
+      color: var(--muted);
+      max-width: 620px;
+      margin: 0;
+    }
+
+    .mag-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(38px, 6vw, 70px);
+      align-items: start;
+    }
+
+    .text-block {
+      font-size: 1.02rem;
+      color: var(--text);
+      line-height: 1.85;
+    }
+
+    .text-block p {
+      color: var(--text);
+      margin-bottom: 18px;
+      opacity: .82;
+    }
+
+    .side-box {
+      background: var(--deep-teal);
+      color: var(--sand);
+      padding: clamp(30px, 4vw, 42px);
+      position: sticky;
+      top: 110px;
+    }
+
+    .side-box h3 {
+      color: var(--sand);
+      font-size: 2.05rem;
+      margin-bottom: 20px;
+    }
+
+    .side-box p,
+    .side-box li {
+      color: rgba(237, 228, 217, .88);
+    }
+
+    .side-box ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .side-box li {
+      margin-bottom: 12px;
+      font-size: .95rem;
+    }
+
+    .timeline-panel {
+      background: linear-gradient(135deg, var(--sand), rgba(245, 238, 230, .65));
+      padding: clamp(82px, 9vw, 110px) 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .challenge-flow {
+      display: grid;
+      grid-template-columns: .42fr 1.58fr;
+      gap: 32px;
+      align-items: stretch;
+    }
+
+    .flow-steps {
+      display: grid;
+      gap: 10px;
+      align-content: start;
+    }
+
+    .flow-step {
+      border: 1px solid var(--line);
+      background: rgba(255, 253, 249, .72);
+      padding: 20px;
+      text-align: left;
+      cursor: pointer;
+      transition: .28s var(--ease);
+    }
+
+    .flow-step strong {
+      display: block;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.7rem;
+      color: var(--deep-teal);
+      margin-bottom: 8px;
+    }
+
+    .flow-step span {
+      color: var(--muted);
+      font-size: .85rem;
+    }
+
+    .flow-step.active,
+    .flow-step:hover {
+      background: var(--deep-teal);
+      color: var(--sand);
+      transform: translateX(4px);
+    }
+
+    .flow-step.active strong,
+    .flow-step.active span,
+    .flow-step:hover strong,
+    .flow-step:hover span {
+      color: var(--sand);
+    }
+
+    .flow-display {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      padding: clamp(28px, 4vw, 42px);
+      box-shadow: 0 20px 55px rgba(26, 60, 64, .08);
+      display: grid;
+      grid-template-columns: 1fr .9fr;
+      gap: 28px;
+      align-items: center;
+      min-height: 360px;
+    }
+
+    .flow-display h3 {
+      color: var(--deep-teal);
+      font-size: clamp(2.2rem, 4vw, 3.2rem);
+      margin-bottom: 18px;
+    }
+
+    .flow-display p {
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+
+    .flow-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 22px;
+    }
+
+    .flow-badges span {
+      border: 1px solid var(--line);
+      color: var(--deep-teal);
+      background: rgba(65, 125, 122, .08);
+      padding: 8px 10px;
+      font-size: .66rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .clock-card {
+      background: var(--deep-teal);
+      color: var(--sand);
+      padding: 30px;
+      min-height: 250px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .clock-card span {
+      color: rgba(237, 228, 217, .62);
+    }
+
+    .clock-card strong {
+      display: block;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 5rem;
+      line-height: .9;
+      color: var(--sand);
+    }
+
+    .clock-card p {
+      color: rgba(237, 228, 217, .84);
+      margin: 0;
+      font-size: .92rem;
+    }
+
+    .lab-section {
+      background: var(--bg);
+    }
+
+    .climate-lab {
+      display: grid;
+      grid-template-columns: minmax(260px, .55fr) minmax(0, 1.45fr);
+      gap: 28px;
+      align-items: stretch;
+    }
+
+    .lab-controls {
+      background: var(--deep-teal);
+      color: var(--sand);
+      padding: clamp(28px, 4vw, 42px);
+    }
+
+    .lab-controls h3 {
+      color: var(--sand);
+      font-size: 2.25rem;
+      margin-bottom: 18px;
+    }
+
+    .lab-controls p {
+      color: rgba(237, 228, 217, .82);
+      margin-bottom: 22px;
+    }
+
+    .indicator-buttons {
+      display: grid;
+      gap: 10px;
+    }
+
+    .indicator-buttons button {
+      border: 1px solid rgba(237, 228, 217, .22);
+      background: transparent;
+      color: var(--sand);
+      padding: 15px;
+      text-align: left;
+      cursor: pointer;
+      font-weight: 800;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      font-size: .7rem;
+      transition: .25s;
+    }
+
+    .indicator-buttons button.active,
+    .indicator-buttons button:hover {
+      background: var(--sand);
+      color: var(--deep-teal);
+    }
+
+    .lab-display {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      padding: clamp(26px, 4vw, 42px);
+      box-shadow: 0 18px 45px rgba(26, 60, 64, .07);
+    }
+
+    .lab-top {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 18px;
+      align-items: end;
+      margin-bottom: 28px;
+    }
+
+    .lab-top h3 {
+      color: var(--deep-teal);
+      font-size: clamp(2rem, 4vw, 3.1rem);
+      margin-top: 10px;
+    }
+
+    .lab-unit {
+      border: 1px solid var(--line);
+      padding: 10px 13px;
+      color: var(--deep-teal);
+      font-size: .7rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .09em;
+    }
+
+    .compare-grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .compare-row {
+      display: grid;
+      grid-template-columns: 150px 1fr 90px;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .compare-label {
+      font-weight: 800;
+      color: var(--deep-teal);
+    }
+
+    .compare-track {
+      height: 24px;
+      background: rgba(26, 60, 64, .08);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .compare-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--accent);
+      transition: width .8s var(--ease);
+    }
+
+    .compare-value {
+      text-align: right;
+      color: var(--deep-teal);
+      font-weight: 800;
+    }
+
+    .trend-chart {
+      width: 100%;
+      overflow-x: auto;
+      padding-bottom: 8px;
+    }
+
+    .trend-svg {
+      width: 100%;
+      min-width: 620px;
+      height: 360px;
+      display: block;
+      background: linear-gradient(180deg, rgba(65, 125, 122, .06), transparent);
+      border: 1px solid var(--line);
+    }
+
+    .trend-axis {
+      stroke: rgba(26, 60, 64, .35);
+      stroke-width: 1;
+    }
+
+    .trend-grid-line {
+      stroke: rgba(26, 60, 64, .09);
+      stroke-width: 1;
+    }
+
+    .trend-line {
+      fill: none;
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .trend-line.guyane {
+      stroke: var(--accent);
+    }
+
+    .trend-line.bdr {
+      stroke: var(--deep-teal);
+    }
+
+    .trend-point {
+      stroke: var(--paper);
+      stroke-width: 2;
+    }
+
+    .trend-point.guyane {
+      fill: var(--accent);
+    }
+
+    .trend-point.bdr {
+      fill: var(--deep-teal);
+    }
+
+    .trend-label {
+      fill: var(--deep-teal);
+      font-size: 12px;
+      font-weight: 700;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .trend-legend {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: .86rem;
+      font-weight: 700;
+    }
+
+    .trend-legend span::before {
+      content: "";
+      display: inline-block;
+      width: 22px;
+      height: 3px;
+      margin-right: 8px;
+      vertical-align: middle;
+      background: var(--accent);
+    }
+
+    .trend-legend span:nth-child(2)::before {
+      background: var(--deep-teal);
+    }
+
+    .trend-tooltip {
+      position: fixed;
+      z-index: 999;
+      pointer-events: none;
+      background: var(--deep-teal);
+      color: var(--sand);
+      padding: 10px 12px;
+      border: 1px solid rgba(237, 228, 217, .22);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, .22);
+      font-size: .82rem;
+      line-height: 1.35;
+      opacity: 0;
+      transform: translate(-50%, -120%);
+      transition: opacity .18s ease;
+      max-width: 220px;
+    }
+
+    .trend-tooltip strong {
+      display: block;
+      color: var(--sand);
+      margin-bottom: 3px;
+    }
+
+    .trend-point {
+      cursor: pointer;
+    }
+
+    .trend-point:hover {
+      r: 7;
+    }
+
+    .data-status {
+      margin-top: 18px;
+      font-size: .82rem;
+      color: var(--muted);
+      line-height: 1.6;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+    }
+
+    .lab-insight {
+      margin-top: 28px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .insight-box {
+      border-top: 3px solid var(--accent);
+      padding-top: 24px;
+    }
+
+    .insight-box strong {
+      display: block;
+      color: var(--deep-teal);
+      margin-bottom: 8px;
+    }
+
+    .insight-box p {
+      margin: 0;
+      color: var(--muted);
+      font-size: .92rem;
+    }
+
+    .visual-section {
+      background: var(--sand);
+      padding: clamp(82px, 9vw, 110px) 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 55px;
+    }
+
+    .result-card {
+      background: rgba(255, 253, 249, .9);
+      border: 1px solid rgba(26, 60, 64, .16);
+      padding: 30px;
+      box-shadow: 0 16px 42px rgba(26, 60, 64, .07);
+      transition:
+        transform .55s var(--ease),
+        box-shadow .55s var(--ease),
+        border-color .45s ease,
+        background .45s ease;
+    }
+
+    .result-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 34px 80px rgba(26, 60, 64, .16);
+      border-color: rgba(65, 125, 122, .32);
+      background: #fffdfa;
+    }
+
+    .result-card strong {
+      display: block;
+      color: var(--accent);
+      font-size: .7rem;
+      text-transform: uppercase;
+      letter-spacing: .16em;
+      margin-bottom: 18px;
+    }
+
+    .result-card span {
+      display: block;
+      font-family: 'Cormorant Garamond', serif;
+      color: var(--deep-teal);
+      font-size: 2.2rem;
+      line-height: 1.05;
+    }
+
+    .result-card p {
+      margin: 18px 0 0;
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    .limits-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+    }
+
+    .limit-card {
+      border-top: 3px solid var(--deep-teal);
+      padding-top: 22px;
+    }
+
+    .limit-card h3 {
+      color: var(--deep-teal);
+      font-size: 1.7rem;
+      margin-bottom: 12px;
+    }
+
+    .limit-card p {
+      color: var(--muted);
+      margin: 0;
+      font-size: .94rem;
+    }
+
+    .learning-panel {
+      background: rgba(26, 60, 64, .08);
+      padding: clamp(76px, 9vw, 100px) 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .learning-inner {
+      background: rgba(26, 60, 64, .9);
+      color: var(--sand);
+      padding: clamp(38px, 6vw, 64px);
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+
+    .learning-inner h2 {
+      color: var(--sand);
+      font-size: clamp(2.4rem, 5vw, 3.7rem);
+      margin-bottom: 30px;
+    }
+
+    .learning-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 50px;
+    }
+
+    .learning-inner p,
+    .learning-inner li {
+      color: rgba(237, 228, 217, .88);
+    }
+
+    .learning-inner ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .learning-inner li {
+      margin-bottom: 12px;
+    }
+
+    .project-footer {
+      background: #10282b;
+      color: var(--sand);
+      padding: 90px 0 42px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .project-footer::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top right, rgba(65, 125, 122, .18), transparent 35%);
+      pointer-events: none;
+    }
+
+    .footer-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 30px;
+      margin-bottom: 50px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .footer-top h2 {
+      color: var(--sand);
+      margin-top: 12px;
+      font-size: clamp(2.4rem, 5vw, 4rem);
+    }
+
+    .footer-link {
+      color: rgba(237, 228, 217, .78);
+      font-size: .75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      border-bottom: 2px solid rgba(237, 228, 217, .4);
+      padding-bottom: 6px;
+      transition: .3s ease;
+    }
+
+    .footer-link:hover {
+      color: white;
+      border-color: white;
+    }
+
+    .footer-nav {
+      display: grid;
+      grid-template-columns: 1fr 1.15fr 1fr;
+      gap: 22px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .footer-card {
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid rgba(237, 228, 217, .08);
+      padding: 34px;
+      min-height: 220px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      transition: .45s cubic-bezier(.16, 1, .3, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .footer-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(65, 125, 122, .95), rgba(26, 60, 64, .98));
+      opacity: 0;
+      transition: .45s ease;
+    }
+
+    .footer-card * {
+      position: relative;
+      z-index: 2;
+    }
+
+    .footer-card span {
+      color: rgba(237, 228, 217, .6);
+      font-size: .68rem;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .footer-card h3 {
+      color: var(--sand);
+      font-size: 2rem;
+      line-height: 1.1;
+    }
+
+    .footer-card:hover {
+      transform: translateY(-8px);
+      border-color: rgba(237, 228, 217, .16);
+      box-shadow: 0 26px 60px rgba(0, 0, 0, .28);
+    }
+
+    .footer-card:hover::before {
+      opacity: 1;
+    }
+
+    .footer-bottom {
+      margin-top: 55px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(237, 228, 217, .08);
+      color: rgba(237, 228, 217, .52);
+      font-size: .82rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity .75s var(--ease), transform .75s var(--ease);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 950px) {
+      .hero-layout,
+      .mag-grid,
+      .result-grid,
+      .learning-grid,
+      .limits-grid,
+      .section-title,
+      .challenge-flow,
+      .flow-display,
+      .climate-lab,
+      .lab-insight,
+      .footer-nav {
+        grid-template-columns: 1fr;
+        gap: 38px;
+      }
+
+      .hero-card {
+        min-height: auto;
+      }
+
+      .side-box {
+        position: static;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .container {
+        width: min(100% - 34px, 1180px);
+      }
+
+      .nav-inner {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 16px 0;
+      }
+
+      .nav-links {
+        justify-content: flex-start;
+        gap: 12px;
+      }
+
+      .hero {
+        min-height: auto;
+        padding: 70px 0 55px;
+        background: var(--bg);
+      }
+
+      .hero-card,
+      .side-box,
+      .learning-inner,
+      .flow-display,
+      .lab-controls,
+      .lab-display {
+        padding: 28px;
+      }
+
+      .meta-item,
+      .compare-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .hero-stats {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-stats div {
+        border-right: none;
+        border-bottom: 1px solid rgba(237, 228, 217, .16);
+        padding-left: 0 !important;
+      }
+
+      .compare-value {
+        text-align: left;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="progress-bar" id="progressBar"></div>
+
+  <nav>
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo">Ilona Saunier</a>
+
+      <div class="nav-links">
+        <a href="index.html">Portfolio</a>
+        <a href="#contexte">Contexte</a>
+        <a href="#demarche">Démarche</a>
+        <a href="#lab">Comparateur</a>
+        <a href="#resultats">Résultats</a>
+        <a href="#limites">Limites</a>
+        <a href="#bilan">Bilan</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="container hero-layout">
+      <div class="reveal">
+        <div class="caps">Projet · Data challenge climat</div>
+        <h1>Data challenge climat</h1>
+
+        <p>
+          En une journée, notre équipe devait comparer le climat de la Guyane et des Bouches-du-Rhône
+          pour comprendre son impact possible sur la qualité de vie.
+        </p>
+
+        <p class="hero-angle">
+          Objectif : transformer rapidement des données climatiques en une lecture visuelle claire, synthétique et défendable.
+        </p>
+
+        <a href="#lab" class="btn-mag">Tester le comparateur</a>
+      </div>
+
+      <aside class="hero-card reveal">
+        <div>
+          <h3>Fiche projet</h3>
+
+          <div class="meta-list">
+            <div class="meta-item">
+              <strong>Type</strong>
+              <span>Challenge d’une journée</span>
+            </div>
+            <div class="meta-item">
+              <strong>Compétence</strong>
+              <span>Valoriser une production</span>
+            </div>
+            <div class="meta-item">
+              <strong>Thème</strong>
+              <span>Climat et qualité de vie</span>
+            </div>
+            <div class="meta-item">
+              <strong>Cadre</strong>
+              <span>Travail en équipe · restitution rapide</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-stats">
+          <div>
+            <strong data-counter="1" data-suffix="j">0</strong>
+            <span>temps de production</span>
+          </div>
+          <div>
+            <strong data-counter="2">0</strong>
+            <span>territoires comparés</span>
+          </div>
+          <div>
+            <strong data-counter="5" data-suffix="+">0</strong>
+            <span>indicateurs clés</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </header>
+
+  <main>
+    <section id="contexte" class="section container reveal">
+      <div class="section-title">
+        <div>
+          <div class="caps">01 / Contexte</div>
+          <h2>Un défi d’analyse et de restitution</h2>
+        </div>
+        <p>
+          Le projet demandait de sélectionner vite les bons indicateurs, puis de produire une restitution claire et argumentée.
+        </p>
+      </div>
+
+      <div class="mag-grid">
+        <div class="text-block">
+          <p>
+            Le sujet portait sur une comparaison climatique entre deux territoires très différents :
+            la Guyane et les Bouches-du-Rhône. L’objectif était d’étudier comment des indicateurs comme
+            la température, l’humidité, les précipitations ou les jours de pluie peuvent influencer la perception
+            de la qualité de vie.
+          </p>
+
+          <p>
+            Dans ce type de challenge, l’enjeu n’est pas seulement de faire des graphiques. Il faut savoir
+            choisir les indicateurs utiles, simplifier le message et construire une lecture compréhensible
+            dans un temps très court.
+          </p>
+        </div>
+
+        <aside class="side-box">
+          <h3>Enjeu principal</h3>
+          <p>
+            Passer d’une exploration rapide à une restitution lisible, avec un discours cohérent et des visuels
+            capables de soutenir l’argumentation.
+          </p>
+
+          <ul>
+            <li>Sélection d’indicateurs</li>
+            <li>Comparaison de territoires</li>
+            <li>Datavisualisation</li>
+            <li>Synthèse et communication</li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <section id="demarche" class="timeline-panel reveal">
+      <div class="container">
+        <div class="section-title">
+          <div>
+            <div class="caps">02 / Démarche</div>
+            <h2>Une journée organisée en étapes</h2>
+          </div>
+          <p>
+            La démarche est présentée comme un déroulé de challenge : comprendre, choisir, visualiser, restituer.
+          </p>
+        </div>
+
+        <div class="challenge-flow">
+          <div class="flow-steps">
+            <button class="flow-step active" data-step="0">
+              <strong>Comprendre</strong>
+              <span>Cadrer la problématique et les territoires.</span>
+            </button>
+
+            <button class="flow-step" data-step="1">
+              <strong>Sélectionner</strong>
+              <span>Garder les indicateurs les plus parlants.</span>
+            </button>
+
+            <button class="flow-step" data-step="2">
+              <strong>Visualiser</strong>
+              <span>Transformer les écarts en graphiques lisibles.</span>
+            </button>
+
+            <button class="flow-step" data-step="3">
+              <strong>Restituer</strong>
+              <span>Construire une présentation claire et défendable.</span>
+            </button>
+          </div>
+
+          <div class="flow-display">
+            <div>
+              <div class="caps" id="flowKicker">Étape 01</div>
+              <h3 id="flowTitle">Comprendre le sujet</h3>
+              <p id="flowText">
+                La première étape consiste à reformuler la question : quels éléments climatiques peuvent influencer la qualité de vie ?
+              </p>
+
+              <div class="flow-badges" id="flowBadges">
+                <span>problématique</span>
+                <span>territoires</span>
+                <span>contraintes</span>
+              </div>
+            </div>
+
+            <div class="clock-card">
+              <div>
+                <span class="caps" id="flowMetricLabel">Point clé</span>
+                <strong id="flowHour">1j</strong>
+              </div>
+              <p id="flowNote">Le format court impose de faire des choix rapides et de privilégier la clarté.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="lab" class="section lab-section reveal">
+      <div class="container">
+        <div class="section-title">
+          <div>
+            <div class="caps">03 / Comparateur résultats</div>
+            <h2>Lire les écarts climatiques</h2>
+          </div>
+          <p>
+            Cet outil rend la comparaison plus intuitive : on choisit un indicateur et on voit immédiatement le contraste entre les deux territoires.
+          </p>
+        </div>
+
+        <div class="climate-lab">
+          <aside class="lab-controls">
+            <h3>Indicateurs</h3>
+            <p>Clique sur un indicateur pour afficher la comparaison.</p>
+
+            <div class="indicator-buttons">
+              <button class="active" data-indicator="temperature">Température moyenne</button>
+              <button data-indicator="humidity">Humidité</button>
+              <button data-indicator="rain">Jours de pluie</button>
+              <button data-indicator="amplitude">Température minimale</button>
+              <button data-indicator="temperatureTrend">Évolution température</button>
+            </div>
+          </aside>
+
+          <div class="lab-display">
+            <div class="lab-top">
+              <div>
+                <div class="caps" id="indicatorKicker">Comparaison</div>
+                <h3 id="indicatorTitle">Température moyenne</h3>
+              </div>
+              <div class="lab-unit" id="indicatorUnit">°C</div>
+            </div>
+
+            <div class="compare-grid" id="compareGrid"></div>
+
+            <div class="lab-insight">
+              <div class="insight-box">
+                <strong>Lecture rapide</strong>
+                <p id="indicatorReading">
+                  La comparaison permet de comprendre quel territoire présente les conditions les plus marquées.
+                </p>
+              </div>
+
+              <div class="insight-box">
+                <strong>Utilité pour la restitution</strong>
+                <p id="indicatorUse">
+                  L’indicateur aide à relier les données climatiques à une notion plus concrète de confort ou de qualité de vie.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="resultats" class="visual-section reveal">
+      <div class="container">
+        <div class="section-title">
+          <div>
+            <div class="caps">04 / Résultats</div>
+            <h2>Apports principaux</h2>
+          </div>
+          <p>
+            Le comparateur met en avant les résultats les plus lisibles pour une restitution courte.
+          </p>
+        </div>
+
+        <div class="result-grid">
+          <article class="result-card">
+            <strong>Restitution</strong>
+            <span>Claire et structurée</span>
+            <p>Un rendu final pensé pour être compris rapidement.</p>
+          </article>
+
+          <article class="result-card">
+            <strong>Contrainte</strong>
+            <span>Une journée</span>
+            <p>Un travail réalisé sous contrainte de temps forte.</p>
+          </article>
+
+          <article class="result-card">
+            <strong>Compétence clé</strong>
+            <span>Valorisation</span>
+            <p>Transformer l’analyse en support de décision lisible.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="limites" class="section container reveal">
+      <div class="section-title">
+        <div>
+          <div class="caps">05 / Limites & recul</div>
+          <h2>Ce que l’on pourrait améliorer</h2>
+        </div>
+        <p>
+          Le format court oblige à faire des choix. Une analyse plus longue permettrait d’intégrer d’autres dimensions.
+        </p>
+      </div>
+
+      <div class="limits-grid">
+        <article class="limit-card">
+          <h3>Temps limité</h3>
+          <p>
+            Une journée impose de prioriser les indicateurs les plus parlants, au détriment d’une exploration exhaustive.
+          </p>
+        </article>
+
+        <article class="limit-card">
+          <h3>Qualité de vie</h3>
+          <p>
+            Le climat n’explique pas tout : des facteurs sociaux, économiques ou territoriaux pourraient compléter l’étude.
+          </p>
+        </article>
+
+        <article class="limit-card">
+          <h3>Visualisations</h3>
+          <p>
+            Les graphiques pourraient être enrichis avec une comparaison saisonnière, une carte ou un tableau de bord interactif.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section id="bilan" class="learning-panel reveal">
+      <div class="container">
+        <div class="learning-inner">
+          <h2>06 / Bilan du projet</h2>
+
+          <div class="learning-grid">
+            <div>
+              <p>
+                Cette expérience m’a permis de travailler la synthèse : identifier rapidement les résultats importants,
+                choisir les bons visuels et produire une présentation cohérente malgré une contrainte de temps forte.
+              </p>
+
+              <p>
+                Elle m’a aussi montré l’importance de la collaboration : dans un challenge court, la coordination
+                et la clarté du message comptent autant que l’analyse elle-même.
+              </p>
+            </div>
+
+            <div>
+              <div class="caps" style="color:rgba(237,228,217,.65); margin-bottom:18px;">
+                Compétences mobilisées
+              </div>
+
+              <ul>
+                <li>Sélection d’indicateurs pertinents</li>
+                <li>Conception de visualisations comparatives</li>
+                <li>Structuration d’une présentation claire</li>
+                <li>Communication orale et écrite</li>
+                <li>Gestion du temps et coordination en équipe</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="project-footer">
+    <div class="container">
+      <div class="footer-top">
+        <div>
+          <div class="caps">Continuer l’exploration</div>
+          <h2>Navigation projets</h2>
+        </div>
+
+        <a href="index.html#competences" class="footer-link">Tous les projets</a>
+      </div>
+
+      <div class="footer-nav">
+        <a href="reconnaissance-langue.html" class="footer-card nav-prev">
+          <span>Projet précédent</span>
+          <h3>Reconnaissance automatique de langue</h3>
+        </a>
+
+        <a href="index.html#competences" class="footer-card nav-all">
+          <span>Portfolio</span>
+          <h3>Retour aux compétences & réalisations</h3>
+        </a>
+
+        <a href="analyse_pop.html" class="footer-card nav-next">
+          <span>Projet suivant</span>
+          <h3>Population active, emploi et chômage</h3>
+        </a>
+      </div>
+
+      <div class="footer-bottom">
+        Projet détaillé · Portfolio d’Ilona Saunier · Sciences des Données
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const progressBar = document.getElementById("progressBar");
+    const compareGrid = document.getElementById("compareGrid");
+    const dataStatus = document.getElementById("dataStatus");
+    const indicatorButtons = document.querySelectorAll(".indicator-buttons button");
+    const indicatorTitle = document.getElementById("indicatorTitle");
+    const indicatorUnit = document.getElementById("indicatorUnit");
+    const indicatorReading = document.getElementById("indicatorReading");
+    const indicatorUse = document.getElementById("indicatorUse");
+
+    function formatNumber(value) {
+      const number = Number(value);
+
+      if (Number.isNaN(number)) {
+        return "0";
+      }
+
+      return number.toFixed(1).replace(".", ",");
+    }
+
+    function updateProgress() {
+      const pageHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = pageHeight > 0 ? (window.scrollY / pageHeight) * 100 : 0;
+      progressBar.style.width = progress + "%";
+    }
+
+    window.addEventListener("scroll", updateProgress, { passive: true });
+    updateProgress();
+
+    const revealObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: .14 });
+
+    document.querySelectorAll(".reveal").forEach(el => revealObserver.observe(el));
+
+    const counters = document.querySelectorAll("[data-counter]");
+
+    const counterObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+
+        const el = entry.target;
+        const target = Number(el.dataset.counter);
+        const suffix = el.dataset.suffix || "";
+        const duration = 900;
+        const start = performance.now();
+
+        function animate(now) {
+          const progress = Math.min((now - start) / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          const value = Math.round(target * eased);
+
+          el.textContent = value + suffix;
+
+          if (progress < 1) {
+            requestAnimationFrame(animate);
+          } else {
+            el.textContent = target + suffix;
+          }
+        }
+
+        requestAnimationFrame(animate);
+        counterObserver.unobserve(el);
+      });
+    }, { threshold: 0.5 });
+
+    counters.forEach(counter => counterObserver.observe(counter));
+
+    const flowData = [
+      {
+        kicker: "Étape 01",
+        metricLabel: "Cadrage",
+        title: "Comprendre le sujet",
+        text: "Reformuler la problématique : comparer deux territoires et relier les écarts climatiques à une notion de qualité de vie.",
+        hour: "1j",
+        note: "Le format court impose de cadrer très vite l’analyse.",
+        badges: ["problématique", "territoires", "qualité de vie"]
+      },
+      {
+        kicker: "Étape 02",
+        metricLabel: "Indicateurs",
+        title: "Sélectionner les indicateurs",
+        text: "Garder les variables les plus parlantes : température, humidité, précipitations, jours de pluie et amplitude thermique.",
+        hour: "4+",
+        note: "Peu d’indicateurs, mais suffisamment clairs pour soutenir l’argumentation.",
+        badges: ["température", "humidité", "pluie"]
+      },
+      {
+        kicker: "Étape 03",
+        metricLabel: "Visuels",
+        title: "Construire les visualisations",
+        text: "Transformer les écarts en graphiques simples afin que la comparaison soit lisible immédiatement.",
+        hour: "2",
+        note: "Le but est de comparer clairement les deux territoires, pas de multiplier les graphiques.",
+        badges: ["boxplots", "barres", "comparaison"]
+      },
+      {
+        kicker: "Étape 04",
+        metricLabel: "Restitution",
+        title: "Restituer et défendre",
+        text: "Organiser le discours final : expliquer les choix, montrer les résultats et formuler une conclusion cohérente.",
+        hour: "final",
+        note: "La valorisation transforme l’analyse en message compréhensible.",
+        badges: ["synthèse", "oral", "communication"]
+      }
+    ];
+
+    const flowButtons = document.querySelectorAll(".flow-step");
+    const flowKicker = document.getElementById("flowKicker");
+    const flowTitle = document.getElementById("flowTitle");
+    const flowText = document.getElementById("flowText");
+    const flowHour = document.getElementById("flowHour");
+    const flowNote = document.getElementById("flowNote");
+    const flowBadges = document.getElementById("flowBadges");
+    const flowMetricLabel = document.getElementById("flowMetricLabel");
+
+    function renderFlow(index) {
+      const item = flowData[index];
+
+      flowButtons.forEach(btn => btn.classList.remove("active"));
+      flowButtons[index].classList.add("active");
+
+      flowKicker.textContent = item.kicker;
+      flowTitle.textContent = item.title;
+      flowText.textContent = item.text;
+      flowHour.textContent = item.hour;
+      flowNote.textContent = item.note;
+      flowBadges.innerHTML = item.badges.map(badge => `<span>${badge}</span>`).join("");
+
+      if (flowMetricLabel) {
+        flowMetricLabel.textContent = item.metricLabel;
+      }
+    }
+
+    flowButtons.forEach(button => {
+      button.addEventListener("click", () => {
+        renderFlow(Number(button.dataset.step));
+      });
+    });
+
+    let climateData = {
+      temperature: {
+        title: "Température moyenne",
+        unit: "°C",
+        values: [
+          { label: "Guyane", value: 27 },
+          { label: "Bouches-du-Rhône", value: 16 }
+        ],
+        reading: "Valeurs de secours affichées car le JSON n’a pas encore été chargé.",
+        use: "Le comparateur reste fonctionnel même si le fichier de données est indisponible."
+      },
+      humidity: {
+        title: "Humidité maximale moyenne",
+        unit: "%",
+        values: [
+          { label: "Guyane", value: 82 },
+          { label: "Bouches-du-Rhône", value: 62 }
+        ],
+        reading: "L’humidité permet de comparer le ressenti climatique entre les territoires.",
+        use: "Elle complète l’analyse de température."
+      },
+      rain: {
+        title: "Jours de pluie ≥ 1 mm",
+        unit: "jours",
+        values: [
+          { label: "Guyane", value: 220 },
+          { label: "Bouches-du-Rhône", value: 65 }
+        ],
+        reading: "Cet indicateur compare la fréquence des jours de pluie.",
+        use: "Il rend visible l’impact des épisodes pluvieux sur le quotidien."
+      },
+      amplitude: {
+        title: "Température minimale moyenne",
+        unit: "°C",
+        values: [
+          { label: "Guyane", value: 23 },
+          { label: "Bouches-du-Rhône", value: 9 }
+        ],
+        reading: "La température minimale moyenne donne une lecture complémentaire du climat.",
+        use: "Elle aide à comprendre la différence entre climat tropical et méditerranéen."
+      },
+      temperatureTrend: {
+        title: "Évolution des températures",
+        unit: "°C",
+        type: "trend",
+        values: [
+          { territoire: "Guyane", dec: 1950, value: 25.8 },
+          { territoire: "Guyane", dec: 1960, value: 26.1 },
+          { territoire: "Guyane", dec: 1970, value: 26.3 },
+          { territoire: "Guyane", dec: 1980, value: 26.6 },
+          { territoire: "Guyane", dec: 1990, value: 26.8 },
+          { territoire: "Guyane", dec: 2000, value: 27.1 },
+          { territoire: "Guyane", dec: 2010, value: 27.3 },
+          { territoire: "Guyane", dec: 2020, value: 27.5 },
+          { territoire: "Bouches-du-Rhône", dec: 1950, value: 14.2 },
+          { territoire: "Bouches-du-Rhône", dec: 1960, value: 14.5 },
+          { territoire: "Bouches-du-Rhône", dec: 1970, value: 14.8 },
+          { territoire: "Bouches-du-Rhône", dec: 1980, value: 15.1 },
+          { territoire: "Bouches-du-Rhône", dec: 1990, value: 15.4 },
+          { territoire: "Bouches-du-Rhône", dec: 2000, value: 15.8 },
+          { territoire: "Bouches-du-Rhône", dec: 2010, value: 16.2 },
+          { territoire: "Bouches-du-Rhône", dec: 2020, value: 16.6 }
+        ],
+        reading: "Cette visualisation montre l’évolution des températures moyennes par décennie.",
+        use: "Elle permet de voir si les écarts climatiques restent stables ou évoluent dans le temps."
+      }
+    };
+
+    function buildClimateData(rawData) {
+      const cleanData = rawData
+        .map(row => ({
+          ...row,
+          dec: Number(row.dec),
+          temperature_moyenne: Number(row.temperature_moyenne),
+          temperature_min: Number(row.temperature_min),
+          jours_pluie_1mm: Number(row.jours_pluie_1mm),
+          humidite_max: Number(row.humidite_max)
+        }))
+        .filter(row => !Number.isNaN(row.dec));
+
+      const latestDec = Math.max(...cleanData.map(row => row.dec));
+      const latest = cleanData.filter(row => row.dec === latestDec);
+
+      const getValue = (territoire, variable) => {
+        const row = latest.find(item => item.territoire === territoire);
+        return row && !Number.isNaN(row[variable]) ? row[variable] : 0;
+      };
+
+      return {
+        temperature: {
+          title: "Température moyenne",
+          unit: "°C",
+          values: [
+            { label: "Guyane", value: getValue("Guyane", "temperature_moyenne") },
+            { label: "Bouches-du-Rhône", value: getValue("Bouches-du-Rhône", "temperature_moyenne") }
+          ],
+          reading: `Comparaison sur la dernière décennie disponible : ${latestDec}.`,
+          use: "Cet indicateur permet de comparer le confort thermique entre les deux territoires."
+        },
+        humidity: {
+          title: "Humidité maximale moyenne",
+          unit: "%",
+          values: [
+            { label: "Guyane", value: getValue("Guyane", "humidite_max") },
+            { label: "Bouches-du-Rhône", value: getValue("Bouches-du-Rhône", "humidite_max") }
+          ],
+          reading: `Comparaison sur la dernière décennie disponible : ${latestDec}.`,
+          use: "Elle complète l’analyse de température en montrant les différences de confort ressenti."
+        },
+        rain: {
+          title: "Jours de pluie ≥ 1 mm",
+          unit: "jours",
+          values: [
+            { label: "Guyane", value: getValue("Guyane", "jours_pluie_1mm") },
+            { label: "Bouches-du-Rhône", value: getValue("Bouches-du-Rhône", "jours_pluie_1mm") }
+          ],
+          reading: `Comparaison sur la dernière décennie disponible : ${latestDec}.`,
+          use: "Il rend visible la fréquence des épisodes pluvieux dans chaque territoire."
+        },
+        amplitude: {
+          title: "Température minimale moyenne",
+          unit: "°C",
+          values: [
+            { label: "Guyane", value: getValue("Guyane", "temperature_min") },
+            { label: "Bouches-du-Rhône", value: getValue("Bouches-du-Rhône", "temperature_min") }
+          ],
+          reading: `Comparaison sur la dernière décennie disponible : ${latestDec}.`,
+          use: "Elle aide à comprendre les écarts entre climats tropicaux et méditerranéens."
+        },
+        temperatureTrend: {
+          title: "Évolution des températures",
+          unit: "°C",
+          type: "trend",
+          values: cleanData
+            .filter(row => row.territoire === "Guyane" || row.territoire === "Bouches-du-Rhône")
+            .filter(row => !Number.isNaN(row.temperature_moyenne))
+            .map(row => ({
+              territoire: row.territoire,
+              dec: row.dec,
+              value: row.temperature_moyenne
+            })),
+          reading: "Cette visualisation montre l’évolution des températures moyennes par décennie.",
+          use: "Elle permet de voir si les écarts climatiques restent stables ou évoluent dans le temps."
+        }
+      };
+    }
+
+    function renderIndicator(key) {
+      const item = climateData[key];
+
+      if (!item) return;
+
+      indicatorButtons.forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.indicator === key);
+      });
+
+      indicatorTitle.textContent = item.title;
+      indicatorUnit.textContent = item.unit;
+      indicatorReading.textContent = item.reading;
+      indicatorUse.textContent = item.use;
+
+      if (item.type === "trend") {
+        renderTrend(item);
+        return;
+      }
+
+      const max = Math.max(...item.values.map(row => Number(row.value)), 1);
+
+      compareGrid.innerHTML = item.values.map(row => `
+        <div class="compare-row">
+          <div class="compare-label">${row.label}</div>
+          <div class="compare-track">
+            <div class="compare-fill" data-width="${(Number(row.value) / max) * 100}"></div>
+          </div>
+          <div class="compare-value">${formatNumber(row.value)} ${item.unit}</div>
+        </div>
+      `).join("");
+
+      requestAnimationFrame(() => {
+        compareGrid.querySelectorAll(".compare-fill").forEach(bar => {
+          bar.style.width = bar.dataset.width + "%";
+        });
+      });
+    }
+
+    function renderTrend(item) {
+      const values = item.values.filter(row => !Number.isNaN(Number(row.value)));
+
+      if (values.length === 0) {
+        compareGrid.innerHTML = "<p>Aucune donnée disponible pour cette visualisation.</p>";
+        return;
+      }
+
+      const width = 720;
+      const height = 340;
+      const padding = 54;
+
+      const years = [...new Set(values.map(row => Number(row.dec)))].sort((a, b) => a - b);
+      const minYear = Math.min(...years);
+      const maxYear = Math.max(...years);
+      const minValue = Math.floor(Math.min(...values.map(row => Number(row.value))) - 1);
+      const maxValue = Math.ceil(Math.max(...values.map(row => Number(row.value))) + 1);
+
+      const xScale = year => {
+        if (maxYear === minYear) return width / 2;
+        return padding + ((year - minYear) / (maxYear - minYear)) * (width - padding * 2);
+      };
+
+      const yScale = value => {
+        if (maxValue === minValue) return height / 2;
+        return height - padding - ((value - minValue) / (maxValue - minValue)) * (height - padding * 2);
+      };
+
+      const grouped = {
+        "Guyane": values.filter(row => row.territoire === "Guyane").sort((a, b) => Number(a.dec) - Number(b.dec)),
+        "Bouches-du-Rhône": values.filter(row => row.territoire === "Bouches-du-Rhône").sort((a, b) => Number(a.dec) - Number(b.dec))
+      };
+
+      const makePath = rows => rows
+        .map((row, index) => {
+          const x = xScale(Number(row.dec));
+          const y = yScale(Number(row.value));
+          return `${index === 0 ? "M" : "L"} ${x} ${y}`;
+        })
+        .join(" ");
+
+      const gridValues = [minValue, Math.round((minValue + maxValue) / 2), maxValue];
+
+      compareGrid.innerHTML = `
+        <div class="trend-chart">
+          <svg class="trend-svg" viewBox="0 0 ${width} ${height}" role="img" aria-label="Évolution des températures moyennes par décennie">
+            ${gridValues.map(value => `
+              <line class="trend-grid-line" x1="${padding}" y1="${yScale(value)}" x2="${width - padding}" y2="${yScale(value)}"></line>
+              <text class="trend-label" x="14" y="${yScale(value) + 4}">${formatNumber(value)} °C</text>
+            `).join("")}
+
+            <line class="trend-axis" x1="${padding}" y1="${height - padding}" x2="${width - padding}" y2="${height - padding}"></line>
+            <line class="trend-axis" x1="${padding}" y1="${padding}" x2="${padding}" y2="${height - padding}"></line>
+
+            ${years.map(year => `
+              <text class="trend-label" x="${xScale(year) - 14}" y="${height - 18}">${year}</text>
+            `).join("")}
+
+            <path class="trend-line guyane" d="${makePath(grouped["Guyane"])}"></path>
+            <path class="trend-line bdr" d="${makePath(grouped["Bouches-du-Rhône"])}"></path>
+
+            ${grouped["Guyane"].map(row => `
+              <circle class="trend-point guyane" cx="${xScale(Number(row.dec))}" cy="${yScale(Number(row.value))}" r="5" data-territoire="Guyane" data-dec="${row.dec}" data-value="${formatNumber(row.value)}"></circle>
+            `).join("")}
+
+            ${grouped["Bouches-du-Rhône"].map(row => `
+              <circle class="trend-point bdr" cx="${xScale(Number(row.dec))}" cy="${yScale(Number(row.value))}" r="5" data-territoire="Bouches-du-Rhône" data-dec="${row.dec}" data-value="${formatNumber(row.value)}"></circle>
+            `).join("")}
+          </svg>
+
+          <div class="trend-legend">
+            <span>Guyane</span>
+            <span>Bouches-du-Rhône</span>
+          </div>
+        </div>
+      `;
+
+      activateTrendTooltip();
+    }
+
+    function activateTrendTooltip() {
+      let tooltip = document.querySelector(".trend-tooltip");
+
+      if (!tooltip) {
+        tooltip = document.createElement("div");
+        tooltip.className = "trend-tooltip";
+        document.body.appendChild(tooltip);
+      }
+
+      document.querySelectorAll(".trend-point").forEach(point => {
+        point.addEventListener("mouseenter", () => {
+          tooltip.innerHTML = `
+            <strong>${point.dataset.territoire}</strong>
+            Décennie : ${point.dataset.dec}<br>
+            Température moyenne : ${point.dataset.value} °C
+          `;
+          tooltip.style.opacity = "1";
+        });
+
+        point.addEventListener("mousemove", event => {
+          tooltip.style.left = event.clientX + "px";
+          tooltip.style.top = event.clientY - 12 + "px";
+        });
+
+        point.addEventListener("mouseleave", () => {
+          tooltip.style.opacity = "0";
+        });
+      });
+    }
+
+    indicatorButtons.forEach(button => {
+      button.addEventListener("click", () => {
+        renderIndicator(button.dataset.indicator);
+      });
+    });
+
+    async function loadClimateData() {
+      renderIndicator("temperature");
+
+      const possiblePaths = [
+        "data/climat_data.json",
+        "./data/climat_data.json",
+        "v3/data/climat_data.json",
+        "./v3/data/climat_data.json",
+        "climat_data.json"
+      ];
+
+    }
+
+    loadClimateData();
+
+    const sections = document.querySelectorAll("main section[id]");
+    const navItems = document.querySelectorAll(".nav-links a[href^='#']");
+
+    const sectionObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+
+        const id = entry.target.getAttribute("id");
+
+        navItems.forEach(link => {
+          link.classList.toggle("active", link.getAttribute("href") === "#" + id);
+        });
+      });
+    }, { rootMargin: "-45% 0px -50% 0px", threshold: .01 });
+
+    sections.forEach(section => sectionObserver.observe(section));
+  </script>
+</body>
+</html>

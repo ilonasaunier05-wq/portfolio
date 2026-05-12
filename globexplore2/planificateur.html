@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GlobExplore — Planner</title>
+
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@600;700;800&display=swap");
+
+    :root{
+      --bg:#f8f5ef;
+      --paper:#fffdf9;
+      --deep:#182236;
+      --ink:#182236;
+      --muted:#697386;
+      --aqua:#7bd6d0;
+      --brand:#9bb7ff;
+      --brand-dark:#7386c8;
+      --sand:#f1d6a8;
+      --line:rgba(24,34,54,.12);
+      --shadow:0 34px 110px rgba(24,34,54,.18);
+      --ease:cubic-bezier(.16,1,.3,1);
+    }
+
+    *{margin:0;padding:0;box-sizing:border-box}
+    html{scroll-behavior:smooth;background:var(--bg)}
+
+    body{
+      font-family:Inter,system-ui,sans-serif;
+      overflow-x:hidden;
+      color:var(--deep);
+      background:
+        radial-gradient(circle at 8% 0%,rgba(123,214,208,.18),transparent 30rem),
+        radial-gradient(circle at 92% 0%,rgba(155,183,255,.22),transparent 32rem),
+        linear-gradient(180deg,#f8f5ef,#fffdf9 45%,#f6f0e8);
+      line-height:1.65;
+    }
+
+    a{text-decoration:none;color:inherit}
+    img{display:block;width:100%}
+    button,input,select,textarea{font:inherit}
+
+    .container{width:min(1180px,calc(100% - 34px));margin:auto}
+
+    .progress{
+      position:fixed;top:0;left:0;z-index:10000;height:3px;width:0;
+      background:linear-gradient(90deg,var(--brand-dark),var(--aqua),var(--sand));
+    }
+
+    .nav{
+      position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:9999;
+      width:min(1180px,calc(100% - 24px));
+      border:1px solid rgba(255,255,255,.32);
+      background:rgba(255,255,255,.16);
+      backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+      border-radius:999px;box-shadow:0 20px 70px rgba(0,0,0,.16);
+      transition:.25s var(--ease);
+    }
+
+    .nav.scrolled{
+      background:rgba(255,255,255,.86);
+      border-color:rgba(24,34,54,.10);
+    }
+
+    .nav-inner{height:66px;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 14px 0 24px}
+
+    .brand{
+      font-family:"Playfair Display",serif;font-size:1.5rem;font-weight:800;
+      letter-spacing:-.04em;color:white;text-shadow:0 12px 32px rgba(0,0,0,.28);white-space:nowrap;
+    }
+    .nav.scrolled .brand{color:var(--deep);text-shadow:none}
+
+    .nav-links{display:flex;align-items:center;gap:5px}
+    .nav-links a{
+      border-radius:999px;padding:10px 12px;color:rgba(255,255,255,.86);
+      font-size:.70rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;
+      transition:.25s var(--ease);white-space:nowrap;
+    }
+    .nav.scrolled .nav-links a{color:rgba(24,34,54,.72)}
+    .nav-links a:hover,.nav-links a.active,.nav.scrolled .nav-links a:hover,.nav.scrolled .nav-links a.active{
+      background:var(--deep);color:white;
+    }
+
+    .menu-btn{display:none;border:0;background:white;color:var(--deep);border-radius:999px;padding:10px 13px;font-weight:900;cursor:pointer}
+
+    .eyebrow{color:var(--aqua);text-transform:uppercase;letter-spacing:.16em;font-size:.72rem;font-weight:900;margin-bottom:18px}
+    .eyebrow.dark{color:var(--brand-dark)}
+    h1,h2,h3{font-family:"Playfair Display",serif;line-height:1.02;letter-spacing:-.05em;color:var(--deep)}
+    h1{font-size:clamp(3rem,7vw,6.7rem);color:white;text-shadow:0 24px 80px rgba(0,0,0,.35);max-width:960px}
+    h2{font-size:clamp(2.25rem,5vw,4.5rem);margin-bottom:18px}
+    h3{font-size:1.65rem}
+    p{color:var(--muted)}
+
+    .hero{
+      position:relative;min-height:90vh;display:flex;align-items:center;overflow:hidden;isolation:isolate;
+      padding:145px 0 92px;
+    }
+    .hero-media{position:absolute;inset:0;height:100%;object-fit:cover;z-index:-3;filter:saturate(1.08) contrast(1.05)}
+    .hero::before{
+      content:"";position:absolute;inset:0;z-index:-2;
+      background:
+        linear-gradient(90deg,rgba(10,18,34,.86),rgba(10,18,34,.42)),
+        linear-gradient(180deg,rgba(10,18,34,.08),rgba(10,18,34,.74));
+    }
+    .hero::after{content:"";position:absolute;inset:auto 0 0;height:72px;z-index:-1;background:linear-gradient(180deg,transparent,rgba(248,245,239,.48))}
+
+    .hero-grid{display:grid;grid-template-columns:minmax(0,1fr) 390px;gap:42px;align-items:end}
+    .hero p{margin-top:24px;max-width:760px;color:rgba(255,255,255,.84);font-size:1.08rem;line-height:1.8}
+    .hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+
+    .hero-panel{
+      padding:26px;border-radius:34px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.25);
+      backdrop-filter:blur(24px);color:white;box-shadow:0 24px 90px rgba(0,0,0,.22);
+    }
+    .hero-panel h3{color:white;font-size:1.9rem;margin-bottom:12px}
+    .hero-panel p{margin:0;color:rgba(255,255,255,.76)}
+    .hero-panel-list{display:grid;gap:10px;margin-top:20px}
+    .hero-panel-list a{padding:12px 14px;border-radius:18px;background:rgba(255,255,255,.13);color:white;font-weight:850;transition:.25s}
+    .hero-panel-list a:hover{background:rgba(255,255,255,.25);transform:translateX(5px)}
+
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:9px;border:0;border-radius:999px;
+      padding:14px 22px;background:white;color:var(--deep);font-weight:900;cursor:pointer;
+      box-shadow:0 16px 44px rgba(24,34,54,.12);transition:.25s var(--ease);text-align:center;
+    }
+    .btn:hover{transform:translateY(-2px);box-shadow:0 22px 60px rgba(24,34,54,.18)}
+    .btn.primary{background:linear-gradient(135deg,#fff,var(--aqua));color:#122037}
+    .btn.dark{background:var(--deep);color:white}
+    .btn.ghost-light{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);box-shadow:none;color:white;backdrop-filter:blur(16px)}
+    .btn.full{width:100%}
+
+    .section{padding:105px 0}
+    .section.alt{background:radial-gradient(circle at 10% 0%,rgba(241,214,168,.26),transparent 28rem),linear-gradient(180deg,#fffdf9,#f8f5ef)}
+    .section-head{display:grid;grid-template-columns:.95fr 1.05fr;gap:44px;align-items:end;margin-bottom:42px}
+    .section-head p{line-height:1.8;margin:0}
+
+    .planner-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:24px;align-items:start}
+    .feature{
+      border-radius:34px;background:rgba(255,255,255,.82);border:1px solid rgba(24,34,54,.08);
+      padding:30px;box-shadow:0 24px 80px rgba(24,34,54,.10);
+    }
+    .feature.tint{
+      background:radial-gradient(circle at 88% 0%,rgba(123,214,208,.28),transparent 20rem),linear-gradient(135deg,#182236,#405384);
+      color:white;position:sticky;top:100px;
+    }
+    .feature.tint h2,.feature.tint h3{color:white}
+    .feature.tint p,.feature.tint li{color:rgba(255,255,255,.76)}
+    .feature.tint ul{margin:22px 0 0 18px;display:grid;gap:10px;font-weight:800}
+
+    .form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+    .field{display:grid;gap:8px}
+    .field.full{grid-column:1/-1}
+    .field label{font-weight:900;color:var(--deep)}
+    .field select,.field input[type="range"]{width:100%}
+    .field select{
+      border:1px solid rgba(24,34,54,.12);border-radius:18px;padding:14px 15px;outline:none;background:white;color:var(--deep);font-weight:750;
+    }
+    .field select:focus{border-color:var(--brand);box-shadow:0 0 0 4px rgba(155,183,255,.22)}
+    .budget-row{display:flex;align-items:center;justify-content:space-between;gap:14px}
+    .budget-row p{font-weight:900;color:var(--deep);margin:0}
+    input[type="range"]{accent-color:var(--brand-dark);margin:10px 0}
+    .search-card .btn{margin-top:22px}
+
+    .planner-output{display:none;margin-top:24px}
+    .planner-output.show{display:block}
+    .result-layout{display:grid;gap:20px}
+    .main-result{
+      overflow:hidden;border-radius:34px;background:white;box-shadow:0 24px 80px rgba(24,34,54,.13);
+      display:grid;grid-template-columns:320px 1fr;
+    }
+    .main-result figure{height:100%;min-height:320px;overflow:hidden}
+    .main-result img{height:100%;object-fit:cover}
+    .main-result-body{padding:28px}
+    .main-result-body h3{font-size:2.5rem;margin:10px 0 12px}
+    .result-meta,.alt-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+    .result-meta span,.alt-meta span{
+      padding:8px 11px;border-radius:999px;background:#eef3ff;color:var(--deep);font-size:.72rem;font-weight:900;
+    }
+    .alternative-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .alt-card{
+      padding:20px;border-radius:26px;background:white;border:1px solid rgba(24,34,54,.08);box-shadow:0 18px 60px rgba(24,34,54,.08);
+      cursor:pointer;transition:.25s var(--ease);
+    }
+    .alt-card:hover,.alt-card.active{transform:translateY(-3px);border-color:rgba(115,134,200,.35);box-shadow:0 24px 70px rgba(24,34,54,.14)}
+    .alt-card h3{font-size:1.55rem;margin:8px 0}
+
+    .itinerary-section{display:none}
+    .itinerary-section.show{display:block}
+    .itinerary-board{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .day-card{
+      position:relative;padding:28px;border-radius:30px;background:white;box-shadow:0 22px 70px rgba(24,34,54,.10);overflow:hidden;
+    }
+    .day-card::before{
+      content:attr(data-day);position:absolute;right:18px;top:12px;font-family:"Playfair Display",serif;font-size:4rem;line-height:1;
+      color:rgba(115,134,200,.12);font-weight:800;
+    }
+    .day-card h3{font-size:1.65rem;margin-bottom:10px;position:relative;z-index:2}
+    .day-card p{position:relative;z-index:2;line-height:1.7}
+    .day-card span{display:inline-flex;margin-top:16px;padding:8px 11px;border-radius:999px;background:#eef3ff;font-weight:900;font-size:.72rem;position:relative;z-index:2}
+
+    .experience-addons{margin-top:34px;display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .addon-card{background:white;border-radius:28px;overflow:hidden;box-shadow:0 20px 60px rgba(24,34,54,.12)}
+    .addon-card img{height:170px;object-fit:cover;cursor:zoom-in;transition:.35s var(--ease)}
+    .addon-card img:hover{transform:scale(1.03)}
+    .addon-card div{padding:18px}
+    .addon-card h3{font-size:1.45rem;margin-bottom:8px}
+    .addon-card p{line-height:1.6}
+    .addon-card span{display:inline-flex;margin-top:10px;padding:7px 10px;border-radius:999px;background:#eef3ff;font-size:.72rem;font-weight:900}
+
+    .summary-card{
+      margin-top:34px;border-radius:34px;padding:30px;background:linear-gradient(135deg,#182236,#405384);color:white;box-shadow:var(--shadow);
+    }
+    .summary-card h3{color:white;font-size:2rem;margin-bottom:10px}
+    .summary-card p{color:rgba(255,255,255,.76)}
+    .summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px}
+    .summary-grid span{padding:14px;border-radius:18px;background:rgba(255,255,255,.12);color:white;font-weight:850}
+
+    .image-modal{position:fixed;inset:0;z-index:20000;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(8,14,26,.82);backdrop-filter:blur(18px)}
+    .image-modal.show{display:flex}
+    .image-modal img{max-width:min(1100px,94vw);max-height:86vh;object-fit:contain;border-radius:28px;box-shadow:0 30px 100px rgba(0,0,0,.45)}
+    .image-close{position:fixed;top:24px;right:24px;width:44px;height:44px;border:0;border-radius:999px;background:white;color:#182236;font-size:1.5rem;font-weight:900;cursor:pointer}
+
+    .cta{overflow:hidden;border-radius:42px;padding:70px;background:radial-gradient(circle at 20% 20%,rgba(123,214,208,.22),transparent 28rem),linear-gradient(135deg,#111827,#182236 58%,#405384);color:white;box-shadow:var(--shadow)}
+    .cta h2{color:white;max-width:760px}.cta p{color:rgba(255,255,255,.75);max-width:660px}
+
+    .footer{position:relative;overflow:hidden;padding:78px 0 34px;background:radial-gradient(circle at top left,rgba(123,214,208,.10),transparent 24rem),radial-gradient(circle at top right,rgba(155,183,255,.12),transparent 24rem),linear-gradient(135deg,#0f172a,#182236 58%,#22345a);color:white}
+    .footer-grid{display:grid;grid-template-columns:1.4fr repeat(3,1fr);gap:40px}
+    .footer h3{font-family:"Playfair Display",serif;font-size:2rem;margin-bottom:14px;color:white;letter-spacing:-.04em}
+    .footer h4{margin-bottom:16px;color:white;font-size:.95rem;text-transform:uppercase;letter-spacing:.08em}
+    .footer p,.footer a{color:rgba(255,255,255,.68);line-height:1.9}.footer a{display:block;width:fit-content;transition:.25s}.footer a:hover{color:white;transform:translateX(3px)}
+    .footer-bottom{width:min(1180px,calc(100% - 34px));margin:46px auto 0;padding-top:24px;border-top:1px solid rgba(255,255,255,.10);display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;color:rgba(255,255,255,.52);font-size:.9rem}
+    .footer-bottom-links{display:flex;gap:18px;flex-wrap:wrap}.footer-bottom-links a{color:rgba(255,255,255,.52)}.footer-bottom-links a:hover{color:white}
+
+    @media(max-width:1180px){
+      .planner-grid{grid-template-columns:1fr}.feature.tint{position:relative;top:auto}.main-result{grid-template-columns:1fr}.main-result figure{min-height:280px}.itinerary-board{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:980px){
+      .nav-links{position:absolute;top:calc(100% + 10px);right:0;width:min(330px,calc(100vw - 28px));display:none;flex-direction:column;align-items:stretch;background:rgba(18,32,55,.94);border:1px solid rgba(255,255,255,.18);border-radius:26px;padding:12px;backdrop-filter:blur(22px)}
+      .nav.open .nav-links{display:flex}.nav-links a,.nav.scrolled .nav-links a{color:white}.menu-btn{display:inline-flex}
+      .hero-grid,.section-head{grid-template-columns:1fr}.hero-panel{max-width:620px}.alternative-grid,.experience-addons,.footer-grid{grid-template-columns:1fr 1fr}.summary-grid{grid-template-columns:1fr}
+    }
+    @media(max-width:720px){
+      .container{width:calc(100% - 24px)}.hero{min-height:auto;padding:118px 0 70px}.hero-panel{display:none}.hero-actions{flex-direction:column}.hero-actions .btn{width:100%}
+      .section{padding:78px 0}.form-grid,.itinerary-board,.alternative-grid,.experience-addons,.footer-grid{grid-template-columns:1fr}.main-result-body,.feature{padding:22px}.cta{padding:38px 24px;border-radius:30px}.footer-bottom{flex-direction:column;text-align:center;align-items:center}.footer-bottom-links{justify-content:center}
+    }
+    @media(max-width:420px){h1{font-size:2.55rem}h2{font-size:2.15rem}.btn{width:100%}.nav-inner{height:58px;padding:0 12px 0 18px}.brand{font-size:1.28rem}}
+    @media (max-width: 1366px) and (min-width: 981px) {
+      .container {
+        width: min(1120px, calc(100% - 34px));
+      }
+
+      .hero {
+        min-height: auto;
+        padding: 115px 0 64px;
+      }
+
+      .hero-layout {
+        grid-template-columns: minmax(0, 1fr) 340px;
+        gap: 26px;
+        align-items: start;
+      }
+
+      h1 {
+        font-size: clamp(3rem, 6vw, 5.8rem);
+      }
+
+      .hero-copy p:not(.eyebrow) {
+        font-size: 1rem;
+        margin-top: 14px;
+      }
+
+      .smart-search {
+        margin-top: 22px;
+      }
+
+      .actions {
+        margin-top: 14px;
+      }
+
+      .dash-card {
+        padding: 20px;
+      }
+
+      .dash-card h3 {
+        font-size: 1.55rem;
+      }
+
+      .dash-card p {
+        margin: 8px 0 14px;
+        font-size: .92rem;
+      }
+
+      .mini-stat {
+        padding: 13px;
+      }
+
+      .mini-stat strong {
+        font-size: 1.35rem;
+      }
+
+      .section {
+        padding: 86px 0;
+      }
+    }
+    
+    /* RESET du correctif précédent */
+    .hero {
+      min-height: auto !important;
+      height: auto !important;
+    }
+    
+    /* Hero qui s’adapte vraiment à une fenêtre intégrée / portfolio */
+    /* FIX PROPRE PORTFOLIO + GRAND ÉCRAN */
+    .hero {
+      min-height: 100svh !important;
+      height: auto !important;
+      padding: 120px 0 80px !important;
+      align-items: center !important;
+    }
+    
+    .hero-layout {
+      align-items: center !important;
+    }
+    
+    /* Grand écran fixe : on agrandit un peu, mais sans forcer 100vh */
+    @media (min-width: 1400px) {
+      .hero {
+        padding: 135px 0 80px !important;
+      }
+    
+      .container {
+        width: min(1180px, calc(100% - 60px)) !important;
+      }
+    
+      .nav {
+        width: min(1180px, calc(100% - 60px)) !important;
+      }
+    
+      .hero-layout {
+        grid-template-columns: minmax(0, 1.08fr) 380px !important;
+        gap: 38px !important;
+      }
+    
+      h1 {
+        font-size: clamp(4rem, 6.4vw, 7rem) !important;
+      }
+    }
+  
+  </style>
+</head>
+<body>
+  <div class="progress"></div>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="index.html">GlobExplore</a>
+      <button class="menu-btn" aria-label="menu">Menu</button>
+      <div class="nav-links">
+        <a href="index.html">Accueil</a>
+        <a href="destinations.html">Destinations</a>
+        <a href="experiences.html">Expériences</a>
+        <a href="planificateur.html" class="active">Planner</a>
+        <a href="contact.html">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <img class="hero-media" src="https://images.unsplash.com/photo-1501555088652-021faa106b9b?auto=format&fit=crop&w=1800&q=90" alt="Planner voyage premium">
+    <div class="container hero-grid">
+      <div>
+        <p class="eyebrow">Planner intelligent</p>
+        <h1>Créez un itinéraire qui vous ressemble.</h1>
+        <p>Choisissez votre style, budget, confort et rythme. Le planner recommande un séjour, propose des alternatives et ajoute des expériences premium au programme.</p>
+        <div class="hero-actions">
+          <a class="btn primary" href="#planner">Créer mon voyage</a>
+          <a class="btn ghost-light" href="#itinerarySection">Voir un itinéraire</a>
+        </div>
+      </div>
+      <aside class="hero-panel">
+        <h3>Ce que le planner prépare</h3>
+        <p>Une proposition claire, facile à lire et prête à transformer en demande de devis.</p>
+        <div class="hero-panel-list">
+          <a href="#planner">✦ Meilleure destination</a>
+          <a href="#planner">✦ Alternatives adaptées</a>
+          <a href="#itinerarySection">✦ Planning jour par jour</a>
+          <a href="#itinerarySection">✦ Expériences à ajouter</a>
+        </div>
+      </aside>
+    </div>
+  </header>
+
+  <section id="planner" class="section alt planner-section">
+    <div class="container">
+      <div class="planner-grid">
+        <div class="feature tint planner-intro">
+          <p class="eyebrow">Comment ça marche</p>
+          <h2>Votre voyage en quelques critères.</h2>
+          <p>Le planner score les séjours possibles, propose la meilleure option, affiche deux alternatives et génère un itinéraire jour par jour avec des expériences issues du catalogue.</p>
+          <ul>
+            <li>Budget et durée pris en compte</li>
+            <li>Style de voyage prioritaire</li>
+            <li>Confort et rythme intégrés</li>
+            <li>Expériences recommandées automatiquement</li>
+          </ul>
+        </div>
+
+        <div>
+          <form id="plannerForm" class="feature search-card">
+            <div class="form-grid">
+              <div class="field">
+                <label for="style">Style</label>
+                <select id="style">
+                  <option>Culture</option>
+                  <option>Aventure</option>
+                  <option>Gastronomie</option>
+                  <option>Romantique</option>
+                  <option>Road trip</option>
+                  <option>Bien-être</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="comfort">Confort</label>
+                <select id="comfort">
+                  <option>Équilibré</option>
+                  <option>Premium</option>
+                  <option>Économique</option>
+                  <option>Luxe discret</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="duration">Durée</label>
+                <select id="duration">
+                  <option value="3">3 jours</option>
+                  <option value="5" selected>5 jours</option>
+                  <option value="7">7 jours</option>
+                  <option value="10">10 jours</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="pace">Rythme</label>
+                <select id="pace">
+                  <option>Doux</option>
+                  <option selected>Équilibré</option>
+                  <option>Intense</option>
+                </select>
+              </div>
+              <div class="field full">
+                <div class="budget-row">
+                  <label for="budget">Budget</label>
+                  <p id="budgetValue">1200 €</p>
+                </div>
+                <input id="budget" type="range" min="600" max="3200" value="1200" step="50">
+              </div>
+            </div>
+            <button class="btn primary" type="submit">Générer mon voyage</button>
+          </form>
+          <div id="plannerOutput" class="planner-output"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="itinerarySection" class="section itinerary-section">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow dark">Itinéraire</p>
+          <h2 id="itineraryTitle">Itinéraire proposé</h2>
+        </div>
+        <p id="itineraryIntro">Générez un voyage pour voir un parcours détaillé avec des expériences recommandées.</p>
+      </div>
+      <div id="itineraryBoard" class="itinerary-board"></div>
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="container">
+      <div class="cta">
+        <p class="eyebrow">Prêt à partir ?</p>
+        <h2>Transformez cette idée en demande de voyage.</h2>
+        <p>Une fois l’itinéraire choisi, envoyez vos préférences : dates, budget, nombre de voyageurs, confort et expériences à intégrer.</p>
+        <a class="btn primary" href="contact.html">Demander un devis</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="image-modal" id="imageModal">
+    <button class="image-close" id="imageClose">×</button>
+    <img id="imageModalImg" src="" alt="Aperçu plein écran">
+  </div>
+
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div>
+        <h3>GlobExplore</h3>
+        <p>Voyages premium, expériences choisies et itinéraires personnalisés pour organiser un séjour sans stress.</p>
+      </div>
+      <div>
+        <h4>Explorer</h4>
+        <a href="destinations.html">Destinations</a>
+        <a href="experiences.html">Expériences</a>
+        <a href="offres.html">Offres</a>
+        <a href="planificateur.html">Planner</a>
+      </div>
+      <div>
+        <h4>Préparer</h4>
+        <a href="contact.html">Demander un devis</a>
+        <a href="#planner">Créer un itinéraire</a>
+        <a href="experiences.html">Ajouter des expériences</a>
+        <a href="#">Conseils départ</a>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <p>contact@globexplore.com</p>
+        <p>+33 6 00 00 00 00</p>
+        <p>Paris, France</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 GlobExplore — Voyages visuels, expériences choisies, planner intelligent.</span>
+      <div class="footer-bottom-links">
+        <a href="#">Mentions légales</a>
+        <a href="#">Confidentialité</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const nav = document.querySelector('.nav');
+    const menuBtn = document.querySelector('.menu-btn');
+    const progress = document.querySelector('.progress');
+
+    menuBtn?.addEventListener('click', () => nav.classList.toggle('open'));
+
+    window.addEventListener('scroll', () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      progress.style.width = max > 0 ? (window.scrollY / max) * 100 + '%' : '0%';
+      nav.classList.toggle('scrolled', window.scrollY > 80);
+    });
+
+    const budget = document.getElementById('budget');
+    const budgetValue = document.getElementById('budgetValue');
+    budget?.addEventListener('input', () => budgetValue.textContent = Number(budget.value).toLocaleString('fr-FR') + ' €');
+
+    const tripBank = {
+      Culture: [
+        {
+          title:'Tokyo créatif',
+          image:'https://images.unsplash.com/photo-1528360983277-13d401cdc186?auto=format&fit=crop&w=1400&q=85',
+          mood:'Néon, temples, food',
+          minBudget:1400,
+          idealDays:6,
+          comfort:'Premium',
+          text:'Un séjour urbain, design et culturel entre quartiers créatifs, temples et adresses food.',
+          itinerary:[
+            ['Arrivée douce','Check-in, balade de quartier, ramen signature.','Arrivée'],
+            ['Tokyo classique','Temple, jardin, tea house et ruelles photogéniques.','Culture'],
+            ['Design city','Concept stores, musée, cafés minimalistes.','Créatif'],
+            ['Food night','Izakaya, marchés et rooftop.','Food'],
+            ['Excursion','Mont Fuji ou Kamakura selon météo.','Nature'],
+            ['Derniers spots','Shopping, souvenirs, transfert.','Départ']
+          ]
+        },
+        {
+          title:'Marrakech sensoriel',
+          image:'https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=1400&q=85',
+          mood:'Riad, souks, Atlas',
+          minBudget:950,
+          idealDays:5,
+          comfort:'Équilibré',
+          text:'Une immersion chaude et élégante entre médina, hammam, artisanat et excursion Atlas.',
+          itinerary:[
+            ['Riad & médina','Installation, thé, première balade.','Arrivée'],
+            ['Souks guidés','Artisans, couleurs et déjeuner local.','Culture'],
+            ['Hammam','Spa, jardin secret et dîner rooftop.','Bien-être'],
+            ['Atlas','Excursion montagne et villages.','Nature'],
+            ['Derniers achats','Café, épices, transfert.','Départ']
+          ]
+        }
+      ],
+      Aventure: [
+        {
+          title:'Islande panoramique',
+          image:'https://images.unsplash.com/photo-1504829857797-ddff29c27927?auto=format&fit=crop&w=1400&q=85',
+          mood:'Volcans, cascades, lagons',
+          minBudget:1600,
+          idealDays:7,
+          comfort:'Équilibré',
+          text:'Road trip spectaculaire avec étapes scéniques, sources chaudes et paysages bruts.',
+          itinerary:[
+            ['Arrivée Reykjavik','Installation et lagon chaud.','Arrivée'],
+            ['Cercle d’or','Geysers, cascades, route photo.','Nature'],
+            ['Côte sud','Plages noires et glaciers.','Route'],
+            ['Randonnée','Point de vue et pause thermale.','Actif'],
+            ['Journée flexible','Météo, aurores ou repos.','Flex'],
+            ['Retour city','Cafés, port, dîner.','Ville'],
+            ['Départ','Transfert fluide.','Départ']
+          ]
+        }
+      ],
+      Gastronomie: [
+        {
+          title:'Italie gourmande',
+          image:'https://images.unsplash.com/photo-1516483638261-f4dbaf036963?auto=format&fit=crop&w=1400&q=85',
+          mood:'Trattorias, marchés, côte',
+          minBudget:1050,
+          idealDays:5,
+          comfort:'Équilibré',
+          text:'Un voyage gourmand entre marchés, cours de cuisine, villages et tables panoramiques.',
+          itinerary:[
+            ['Arrivée','Aperitivo et dîner local.','Food'],
+            ['Marché','Produits, dégustation, balade.','Local'],
+            ['Atelier cuisine','Pasta, dessert, vins.','Atelier'],
+            ['Côte','Village, bateau ou train panoramique.','Scénique'],
+            ['Départ','Dernier café et souvenirs.','Départ']
+          ]
+        }
+      ],
+      Romantique: [
+        {
+          title:'Parenthèse romantique',
+          image:'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1400&q=85',
+          mood:'Intime et élégant',
+          minBudget:1200,
+          idealDays:3,
+          comfort:'Luxe discret',
+          text:'Un court séjour pensé pour ralentir, profiter d’un bel hôtel et créer un souvenir fort.',
+          itinerary:[
+            ['Arrivée premium','Transfert, chambre agréable et dîner intimiste.','Arrivée'],
+            ['Moment à deux','Spa, balade douce et surprise sunset.','Signature'],
+            ['Départ lent','Petit-déjeuner tardif et retour.','Départ']
+          ]
+        }
+      ],
+      'Road trip': [
+        {
+          title:'Route panoramique libre',
+          image:'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1400&q=85',
+          mood:'Libre et cinématographique',
+          minBudget:1100,
+          idealDays:7,
+          comfort:'Équilibré',
+          text:'Un itinéraire modulable avec étapes, paysages variés et moments spontanés.',
+          itinerary:[
+            ['Prise en main','Véhicule et première étape courte.','Départ'],
+            ['Route scénique','Points de vue et hébergement d’étape.','Route'],
+            ['Grand paysage','Arrêt signature.','Nature'],
+            ['Village','Marché et temps libre.','Culture'],
+            ['Étape flexible','Détour, randonnée ou repos.','Flex'],
+            ['Dernière route','Coucher de soleil.','Final'],
+            ['Restitution','Retour.','Départ']
+          ]
+        }
+      ],
+      'Bien-être': [
+        {
+          title:'Retraite spa & nature',
+          image:'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1400&q=85',
+          mood:'Calme et régénérant',
+          minBudget:1000,
+          idealDays:5,
+          comfort:'Premium',
+          text:'Un séjour calme entre spa, nature, sommeil, marche douce et bonnes adresses.',
+          itinerary:[
+            ['Installation calme','Dîner léger et repos.','Déconnexion'],
+            ['Spa','Massage, piscine, lecture.','Bien-être'],
+            ['Nature lente','Balade et déjeuner sain.','Nature'],
+            ['Soin signature','Expérience spa complète.','Signature'],
+            ['Retour doux','Matinée libre.','Départ']
+          ]
+        }
+      ]
+    };
+
+    const experienceBank = {
+      Culture: [
+        {title:'Food tour signature',img:'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=900&q=85',text:'Marché local, dégustations, table cachée et storytelling culinaire.',tag:'3h • local'},
+        {title:'Art pass immersif',img:'https://images.unsplash.com/photo-1564399579883-451a5d44ec08?auto=format&fit=crop&w=900&q=85',text:'Galeries, musées, ateliers créatifs et cafés design.',tag:'Demi-journée'}
+      ],
+      Aventure: [
+        {title:'Plongée immersive',img:'https://images.unsplash.com/photo-1682687982501-1e58ab814714?auto=format&fit=crop&w=900&q=85',text:'Sortie bateau, eaux cristallines, récifs et accompagnement premium.',tag:'Demi-journée'},
+        {title:'Trek accessible',img:'https://images.unsplash.com/photo-1551632811-561732d1e306?auto=format&fit=crop&w=900&q=85',text:'Parcours guidé, pause panoramique et rythme adaptable.',tag:'4-6h'}
+      ],
+      Gastronomie: [
+        {title:'Atelier cuisine locale',img:'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=900&q=85',text:'Marché, produits locaux, atelier et dégustation.',tag:'3h'},
+        {title:'Table cachée',img:'https://images.unsplash.com/photo-1544148103-0773bf10d330?auto=format&fit=crop&w=900&q=85',text:'Adresse confidentielle, dîner travaillé et ambiance locale.',tag:'Soirée'}
+      ],
+      Romantique: [
+        {title:'Sunset privé',img:'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=900&q=85',text:'Moment à deux, coucher de soleil, boisson et spot confidentiel.',tag:'Soirée'},
+        {title:'Spa duo',img:'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=900&q=85',text:'Soin en duo, ambiance calme et retour doux.',tag:'2h'}
+      ],
+      'Road trip': [
+        {title:'Route panoramique',img:'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=900&q=85',text:'Arrêts photo, déjeuner local et carnet de route.',tag:'1 jour'},
+        {title:'Train panoramique',img:'https://images.unsplash.com/photo-1474487548417-781cb71495f3?auto=format&fit=crop&w=900&q=85',text:'Trajet scénique, stops photo et rythme slow travel.',tag:'1 jour'}
+      ],
+      'Bien-être': [
+        {title:'Spa & reset',img:'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=900&q=85',text:'Hammam, massage, respiration et retour doux.',tag:'2-3h'},
+        {title:'Balade nature lente',img:'https://images.unsplash.com/photo-1551632811-561732d1e306?auto=format&fit=crop&w=900&q=85',text:'Marche douce, paysage, respiration et pause saine.',tag:'Demi-journée'}
+      ]
+    };
+
+    function getTripsForStyle(style,budgetValue,durationValue,comfort,pace){
+      const styleTrips = tripBank[style] || [];
+      const allTrips = Object.values(tripBank).flat();
+      const pool = [...styleTrips,...allTrips.filter(t => !styleTrips.includes(t))];
+      return pool.map(trip => {
+        let score = 0;
+        if(styleTrips.includes(trip)) score += 40;
+        if(budgetValue >= trip.minBudget) score += 25;
+        else score -= Math.min(25,(trip.minBudget - budgetValue) / 80);
+        score -= Math.abs(trip.idealDays - durationValue) * 3;
+        if(trip.comfort === comfort) score += 12;
+        if(comfort === 'Premium' && trip.minBudget > 1200) score += 6;
+        if(comfort === 'Économique' && trip.minBudget <= 1000) score += 6;
+        if(pace === 'Doux' && trip.idealDays <= durationValue) score += 5;
+        if(pace === 'Intense' && trip.idealDays >= durationValue) score += 5;
+        return {...trip,score};
+      }).sort((a,b) => b.score - a.score).slice(0,3);
+    }
+
+    function activateImageModal(){
+      document.querySelectorAll('.clickable-img').forEach(img => {
+        img.onclick = () => {
+          document.getElementById('imageModalImg').src = img.src;
+          document.getElementById('imageModal').classList.add('show');
+        };
+      });
+    }
+
+    function renderItinerary(trip,duration){
+      const days = trip.itinerary.slice(0,duration);
+      while(days.length < duration){
+        days.push(['Temps libre guidé','Suggestions personnalisées : repos, visite légère ou bonne adresse.','Flexible']);
+      }
+
+      document.getElementById('itineraryTitle').textContent = trip.title + ' : itinéraire proposé';
+      document.getElementById('itineraryIntro').textContent = `Un parcours en ${duration} jours, pensé pour équilibrer expériences fortes et respiration.`;
+      document.getElementById('itineraryBoard').innerHTML = days.map((d,i) => `
+        <article class="day-card" data-day="${String(i+1).padStart(2,'0')}">
+          <h3>${d[0]}</h3>
+          <p>${d[1]}</p>
+          <span>${d[2]}</span>
+        </article>
+      `).join('');
+
+      document.querySelector('.experience-addons')?.remove();
+      document.querySelector('.summary-card')?.remove();
+
+      const selectedStyle = document.getElementById('style').value;
+      const addons = experienceBank[selectedStyle] || [];
+
+      const addonHTML = addons.length ? `
+        <div class="experience-addons">
+          ${addons.map(addon => `
+            <article class="addon-card">
+              <img class="clickable-img" src="${addon.img}" alt="${addon.title}">
+              <div>
+                <h3>${addon.title}</h3>
+                <p>${addon.text}</p>
+                <span>${addon.tag}</span>
+              </div>
+            </article>
+          `).join('')}
+        </div>
+      ` : '';
+
+      const summaryHTML = `
+        <article class="summary-card">
+          <h3>Résumé intelligent</h3>
+          <p>Ce voyage combine la destination recommandée, le rythme choisi et des expériences adaptées au style ${selectedStyle.toLowerCase()}.</p>
+          <div class="summary-grid">
+            <span>Destination : ${trip.title}</span>
+            <span>Durée : ${duration} jours</span>
+            <span>Expériences : ${addons.length} recommandées</span>
+          </div>
+        </article>
+      `;
+
+      document.getElementById('itineraryBoard').insertAdjacentHTML('afterend', addonHTML + summaryHTML);
+      document.getElementById('itinerarySection').classList.add('show');
+      activateImageModal();
+    }
+
+    function renderResults(trips,settings){
+      const main = trips[0];
+      const out = document.getElementById('plannerOutput');
+      out.classList.add('show');
+      out.innerHTML = `
+        <div class="result-layout">
+          <article class="main-result">
+            <figure><img class="clickable-img" src="${main.image}" alt="${main.title}"></figure>
+            <div class="main-result-body">
+              <p class="eyebrow dark">Meilleure recommandation</p>
+              <h3>${main.title}</h3>
+              <p>${main.text}</p>
+              <div class="result-meta">
+                <span>${settings.style}</span>
+                <span>${settings.duration} jours</span>
+                <span>${settings.budget.toLocaleString('fr-FR')} €</span>
+                <span>${settings.comfort}</span>
+                <span>${main.mood}</span>
+              </div>
+              <button class="btn primary" id="showMainItinerary">Voir l’itinéraire détaillé</button>
+            </div>
+          </article>
+          <div class="alternative-grid">
+            ${trips.map((trip,index) => `
+              <article class="alt-card ${index===0?'active':''}" data-trip-index="${index}">
+                <p class="eyebrow dark">${index===0?'Option conseillée':'Alternative '+index}</p>
+                <h3>${trip.title}</h3>
+                <p>${trip.text}</p>
+                <div class="alt-meta">
+                  <span>${trip.mood}</span>
+                  <span>Budget min. ${trip.minBudget.toLocaleString('fr-FR')} €</span>
+                  <span>${trip.idealDays} jours idéal</span>
+                </div>
+              </article>
+            `).join('')}
+          </div>
+        </div>
+      `;
+
+      document.getElementById('showMainItinerary').onclick = () => {
+        renderItinerary(main,settings.duration);
+        document.getElementById('itinerarySection').scrollIntoView({behavior:'smooth'});
+      };
+
+      document.querySelectorAll('.alt-card').forEach(card => {
+        card.onclick = () => {
+          const trip = trips[Number(card.dataset.tripIndex)];
+          document.querySelectorAll('.alt-card').forEach(i => i.classList.remove('active'));
+          card.classList.add('active');
+          renderItinerary(trip,settings.duration);
+          document.getElementById('itinerarySection').scrollIntoView({behavior:'smooth'});
+        };
+      });
+
+      renderItinerary(main,settings.duration);
+      activateImageModal();
+    }
+
+    document.getElementById('plannerForm')?.addEventListener('submit', e => {
+      e.preventDefault();
+      const settings = {
+        style: document.getElementById('style').value,
+        comfort: document.getElementById('comfort').value,
+        duration: Number(document.getElementById('duration').value),
+        pace: document.getElementById('pace').value,
+        budget: Number(document.getElementById('budget').value)
+      };
+      renderResults(getTripsForStyle(settings.style,settings.budget,settings.duration,settings.comfort,settings.pace),settings);
+      document.getElementById('plannerOutput').scrollIntoView({behavior:'smooth',block:'start'});
+    });
+
+    document.getElementById('imageClose').addEventListener('click', () => {
+      document.getElementById('imageModal').classList.remove('show');
+    });
+    document.getElementById('imageModal').addEventListener('click', event => {
+      if(event.target.id === 'imageModal') document.getElementById('imageModal').classList.remove('show');
+    });
+  </script>
+</body>
+</html>

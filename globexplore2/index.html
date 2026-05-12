@@ -1,0 +1,2231 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>GlobExplore — Accueil</title>
+
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@600;700;800&display=swap");
+
+    :root {
+      --bg: #fbf7f0;
+      --paper: #fffdf8;
+      --ink: #182236;
+      --muted: #697386;
+      --line: rgba(255, 255, 255, 0.24);
+      --dark-line: rgba(24, 34, 54, 0.13);
+      --brand: #7386c8;
+      --brand2: #9bb7ff;
+      --aqua: #7bd6d0;
+      --sand: #f1d6a8;
+      --rose: #e8b4a6;
+      --deep: #182236;
+      --soft: #eef3ff;
+      --shadow: 0 28px 90px rgba(24, 34, 54, 0.18);
+      --r: 30px;
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background: var(--bg);
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 8% 0%, rgba(123, 214, 208, 0.24), transparent 32rem),
+        radial-gradient(circle at 92% 8%, rgba(155, 183, 255, 0.27), transparent 34rem),
+        linear-gradient(180deg, #fbf7f0 0%, #fffdf8 42%, #f6f0e8 100%);
+      line-height: 1.65;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    .container {
+      width: min(1180px, calc(100% - 42px));
+      margin: auto;
+    }
+
+    .progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 10000;
+      height: 3px;
+      width: 0;
+      background: linear-gradient(90deg, var(--brand), var(--aqua), var(--sand));
+    }
+
+    .nav {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999;
+      width: min(1180px, calc(100% - 28px));
+      border: 1px solid rgba(255, 255, 255, 0.48);
+      background: rgba(255, 255, 255, 0.18);
+      backdrop-filter: blur(26px);
+      -webkit-backdrop-filter: blur(26px);
+      border-radius: 999px;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.16);
+    }
+
+    .nav-inner {
+      height: 66px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 0 12px 0 24px;
+    }
+
+    .brand {
+      font-family: "Playfair Display", serif;
+      font-size: 1.48rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: white;
+      text-shadow: 0 12px 32px rgba(0,0,0,.28);
+      white-space: nowrap;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .nav-links a {
+      border: 1px solid transparent;
+      border-radius: 999px;
+      padding: 10px 12px;
+      color: rgba(255, 255, 255, 0.84);
+      font-size: 0.70rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: 0.25s var(--ease);
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: #122037;
+      background: rgba(255, 255, 255, 0.92);
+      border-color: rgba(255,255,255,.72);
+      box-shadow: 0 10px 30px rgba(24, 34, 54, 0.12);
+    }
+
+    .menu-btn {
+      display: none;
+      border: 0;
+      background: white;
+      color: var(--deep);
+      border-radius: 999px;
+      padding: 10px 13px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .eyebrow {
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-size: 0.72rem;
+      font-weight: 900;
+      color: var(--brand);
+    }
+
+    .eyebrow.light {
+      color: rgba(255,255,255,.82);
+    }
+
+    h1,
+    h2,
+    h3 {
+      font-family: "Playfair Display", serif;
+      margin: 0;
+      line-height: 1.04;
+      color: var(--ink);
+    }
+
+    h1 {
+      font-size: clamp(3.15rem, 7.4vw, 7.6rem);
+      letter-spacing: -0.075em;
+      color: white;
+      text-shadow: 0 22px 70px rgba(0, 0, 0, 0.35);
+    }
+
+    h2 {
+      font-size: clamp(2.3rem, 5.2vw, 4.8rem);
+      letter-spacing: -0.05em;
+    }
+
+    h3 {
+      font-size: 1.55rem;
+    }
+
+    p {
+      margin-top: 0;
+      color: var(--muted);
+    }
+
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      overflow: hidden;
+      display: grid;
+      align-items: center;
+      padding: 130px 0 80px;
+      isolation: isolate;
+    }
+
+    .hero-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(300px, 0.55fr);
+      gap: 32px;
+      align-items: center;
+    }
+
+    .hero-media {
+      position: absolute;
+      inset: 0;
+      height: 100%;
+      object-fit: cover;
+      z-index: -3;
+      transform: scale(1.02);
+      filter: saturate(1.08) contrast(1.05);
+    }
+
+    .hero-shade {
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      background:
+        linear-gradient(90deg, rgba(10, 18, 34, 0.78) 0%, rgba(10, 18, 34, 0.54) 43%, rgba(10, 18, 34, 0.18) 100%),
+        linear-gradient(180deg, rgba(10,18,34,.25), rgba(10,18,34,.58)),
+        radial-gradient(circle at 22% 30%, rgba(123, 214, 208, .20), transparent 30rem),
+        radial-gradient(circle at 80% 16%, rgba(155, 183, 255, .30), transparent 34rem);
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0;
+      height: 90px;
+      z-index: -1;
+      background: linear-gradient(180deg, transparent, rgba(251,247,240,.72));
+    }
+
+    .glass-hero {
+      max-width: 900px;
+    }
+
+    .hero-copy p:not(.eyebrow) {
+      color: rgba(255,255,255,.88);
+      font-size: clamp(1rem, 1.55vw, 1.22rem);
+      max-width: 760px;
+      margin: 20px 0 0;
+    }
+
+    .smart-search {
+      margin-top: 30px;
+      width: min(820px, 100%);
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 12px;
+      padding: 10px;
+      border: 1px solid rgba(255,255,255,.36);
+      border-radius: 999px;
+      background: rgba(255,255,255,.18);
+      backdrop-filter: blur(22px);
+      box-shadow: 0 24px 70px rgba(0,0,0,.22);
+    }
+
+    .smart-search span {
+      color: white;
+      font-size: 1.15rem;
+      padding-left: 12px;
+      opacity: .9;
+    }
+
+    .smart-search input {
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: white;
+      min-width: 0;
+    }
+
+    .smart-search input::placeholder {
+      color: rgba(255,255,255,.70);
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    .actions.left {
+      justify-content: flex-start;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      border: 1px solid var(--dark-line);
+      border-radius: 999px;
+      padding: 14px 22px;
+      background: white;
+      color: var(--deep);
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 16px 44px rgba(24, 34, 54, 0.10);
+      transition: 0.25s var(--ease);
+      text-align: center;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 22px 60px rgba(24, 34, 54, 0.18);
+    }
+
+    .btn.primary {
+      border: 0;
+      background: linear-gradient(135deg, #ffffff, var(--aqua));
+      color: #122037;
+    }
+
+    .btn.ghost-light {
+      color: white;
+      background: rgba(255,255,255,.12);
+      border-color: rgba(255,255,255,.30);
+      backdrop-filter: blur(16px);
+      box-shadow: none;
+    }
+
+    .hero-dashboard {
+      display: grid;
+      gap: 14px;
+    }
+
+    .dash-card,
+    .mini-stat,
+    .feature,
+    .floating-stack article {
+      border: 1px solid rgba(255,255,255,.38);
+      background: rgba(255,255,255,.18);
+      backdrop-filter: blur(24px);
+      border-radius: var(--r);
+      box-shadow: 0 24px 70px rgba(0,0,0,.20);
+    }
+
+    .dash-card {
+      padding: 25px;
+      color: white;
+    }
+
+    .dash-card h3 {
+      color: white;
+      margin-top: 16px;
+      font-size: 2rem;
+    }
+
+    .dash-card p {
+      color: rgba(255,255,255,.76);
+      margin: 12px 0 18px;
+    }
+
+    .dash-card small {
+      color: rgba(255,255,255,.78);
+      font-weight: 800;
+    }
+
+    .dash-meter {
+      height: 9px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.22);
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .dash-meter span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--aqua), white);
+    }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .mini-stat {
+      color: white;
+      padding: 16px;
+      border-radius: 22px;
+    }
+
+    .mini-stat strong {
+      display: block;
+      font-size: 1.6rem;
+      line-height: 1;
+    }
+
+    .mini-stat span {
+      color: rgba(255,255,255,.70);
+      font-size: .68rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      border: 1px solid rgba(255,255,255,.30);
+      border-radius: 999px;
+      background: rgba(255,255,255,.18);
+      color: white;
+      padding: 7px 10px;
+      font-size: 0.70rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      width: max-content;
+      backdrop-filter: blur(10px);
+    }
+
+    .chip.dark {
+      background: rgba(18,32,55,.52);
+      border-color: rgba(255,255,255,.25);
+    }
+
+    .scroll-cue {
+      position: absolute;
+      right: 34px;
+      bottom: 34px;
+      z-index: 5;
+      color: rgba(255,255,255,.78);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-size: .66rem;
+      text-align: center;
+    }
+
+    .scroll-cue span {
+      display: inline-block;
+      margin-top: 5px;
+      font-size: 1.2rem;
+      animation: bounce 1.5s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(7px);
+      }
+    }
+
+    .section {
+      padding: 105px 0;
+    }
+
+    .cream {
+      background:
+        radial-gradient(circle at 8% 0%, rgba(241,214,168,.36), transparent 28rem),
+        linear-gradient(180deg, var(--bg), var(--paper));
+    }
+
+    .blue {
+      background:
+        radial-gradient(circle at 90% 8%, rgba(115,134,200,.20), transparent 30rem),
+        linear-gradient(180deg, #fffdf8, #eef3ff);
+    }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 44px;
+      align-items: end;
+      margin-bottom: 34px;
+    }
+
+    .section-head p {
+      margin: 0;
+    }
+
+    .board-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 28px;
+      position: sticky;
+      top: 94px;
+      z-index: 20;
+      padding: 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.60);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(24,34,54,.08);
+      width: max-content;
+      max-width: 100%;
+      box-shadow: 0 18px 50px rgba(24,34,54,.08);
+    }
+
+    .filter-chip {
+      border: 1px solid rgba(24,34,54,.12);
+      background: white;
+      color: var(--deep);
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-weight: 900;
+      cursor: pointer;
+      transition: .25s var(--ease);
+      font-size: .78rem;
+    }
+
+    .filter-chip:hover,
+    .filter-chip.active {
+      background: var(--deep);
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .masonry {
+      columns: 4 250px;
+      column-gap: 18px;
+    }
+
+    .pin {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+      margin: 0 0 18px;
+      min-height: 330px;
+      overflow: hidden;
+      border-radius: 32px;
+      background: #ddd;
+      box-shadow: 0 24px 70px rgba(24, 34, 54, 0.14);
+      break-inside: avoid;
+      transform: translateZ(0);
+    }
+
+    .pin.small {
+      min-height: 250px;
+    }
+
+    .pin.tall {
+      min-height: 470px;
+    }
+
+    .pin img {
+      position: absolute;
+      inset: 0;
+      height: 100%;
+      object-fit: cover;
+      transition: .7s var(--ease);
+    }
+
+    .pin:hover img {
+      transform: scale(1.08);
+    }
+
+    .pin::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, transparent 30%, rgba(8,14,26,.78) 100%),
+        radial-gradient(circle at 18% 10%, rgba(255,255,255,.20), transparent 16rem);
+    }
+
+    .pin-overlay {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 2;
+      padding: 22px;
+      color: white;
+    }
+
+    .pin-overlay h3 {
+      color: white;
+      margin-top: 10px;
+      font-size: 1.55rem;
+    }
+
+    .pin-overlay p {
+      color: rgba(255,255,255,.78);
+      margin: 8px 0 0;
+      font-size: .92rem;
+    }
+
+    .lab-grid {
+      display: grid;
+      grid-template-columns: 1.1fr .95fr .95fr;
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    .feature {
+      background: rgba(255,255,255,.76);
+      border-color: rgba(24,34,54,.10);
+      box-shadow: 0 20px 60px rgba(24,34,54,.10);
+      padding: 28px;
+      color: var(--ink);
+    }
+
+    .feature .chip {
+      background: #eef3ff;
+      color: #465ca2;
+      border-color: rgba(70,92,162,.14);
+    }
+
+    .feature h3 {
+      margin: 14px 0 10px;
+      font-size: 2rem;
+    }
+
+    .mood-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin: 18px 0;
+    }
+
+    .mood-buttons button {
+      border: 1px solid rgba(24,34,54,.12);
+      border-radius: 999px;
+      background: white;
+      padding: 10px 13px;
+      font-weight: 900;
+      cursor: pointer;
+      color: var(--deep);
+      transition: .25s var(--ease);
+    }
+
+    .mood-buttons button.active,
+    .mood-buttons button:hover {
+      background: var(--deep);
+      color: white;
+    }
+
+    .mood-result,
+    .budget-output {
+      display: grid;
+      gap: 5px;
+      border-radius: 24px;
+      background: linear-gradient(135deg, #182236, #596fac);
+      color: white;
+      padding: 20px;
+    }
+
+    .mood-result strong,
+    .budget-output strong {
+      font-size: 1.35rem;
+    }
+
+    .mood-result span,
+    .budget-output span {
+      color: rgba(255,255,255,.78);
+    }
+
+    .checklist-card label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(24,34,54,.09);
+      color: #48546b;
+      font-weight: 700;
+    }
+
+    .checklist-card input {
+      accent-color: var(--brand);
+    }
+
+    .budget-card input[type="range"] {
+      width: 100%;
+      margin: 22px 0;
+      accent-color: var(--brand);
+    }
+
+    .dark-showcase {
+      position: relative;
+      background:
+        radial-gradient(circle at 16% 10%, rgba(123,214,208,.18), transparent 28rem),
+        radial-gradient(circle at 88% 20%, rgba(155,183,255,.20), transparent 28rem),
+        linear-gradient(135deg, #111827, #182236 54%, #405384);
+      color: white;
+      overflow: hidden;
+    }
+
+    .dark-showcase h2,
+    .dark-showcase h3 {
+      color: white;
+    }
+
+    .dark-showcase p {
+      color: rgba(255,255,255,.74);
+    }
+
+    .showcase-grid {
+      display: grid;
+      grid-template-columns: .95fr 1.05fr;
+      gap: 42px;
+      align-items: center;
+    }
+
+    .floating-stack {
+      display: grid;
+      gap: 14px;
+      perspective: 1000px;
+    }
+
+    .floating-stack article {
+      padding: 24px;
+      color: white;
+      transition: .3s var(--ease);
+    }
+
+    .floating-stack article:nth-child(2) {
+      transform: translateX(34px);
+    }
+
+    .floating-stack article:nth-child(3) {
+      transform: translateX(68px);
+    }
+
+    .floating-stack article:hover {
+      transform: translateY(-4px) scale(1.01);
+    }
+
+    .floating-stack span {
+      display: inline-flex;
+      width: 42px;
+      height: 42px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      background: rgba(255,255,255,.16);
+      font-weight: 900;
+      margin-bottom: 12px;
+    }
+
+    .floating-stack strong {
+      display: block;
+      font-size: 1.22rem;
+      margin-bottom: 6px;
+    }
+
+    .why-grid {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 28px;
+      align-items: stretch;
+    }
+
+    .why-main {
+      position: relative;
+      overflow: hidden;
+      min-height: 500px;
+      border-radius: 42px;
+      background: #182236;
+      box-shadow: var(--shadow);
+    }
+
+    .why-main img {
+      position: absolute;
+      inset: 0;
+      height: 100%;
+      object-fit: cover;
+      opacity: .8;
+    }
+
+    .why-main::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgba(8,14,26,.08), rgba(8,14,26,.88)),
+        radial-gradient(circle at 20% 20%, rgba(123,214,208,.24), transparent 22rem);
+    }
+
+    .why-main-content {
+      position: absolute;
+      inset: auto 0 0;
+      z-index: 2;
+      padding: 36px;
+      color: white;
+    }
+
+    .why-main-content h2 {
+      color: white;
+      max-width: 680px;
+    }
+
+    .why-main-content p {
+      color: rgba(255,255,255,.78);
+      max-width: 620px;
+      margin-top: 16px;
+    }
+
+    .why-cards {
+      display: grid;
+      gap: 16px;
+    }
+
+    .why-card {
+      padding: 26px;
+      border-radius: 30px;
+      background: white;
+      box-shadow: 0 24px 80px rgba(24,34,54,.10);
+      border: 1px solid rgba(24,34,54,.07);
+    }
+
+    .why-card span {
+      display: inline-flex;
+      width: 44px;
+      height: 44px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      background: #eef3ff;
+      margin-bottom: 14px;
+      font-size: 1.25rem;
+    }
+
+    .why-card h3 {
+      margin-bottom: 8px;
+      font-size: 1.65rem;
+    }
+
+    .why-card p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .reviews-section {
+      background:
+        radial-gradient(circle at 12% 0%, rgba(123,214,208,.18), transparent 28rem),
+        radial-gradient(circle at 90% 10%, rgba(155,183,255,.20), transparent 30rem),
+        linear-gradient(180deg, #fffdf8, #eef3ff);
+    }
+
+    .reviews-layout {
+      display: grid;
+      grid-template-columns: .85fr 1.15fr;
+      gap: 30px;
+      align-items: stretch;
+    }
+
+    .reviews-score {
+      padding: 34px;
+      border-radius: 38px;
+      background:
+        radial-gradient(circle at 90% 0%, rgba(123,214,208,.26), transparent 20rem),
+        linear-gradient(135deg, #182236, #405384);
+      color: white;
+      box-shadow: var(--shadow);
+    }
+
+    .reviews-score h2 {
+      color: white;
+      margin-bottom: 14px;
+    }
+
+    .reviews-score p {
+      color: rgba(255,255,255,.74);
+    }
+
+    .score-number {
+      font-family: "Playfair Display", serif;
+      font-size: clamp(4rem, 8vw, 7rem);
+      line-height: 1;
+      letter-spacing: -.06em;
+      color: white;
+      margin: 22px 0 10px;
+    }
+
+    .stars {
+      color: #f1d6a8;
+      font-size: 1.2rem;
+      letter-spacing: .08em;
+      margin-bottom: 14px;
+    }
+
+    .review-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+    }
+
+    .review-card {
+      padding: 26px;
+      border-radius: 30px;
+      background: white;
+      box-shadow: 0 24px 80px rgba(24,34,54,.10);
+      border: 1px solid rgba(24,34,54,.07);
+    }
+
+    .review-card .stars {
+      color: #d9a441;
+      font-size: .95rem;
+      margin-bottom: 14px;
+    }
+
+    .review-card p {
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+
+    .review-author {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #eef3ff;
+      color: #405384;
+      font-weight: 900;
+    }
+
+    .review-author strong {
+      display: block;
+      line-height: 1.1;
+    }
+
+    .review-author span {
+      color: var(--muted);
+      font-size: .82rem;
+      font-weight: 700;
+    }
+
+    .footer {
+      position: relative;
+      overflow: hidden;
+      padding: 78px 0 34px;
+      background:
+        radial-gradient(circle at top left, rgba(123,214,208,.10), transparent 24rem),
+        radial-gradient(circle at top right, rgba(155,183,255,.12), transparent 24rem),
+        linear-gradient(135deg, #0f172a, #182236 58%, #22345a);
+      color: white;
+    }
+
+    .footer::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.03), transparent 30%);
+      pointer-events: none;
+    }
+
+    .footer-grid {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: 1.4fr repeat(3, 1fr);
+      gap: 40px;
+    }
+
+    .footer h3 {
+      font-family: "Playfair Display", serif;
+      font-size: 2rem;
+      margin-bottom: 14px;
+      color: white;
+      letter-spacing: -.04em;
+    }
+
+    .footer h4 {
+      margin-bottom: 16px;
+      color: white;
+      font-size: .95rem;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .footer p,
+    .footer a {
+      color: rgba(255,255,255,.68);
+      line-height: 1.9;
+      transition: .25s ease;
+    }
+
+    .footer a {
+      display: block;
+      width: fit-content;
+    }
+
+    .footer a:hover {
+      color: white;
+      transform: translateX(3px);
+    }
+
+    .footer-bottom {
+      position: relative;
+      z-index: 2;
+      width: min(1180px, calc(100% - 34px));
+      margin: 46px auto 0;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,.10);
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+      color: rgba(255,255,255,.52);
+      font-size: .9rem;
+    }
+
+    .footer-bottom-links {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .footer-bottom-links a {
+      color: rgba(255,255,255,.52);
+    }
+
+    .footer-bottom-links a:hover {
+      color: white;
+    }
+
+    @media (max-width: 1200px) {
+      .hero-layout {
+        grid-template-columns: 1fr 0.75fr;
+      }
+
+      .masonry {
+        columns: 3 240px;
+      }
+    }
+
+    @media (max-width: 1100px) {
+      .hero-layout,
+      .why-grid,
+      .reviews-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-dashboard {
+        max-width: 620px;
+      }
+
+      .lab-grid,
+      .section-head,
+      .showcase-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .review-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 980px) {
+      .nav-links {
+        position: absolute;
+        top: calc(100% + 10px);
+        right: 0;
+        width: min(320px, calc(100vw - 28px));
+        display: none;
+        flex-direction: column;
+        align-items: stretch;
+        background: rgba(18,32,55,.92);
+        border: 1px solid rgba(255,255,255,.18);
+        border-radius: 26px;
+        padding: 12px;
+        backdrop-filter: blur(22px);
+      }
+
+      .nav.open .nav-links {
+        display: flex;
+      }
+
+      .menu-btn {
+        display: inline-flex;
+      }
+
+      .hero {
+        min-height: auto;
+        padding: 120px 0 70px;
+      }
+
+      .hero-layout,
+      .section-head,
+      .lab-grid,
+      .showcase-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-dashboard {
+        width: 100%;
+        max-width: none;
+      }
+
+      .smart-search {
+        grid-template-columns: auto 1fr;
+        border-radius: 28px;
+      }
+
+      .smart-search .btn {
+        grid-column: 1 / -1;
+      }
+
+      .floating-stack article,
+      .floating-stack article:nth-child(2),
+      .floating-stack article:nth-child(3) {
+        transform: none;
+      }
+
+      .masonry {
+        columns: 2 240px;
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .container {
+        width: calc(100% - 28px);
+      }
+
+      .nav {
+        width: calc(100% - 20px);
+        top: 10px;
+      }
+
+      .nav-inner {
+        height: 58px;
+        padding: 0 10px 0 16px;
+      }
+
+      .brand {
+        font-size: 1.25rem;
+      }
+
+      h1 {
+        font-size: clamp(2.6rem, 13vw, 4.4rem);
+      }
+
+      h2 {
+        font-size: clamp(2rem, 9vw, 3.4rem);
+      }
+
+      .hero {
+        padding: 112px 0 60px;
+      }
+
+      .hero-dashboard {
+        display: none;
+      }
+
+      .hero-copy p:not(.eyebrow) {
+        font-size: 1rem;
+      }
+
+      .smart-search {
+        grid-template-columns: 1fr;
+        border-radius: 26px;
+        padding: 14px;
+      }
+
+      .smart-search span {
+        display: none;
+      }
+
+      .smart-search input {
+        width: 100%;
+        padding: 10px 4px;
+      }
+
+      .smart-search .btn,
+      .actions .btn {
+        width: 100%;
+      }
+
+      .actions {
+        flex-direction: column;
+      }
+
+      .mini-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .section {
+        padding: 70px 0;
+      }
+
+      .section-head {
+        gap: 18px;
+      }
+
+      .board-toolbar {
+        position: static;
+        width: 100%;
+        border-radius: 24px;
+      }
+
+      .filter-chip {
+        flex: 1;
+        min-width: 120px;
+      }
+
+      .masonry {
+        columns: 1;
+      }
+
+      .pin,
+      .pin.small,
+      .pin.tall {
+        min-height: 340px;
+      }
+
+      .feature {
+        padding: 22px;
+      }
+
+      .why-main {
+        min-height: 430px;
+        border-radius: 30px;
+      }
+
+      .why-main-content {
+        padding: 24px;
+      }
+
+      .review-grid,
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .reviews-score,
+      .review-card,
+      .why-card {
+        border-radius: 28px;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .container {
+        width: min(100% - 28px, 1180px);
+      }
+
+      .nav {
+        top: 10px;
+      }
+
+      .nav-inner {
+        height: 60px;
+        padding-left: 18px;
+      }
+
+      .brand {
+        color: white;
+      }
+
+      h1 {
+        font-size: clamp(2.8rem, 16vw, 4.6rem);
+      }
+
+      .hero {
+        padding-top: 116px;
+      }
+
+      .mini-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .board-toolbar {
+        border-radius: 28px;
+        position: static;
+      }
+
+      .section {
+        padding: 76px 0;
+      }
+
+      .pin,
+      .pin.tall,
+      .pin.small {
+        min-height: 360px;
+      }
+
+      .scroll-cue {
+        display: none;
+      }
+
+      .footer {
+        padding: 64px 0 26px;
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 34px;
+      }
+
+      .footer-bottom {
+        flex-direction: column;
+        text-align: center;
+        align-items: center;
+      }
+
+      .footer-bottom-links {
+        justify-content: center;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .container {
+        width: calc(100% - 20px);
+      }
+
+      h1 {
+        font-size: 2.45rem;
+      }
+
+      .dash-card {
+        padding: 20px;
+      }
+
+      .pin,
+      .pin.small,
+      .pin.tall {
+        min-height: 300px;
+        border-radius: 24px;
+      }
+
+      .pin-overlay {
+        padding: 18px;
+      }
+
+      .btn {
+        padding: 13px 18px;
+      }
+    }
+
+    @media (max-height: 760px) and (min-width: 981px) {
+      .hero {
+        padding-top: 105px;
+        padding-bottom: 45px;
+      }
+
+      .hero-layout {
+        align-items: start;
+      }
+
+      h1 {
+        font-size: clamp(2.8rem, 6vw, 5.8rem);
+      }
+
+      .hero-copy p:not(.eyebrow) {
+        font-size: 1rem;
+        margin-top: 14px;
+      }
+
+      .smart-search {
+        margin-top: 20px;
+      }
+
+      .actions {
+        margin-top: 14px;
+      }
+
+      .dash-card {
+        padding: 20px;
+      }
+
+      .dash-card h3 {
+        font-size: 1.55rem;
+      }
+
+      .dash-card p {
+        margin: 8px 0 14px;
+      }
+
+      .mini-stat {
+        padding: 13px;
+      }
+
+      .mini-stat strong {
+        font-size: 1.35rem;
+      }
+    }
+
+    @media (max-width: 1366px) and (min-width: 981px) {
+      .container {
+        width: min(1120px, calc(100% - 34px));
+      }
+
+      .hero {
+        min-height: auto;
+        padding: 115px 0 64px;
+      }
+
+      .hero-layout {
+        grid-template-columns: minmax(0, 1fr) 340px;
+        gap: 26px;
+        align-items: start;
+      }
+
+      h1 {
+        font-size: clamp(3rem, 6vw, 5.8rem);
+      }
+
+      .hero-copy p:not(.eyebrow) {
+        font-size: 1rem;
+        margin-top: 14px;
+      }
+
+      .smart-search {
+        margin-top: 22px;
+      }
+
+      .actions {
+        margin-top: 14px;
+      }
+
+      .dash-card {
+        padding: 20px;
+      }
+
+      .dash-card h3 {
+        font-size: 1.55rem;
+      }
+
+      .dash-card p {
+        margin: 8px 0 14px;
+        font-size: .92rem;
+      }
+
+      .mini-stat {
+        padding: 13px;
+      }
+
+      .mini-stat strong {
+        font-size: 1.35rem;
+      }
+
+      .section {
+        padding: 86px 0;
+      }
+    }
+    
+    /* RESET du correctif précédent */
+    .hero {
+      min-height: auto !important;
+      height: auto !important;
+    }
+    
+    /* Hero qui s’adapte vraiment à une fenêtre intégrée / portfolio */
+    /* FIX PROPRE PORTFOLIO + GRAND ÉCRAN */
+    .hero {
+      min-height: 100svh !important;
+      height: auto !important;
+      padding: 120px 0 80px !important;
+      align-items: center !important;
+    }
+    
+    .hero-layout {
+      align-items: center !important;
+    }
+
+/* Fenêtre portfolio basse : on garde le hero plein écran, on réduit juste le contenu */
+    @media (max-height: 760px) and (min-width: 981px) {
+      .hero {
+        min-height: 100svh !important;
+        padding: 96px 0 60px !important;
+      }
+    
+      .hero-layout {
+        grid-template-columns: minmax(0, 1fr) 340px !important;
+        gap: 26px !important;
+        align-items: center !important;
+      }
+    
+      h1 {
+        font-size: clamp(3rem, 5.2vw, 5.5rem) !important;
+        line-height: 1 !important;
+      }
+    
+      .hero-copy p:not(.eyebrow) {
+        font-size: .95rem !important;
+        line-height: 1.55 !important;
+        margin-top: 12px !important;
+      }
+    
+      .smart-search {
+        margin-top: 18px !important;
+      }
+    
+      .actions {
+        margin-top: 12px !important;
+      }
+    
+      .dash-card {
+        padding: 18px !important;
+      }
+    
+      .dash-card h3 {
+        font-size: 1.45rem !important;
+      }
+    
+      .dash-card p {
+        font-size: .86rem !important;
+        line-height: 1.5 !important;
+      }
+    
+      .mini-stat {
+        padding: 10px !important;
+      }
+    
+      .scroll-cue {
+        display: none !important;
+      }
+    }
+    
+    /* Grand écran fixe */
+    @media (min-width: 1400px) {
+      .hero {
+        min-height: 100svh !important;
+        padding: 145px 0 95px !important;
+      }
+    
+      .hero-layout {
+        grid-template-columns: minmax(0, 1.08fr) 390px !important;
+        gap: 44px !important;
+      }
+    }
+    
+    
+    
+    /* Grand écran fixe : on agrandit un peu, mais sans forcer 100vh */
+    @media (min-width: 1400px) {
+      .hero {
+        padding: 135px 0 80px !important;
+      }
+    
+      .container {
+        width: min(1180px, calc(100% - 60px)) !important;
+      }
+    
+      .nav {
+        width: min(1180px, calc(100% - 60px)) !important;
+      }
+    
+      .hero-layout {
+        grid-template-columns: minmax(0, 1.08fr) 380px !important;
+        gap: 38px !important;
+      }
+    
+      h1 {
+        font-size: clamp(4rem, 6.4vw, 7rem) !important;
+      }
+    }
+    
+    /* Transition moins blanche */
+    .hero::after {
+      height: 55px !important;
+      background: linear-gradient(180deg, transparent, rgba(251,247,240,.38)) !important;
+    }
+    
+    
+  </style>
+</head>
+
+<body>
+  <div class="progress"></div>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <a class="brand active" href="index.html">GlobExplore</a>
+
+      <button class="menu-btn" aria-label="menu">Menu</button>
+
+      <div class="nav-links">
+        <a href="index.html" class="active">Accueil</a>
+        <a href="destinations.html">Destinations</a>
+        <a href="experiences.html">Expériences</a>
+        <a href="planificateur.html">Planner</a>
+        <a href="contact.html">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero home-fullscreen">
+    <img
+      class="hero-media"
+      src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=2400&q=90"
+      alt="Paysage de voyage premium"
+    >
+
+    <div class="hero-shade"></div>
+
+    <div class="container hero-layout">
+      <div class="hero-copy glass-hero">
+        <p class="eyebrow light">Travel studio nouvelle génération</p>
+
+        <h1>Explorez le monde comme un moodboard vivant.</h1>
+
+        <p>
+          Destinations, excursions, tenues, équipements, retraites corporate et itinéraires personnalisés dans une expérience visuelle premium, fluide et interactive.
+        </p>
+
+        <div class="smart-search" role="search">
+          <span>⌕</span>
+
+          <input
+            id="homeSearch"
+            type="text"
+            placeholder="Rechercher : Tokyo, safari, outfit, corporate retreat..."
+          >
+
+          <a class="btn primary" href="planificateur.html">Créer mon voyage</a>
+        </div>
+
+        <div class="actions">
+          <a class="btn ghost-light" href="#board">Voir l’inspiration</a>
+          <a class="btn ghost-light" href="#trip-lab">Tester le Travel Lab</a>
+          <a class="btn ghost-light" href="destinations.html">Explorer la carte</a>
+        </div>
+      </div>
+
+      <aside class="hero-dashboard">
+        <div class="dash-card active-destination">
+          <span class="chip dark">Live inspiration</span>
+
+          <h3 id="heroDestination">Kyoto slow luxury</h3>
+
+          <p id="heroDestinationText">
+            Ryokans, temples au lever du soleil, tea ceremony et adresses confidentielles.
+          </p>
+
+          <div class="dash-meter">
+            <span style="width: 82%"></span>
+          </div>
+
+          <small>Match utilisateur : 82%</small>
+        </div>
+
+        <div class="mini-grid">
+          <div class="mini-stat">
+            <strong>48h</strong>
+            <span>city break</span>
+          </div>
+
+          <div class="mini-stat">
+            <strong>12</strong>
+            <span>moods</span>
+          </div>
+
+          <div class="mini-stat">
+            <strong>360°</strong>
+            <span>planning</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <a class="scroll-cue" href="#board">
+      Scroll<br>
+      <span>↓</span>
+    </a>
+  </header>
+
+  <section id="board" class="section cream immersive-section">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Pinterest-like board</p>
+          <h2>Inspiration voyage, lifestyle et organisation.</h2>
+        </div>
+
+        <p>
+          Un mur d’idées scrollable pour se projeter vite : destinations, activités, outfit, matériel, hôtels, restaurants, city guides, retraites d’équipe et checklists avant départ.
+        </p>
+      </div>
+
+      <div class="board-toolbar">
+        <button class="filter-chip active" data-filter="all">Tout</button>
+        <button class="filter-chip" data-filter="destination">Destinations</button>
+        <button class="filter-chip" data-filter="outfit">Outfit</button>
+        <button class="filter-chip" data-filter="equipment">Équipement</button>
+        <button class="filter-chip" data-filter="food">Food</button>
+        <button class="filter-chip" data-filter="business">Corporate</button>
+        <button class="filter-chip" data-filter="wellness">Wellness</button>
+      </div>
+
+      <div class="masonry premium-board">
+        <article class="pin tall" data-category="destination">
+          <img src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?auto=format&fit=crop&w=1400&q=85" alt="Tokyo néon & temples">
+          <div class="pin-overlay">
+            <span class="chip">Destination</span>
+            <h3>Tokyo néon & temples</h3>
+            <p>Food spots, quartiers créatifs, rooftops et temples calmes.</p>
+          </div>
+        </article>
+
+        <article class="pin small" data-category="outfit">
+          <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1400&q=85" alt="Capsule outfit">
+          <div class="pin-overlay">
+            <span class="chip">Outfit</span>
+            <h3>Airport capsule</h3>
+            <p>Look confortable, chic, compact et photo-ready.</p>
+          </div>
+        </article>
+
+        <article class="pin" data-category="equipment">
+          <img src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1400&q=85" alt="Road trip equipment">
+          <div class="pin-overlay">
+            <span class="chip">Équipement</span>
+            <h3>Kit road trip</h3>
+            <p>Tech pouch, powerbank, trousse sécurité et essentiels.</p>
+          </div>
+        </article>
+
+        <article class="pin tall" data-category="business">
+          <img src="https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=1400&q=85" alt="Corporate retreat">
+          <div class="pin-overlay">
+            <span class="chip">Business</span>
+            <h3>Corporate retreat</h3>
+            <p>Villas, ateliers, team building et planning fluide.</p>
+          </div>
+        </article>
+
+        <article class="pin" data-category="food">
+          <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1400&q=85" alt="Food tour local">
+          <div class="pin-overlay">
+            <span class="chip">Food</span>
+            <h3>Food tour local</h3>
+            <p>Marchés, street food, tables signature et spots cachés.</p>
+          </div>
+        </article>
+
+        <article class="pin tall" data-category="destination">
+          <img src="https://images.unsplash.com/photo-1504829857797-ddff29c27927?auto=format&fit=crop&w=1400&q=85" alt="Aurores & volcans">
+          <div class="pin-overlay">
+            <span class="chip">Nature</span>
+            <h3>Aurores & volcans</h3>
+            <p>Sources chaudes, paysages bruts et routes scéniques.</p>
+          </div>
+        </article>
+
+        <article class="pin" data-category="wellness">
+          <img src="https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=1400&q=85" alt="Resort wellness">
+          <div class="pin-overlay">
+            <span class="chip">Wellness</span>
+            <h3>Reset resort</h3>
+            <p>Spa, slow mornings, yoga deck et cuisine fraîche.</p>
+          </div>
+        </article>
+
+        <article class="pin small" data-category="destination">
+          <img src="https://images.unsplash.com/photo-1474487548417-781cb71495f3?auto=format&fit=crop&w=1400&q=85" alt="Train panoramique">
+          <div class="pin-overlay">
+            <span class="chip">Transport</span>
+            <h3>Slow travel</h3>
+            <p>Trains panoramiques et trajets sans stress.</p>
+          </div>
+        </article>
+
+        <article class="pin" data-category="destination">
+          <img src="https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=1400&q=85" alt="Grèce">
+          <div class="pin-overlay">
+            <span class="chip">Îles</span>
+            <h3>Cyclades confidentielles</h3>
+            <p>Villages blancs, criques, dîners au coucher du soleil.</p>
+          </div>
+        </article>
+
+        <article class="pin tall" data-category="destination">
+          <img src="https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=1400&q=85" alt="Dubaï skyline">
+          <div class="pin-overlay">
+            <span class="chip">City luxury</span>
+            <h3>Dubai vertical escape</h3>
+            <p>Architecture, désert privé, beach clubs et rooftops.</p>
+          </div>
+        </article>
+
+        <article class="pin" data-category="equipment">
+          <img src="https://images.unsplash.com/photo-1553531580-652231dae097?auto=format&fit=crop&w=1400&q=85" alt="Travel tech">
+          <div class="pin-overlay">
+            <span class="chip">Tech</span>
+            <h3>Digital nomad kit</h3>
+            <p>Adaptateurs, eSIM, backup cloud et workspace mobile.</p>
+          </div>
+        </article>
+
+        <article class="pin" data-category="outfit">
+          <img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=1400&q=85" alt="Outfit city">
+          <div class="pin-overlay">
+            <span class="chip">Outfit</span>
+            <h3>City dinner look</h3>
+            <p>Minimal, premium, pratique pour marcher puis sortir.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="trip-lab" class="section blue tech-lab-section">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Travel Lab</p>
+          <h2>Des outils dès l’accueil, pas juste des cartes jolies.</h2>
+        </div>
+
+        <p>
+          L’utilisateur peut déjà simuler son mood de voyage, préparer sa valise, comparer des styles et passer au planner complet ensuite.
+        </p>
+      </div>
+
+      <div class="lab-grid">
+        <article class="feature lab-card planner-preview">
+          <span class="chip">Mood scanner</span>
+
+          <h3>Quel voyage vous ressemble ?</h3>
+
+          <p>Choisissez une vibe et obtenez une suggestion instantanée.</p>
+
+          <div class="mood-buttons">
+            <button data-mood="culture" class="active">Culture</button>
+            <button data-mood="nature">Nature</button>
+            <button data-mood="luxe">Luxe</button>
+            <button data-mood="business">Business</button>
+          </div>
+
+          <div class="mood-result" id="moodResult">
+            <strong>Kyoto, Japon</strong>
+            <span>Temples, ryokans, food alleys et expérience esthétique très immersive.</span>
+          </div>
+        </article>
+
+        <article class="feature lab-card checklist-card">
+          <span class="chip">Smart checklist</span>
+
+          <h3>Avant le départ</h3>
+
+          <label>
+            <input type="checkbox">
+            Passeport / carte identité vérifié
+          </label>
+
+          <label>
+            <input type="checkbox">
+            eSIM ou forfait international
+          </label>
+
+          <label>
+            <input type="checkbox">
+            Réservations sauvegardées hors ligne
+          </label>
+
+          <label>
+            <input type="checkbox">
+            Tenues par météo et activités
+          </label>
+
+          <label>
+            <input type="checkbox">
+            Assurance et documents importants
+          </label>
+        </article>
+
+        <article class="feature lab-card budget-card">
+          <span class="chip">Budget pulse</span>
+
+          <h3>Budget estimatif</h3>
+
+          <p>Un aperçu rapide avant de lancer le planner complet.</p>
+
+          <input
+            id="budgetPulse"
+            type="range"
+            min="500"
+            max="6000"
+            value="1800"
+            step="100"
+          >
+
+          <div class="budget-output">
+            <strong id="budgetPulseValue">1 800 €</strong>
+            <span id="budgetPulseText">City break premium ou voyage confort court.</span>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section dark-showcase">
+    <div class="container showcase-grid">
+      <div>
+        <p class="eyebrow light">Smart trip ecosystem</p>
+
+        <h2>Une page d’accueil qui donne envie de cliquer.</h2>
+
+        <p>
+          Le site ne vend pas seulement une destination : il vend une ambiance, une projection, une organisation claire et une expérience utilisateur premium.
+        </p>
+
+        <div class="actions left">
+          <a class="btn primary" href="planificateur.html">Construire mon itinéraire</a>
+          <a class="btn ghost-light" href="experiences.html">Voir les expériences</a>
+        </div>
+      </div>
+
+      <div class="floating-stack">
+        <article>
+          <span>01</span>
+          <strong>Choisir une vibe</strong>
+          <p>Culture, nature, luxe, aventure, business ou wellness.</p>
+        </article>
+
+        <article>
+          <span>02</span>
+          <strong>Explorer visuellement</strong>
+          <p>Images variées, idées concrètes, contenus lifestyle et utiles.</p>
+        </article>
+
+        <article>
+          <span>03</span>
+          <strong>Planifier intelligemment</strong>
+          <p>Le planner affine selon budget, durée, confort et rythme.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section cream why-section">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Pourquoi nous choisir</p>
+          <h2>Un voyage pensé pour être beau, simple et vraiment utile.</h2>
+        </div>
+
+        <p>
+          GlobExplore aide l’utilisateur à passer de l’inspiration à l’action : trouver une vibe, comparer rapidement, ajouter des expériences et construire un itinéraire clair.
+        </p>
+      </div>
+
+      <div class="why-grid">
+        <article class="why-main">
+          <img
+            src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=90"
+            alt="Voyage premium personnalisé"
+          >
+
+          <div class="why-main-content">
+            <p class="eyebrow light">Premium sans complexité</p>
+            <h2>Une expérience fluide du premier clic jusqu’au départ.</h2>
+            <p>
+              Inspirations visuelles, planner intelligent, conseils pratiques et expériences sélectionnées : tout est réuni pour créer un séjour cohérent sans perdre du temps.
+            </p>
+          </div>
+        </article>
+
+        <div class="why-cards">
+          <article class="why-card">
+            <span>✨</span>
+            <h3>Inspirant</h3>
+            <p>Des visuels forts, des idées concrètes et des séjours qui donnent envie immédiatement.</p>
+          </article>
+
+          <article class="why-card">
+            <span>🧭</span>
+            <h3>Facile à choisir</h3>
+            <p>Filtres, moods, budget, durée et planner guident l’utilisateur sans surcharge.</p>
+          </article>
+
+          <article class="why-card">
+            <span>💎</span>
+            <h3>Premium mais clair</h3>
+            <p>Des propositions élégantes, mais toujours lisibles : prix, rythme, confort et expériences.</p>
+          </article>
+
+          <article class="why-card">
+            <span>📍</span>
+            <h3>Sur mesure</h3>
+            <p>Chaque itinéraire peut intégrer des activités, hôtels, food tours, wellness ou retraites corporate.</p>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section reviews-section">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Avis clients</p>
+          <h2>Ils ont trouvé leur voyage plus vite.</h2>
+        </div>
+
+        <p>
+          Des avis fictifs pour donner vie à la page et renforcer la confiance des visiteurs avant de cliquer vers le planner ou le contact.
+        </p>
+      </div>
+
+      <div class="reviews-layout">
+        <article class="reviews-score">
+          <p class="eyebrow light">Satisfaction</p>
+          <div class="score-number">4.9</div>
+          <div class="stars">★★★★★</div>
+          <h2>Une expérience qui rassure et donne envie.</h2>
+          <p>
+            Les utilisateurs apprécient surtout la clarté du site, les visuels premium et la possibilité de construire un voyage sans partir de zéro.
+          </p>
+          <a class="btn primary" href="contact.html">Laisser un avis</a>
+        </article>
+
+        <div class="review-grid">
+          <article class="review-card">
+            <div class="stars">★★★★★</div>
+            <p>
+              “J’ai adoré le côté moodboard. On comprend tout de suite quel style de voyage nous correspond.”
+            </p>
+            <div class="review-author">
+              <span class="avatar">C</span>
+              <div>
+                <strong>Clara</strong>
+                <span>City break à Lisbonne</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="review-card">
+            <div class="stars">★★★★★</div>
+            <p>
+              “Le planner m’a donné une idée claire du budget, des étapes et des expériences à ajouter.”
+            </p>
+            <div class="review-author">
+              <span class="avatar">A</span>
+              <div>
+                <strong>Adam</strong>
+                <span>Road trip en Islande</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="review-card">
+            <div class="stars">★★★★★</div>
+            <p>
+              “Le site fait très premium, mais reste facile. Pas besoin de chercher pendant des heures.”
+            </p>
+            <div class="review-author">
+              <span class="avatar">I</span>
+              <div>
+                <strong>Inès</strong>
+                <span>Voyage wellness à Bali</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="review-card">
+            <div class="stars">★★★★☆</div>
+            <p>
+              “Les sections sont claires, les images donnent envie et les filtres aident vraiment à choisir.”
+            </p>
+            <div class="review-author">
+              <span class="avatar">M</span>
+              <div>
+                <strong>Mehdi</strong>
+                <span>Séjour à Marrakech</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div>
+        <h3>GlobExplore</h3>
+        <p>
+          Voyages visuels, expériences choisies et planner intelligent pour organiser un séjour premium sans stress.
+        </p>
+      </div>
+
+      <div>
+        <h4>Explorer</h4>
+        <a href="destinations.html">Destinations</a>
+        <a href="experiences.html">Expériences</a>
+        <a href="offres.html">Offres</a>
+        <a href="planificateur.html">Planner</a>
+      </div>
+
+      <div>
+        <h4>Préparer</h4>
+        <a href="contact.html">Demander un devis</a>
+        <a href="experiences.html">Expériences</a>
+        <a href="#">Budget voyage</a>
+        <a href="#">Conseils départ</a>
+      </div>
+
+      <div>
+        <h4>Contact</h4>
+        <p>contact@globexplore.com</p>
+        <p>+33 6 00 00 00 00</p>
+        <p>Paris, France</p>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© 2026 GlobExplore — Voyages visuels, expériences choisies, planner intelligent.</span>
+
+      <div class="footer-bottom-links">
+        <a href="#">Mentions légales</a>
+        <a href="#">Confidentialité</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const nav = document.querySelector(".nav");
+    const menuBtn = document.querySelector(".menu-btn");
+    const progress = document.querySelector(".progress");
+
+    menuBtn.addEventListener("click", () => {
+      nav.classList.toggle("open");
+    });
+
+    window.addEventListener("scroll", () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const percent = max > 0 ? (window.scrollY / max) * 100 : 0;
+      progress.style.width = percent + "%";
+    });
+
+    const filterButtons = document.querySelectorAll(".filter-chip");
+    const pins = document.querySelectorAll(".pin");
+
+    filterButtons.forEach(button => {
+      button.addEventListener("click", () => {
+        filterButtons.forEach(btn => btn.classList.remove("active"));
+        button.classList.add("active");
+
+        const filter = button.dataset.filter;
+
+        pins.forEach(pin => {
+          const visible = filter === "all" || pin.dataset.category === filter;
+          pin.style.display = visible ? "" : "none";
+        });
+      });
+    });
+
+    const moodData = {
+      culture: [
+        "Kyoto, Japon",
+        "Temples, ryokans, food alleys et expérience esthétique très immersive."
+      ],
+      nature: [
+        "Islande sauvage",
+        "Volcans, sources chaudes, aurores boréales et road trip spectaculaire."
+      ],
+      luxe: [
+        "Dubai & désert privé",
+        "Suites avec vue, rooftops, spa, beach clubs et dîner sous les étoiles."
+      ],
+      business: [
+        "Lisbonne retreat",
+        "Villas design, workshops, activités team-building et agenda corporate fluide."
+      ]
+    };
+
+    document.querySelectorAll(".mood-buttons button").forEach(button => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll(".mood-buttons button").forEach(btn => {
+          btn.classList.remove("active");
+        });
+
+        button.classList.add("active");
+
+        const [title, text] = moodData[button.dataset.mood];
+
+        document.getElementById("moodResult").innerHTML =
+          `<strong>${title}</strong><span>${text}</span>`;
+
+        document.getElementById("heroDestination").textContent = title;
+        document.getElementById("heroDestinationText").textContent = text;
+      });
+    });
+
+    const budgetPulse = document.getElementById("budgetPulse");
+    const budgetPulseValue = document.getElementById("budgetPulseValue");
+    const budgetPulseText = document.getElementById("budgetPulseText");
+
+    budgetPulse.addEventListener("input", () => {
+      const value = Number(budgetPulse.value);
+
+      budgetPulseValue.textContent = value.toLocaleString("fr-FR") + " €";
+
+      budgetPulseText.textContent = value < 1200
+        ? "Parfait pour un city break malin ou une escapade proche."
+        : value < 3000
+          ? "Idéal pour un voyage confort avec belles expériences."
+          : "Budget premium pour hôtels iconiques, guides privés et extras.";
+    });
+
+    const homeSearch = document.getElementById("homeSearch");
+
+    homeSearch.addEventListener("input", () => {
+      const query = homeSearch.value.toLowerCase().trim();
+
+      pins.forEach(pin => {
+        const content = pin.textContent.toLowerCase();
+        pin.style.display = content.includes(query) || query === "" ? "" : "none";
+      });
+    });
+  </script>
+</body>
+</html>

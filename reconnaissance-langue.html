@@ -1,0 +1,1510 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Projet — Reconnaissance automatique de langue</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,600&family=Montserrat:wght@300;500;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #fcfaf7;
+      --deep-teal: #1a3c40;
+      --accent: #417d7a;
+      --sand: #ede4d9;
+      --text: #1d1d1d;
+      --muted: #666;
+      --line: rgba(26, 60, 64, 0.12);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: 'Montserrat', sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.7;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 600;
+      line-height: 1.1;
+      margin: 0;
+    }
+
+    p { margin-top: 0; }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .container {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0 30px;
+    }
+
+    .caps {
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(252, 250, 247, 0.92);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .nav-inner {
+      min-height: 74px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 28px;
+    }
+
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.8rem;
+      font-style: italic;
+      font-weight: 600;
+      color: var(--deep-teal);
+      flex: 0 0 auto;
+    }
+
+    .nav-links {
+      display: flex;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .nav-links a {
+      color: var(--text);
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: var(--accent);
+    }
+
+    header,
+    section,
+    footer {
+      scroll-margin-top: 45px;
+    }
+
+    .hero {
+      min-height: calc(100svh - 74px);
+      display: grid;
+      align-items: center;
+      padding: clamp(42px, 6vh, 78px) 0;
+      border-bottom: 1px solid var(--line);
+      background:
+        linear-gradient(90deg, transparent 0 64%, rgba(237, 228, 217, 0.62) 64% 100%),
+        var(--bg);
+    }
+    
+    .hero-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.82fr);
+      gap: clamp(36px, 5vw, 70px);
+      align-items: center;
+    }
+    
+    .hero h1 {
+      margin: 18px 0 22px;
+      font-size: clamp(3rem, 6.4vw, 5.7rem);
+      color: var(--deep-teal);
+      letter-spacing: -0.05em;
+      max-width: 820px;
+    }
+    
+    .hero p {
+      max-width: 690px;
+      color: var(--muted);
+      font-size: clamp(0.98rem, 1.15vw, 1.08rem);
+      line-height: 1.75;
+    }
+    
+    .hero-angle {
+      margin: 28px 0 26px;
+      padding-left: 18px;
+      border-left: 3px solid var(--accent);
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: clamp(1.25rem, 2vw, 1.55rem) !important;
+      color: var(--deep-teal) !important;
+      line-height: 1.35 !important;
+    }
+    
+    .hero-card {
+      background: var(--deep-teal);
+      color: var(--sand);
+      border: 1px solid var(--deep-teal);
+      padding: clamp(30px, 4vw, 44px);
+      min-height: clamp(360px, 52vh, 470px);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .hero-card::before {
+      content: "";
+      position: absolute;
+      inset: 18px;
+      border: 1px solid rgba(237, 228, 217, 0.18);
+      pointer-events: none;
+    }
+    
+    .hero-card::after {
+      content: "LANGUAGE ID";
+      position: absolute;
+      right: 18px;
+      bottom: 18px;
+      color: rgba(237, 228, 217, 0.22);
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+    }
+    
+    .hero-card h3 {
+      color: var(--sand);
+      font-size: clamp(1.8rem, 3vw, 2.25rem);
+      margin-bottom: 24px;
+    }
+    
+    .meta-list {
+      display: grid;
+      gap: 0;
+      border-top: 1px solid rgba(237, 228, 217, 0.22);
+    }
+    
+    .meta-item {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 18px;
+      border-bottom: 1px solid rgba(237, 228, 217, 0.16);
+      padding: 16px 0;
+    }
+    
+    .meta-item strong {
+      color: rgba(237, 228, 217, 0.62);
+      font-size: 0.65rem;
+    }
+    
+    .meta-item span {
+      color: rgba(237, 228, 217, 0.9);
+    }
+    
+    .choice-demo-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(340px, 420px);
+      gap: clamp(34px, 5vw, 58px);
+      align-items: start;
+    }
+    
+    .demo-card {
+      background: var(--deep-teal);
+      color: var(--sand);
+      padding: 30px;
+      border: 1px solid rgba(237, 228, 217, 0.18);
+      margin-top: 55px;
+    }
+    
+    .demo-card h3 {
+      color: var(--sand);
+      font-size: 1.75rem;
+      margin: 12px 0 14px;
+    }
+    
+    .demo-card p {
+      color: rgba(237, 228, 217, 0.82);
+      font-size: 0.92rem;
+      line-height: 1.65;
+      margin-bottom: 0;
+    }
+    
+    .language-demo {
+      margin-top: 22px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(237, 228, 217, 0.22);
+    }
+    
+    .demo-label {
+      display: block;
+      margin-bottom: 10px;
+      color: rgba(237, 228, 217, 0.62);
+      font-size: 0.64rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+    }
+    
+    .demo-input-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 58px;
+      gap: 10px;
+      align-items: center;
+    }
+    
+    .demo-input-row input {
+      width: 100%;
+      min-height: 46px;
+      padding: 13px 14px;
+      border: 1px solid rgba(237, 228, 217, 0.26);
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--sand);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.86rem;
+      outline: none;
+    }
+    
+    .demo-input-row input::placeholder {
+      color: rgba(237, 228, 217, 0.45);
+    }
+    
+    .demo-input-row input:focus {
+      border-color: rgba(237, 228, 217, 0.62);
+      background: rgba(255, 255, 255, 0.12);
+    }
+    
+    .demo-lang {
+      display: grid;
+      place-items: center;
+      min-height: 46px;
+      border: 1px solid rgba(237, 228, 217, 0.26);
+      color: var(--sand);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+    }
+    
+    .demo-result {
+      margin: 12px 0 0;
+      color: rgba(237, 228, 217, 0.7);
+      font-size: 0.82rem;
+      line-height: 1.5;
+    }
+    
+    @media (max-width: 950px) {
+      .choice-demo-layout {
+        grid-template-columns: 1fr;
+      }
+    
+      .demo-card {
+        max-width: none;
+      }
+    }
+    
+    .progress-bar {
+      position: fixed;
+      inset: 0 auto auto 0;
+      width: 0%;
+      height: 3px;
+      background: var(--accent);
+      z-index: 500;
+    }
+    
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.75s ease, transform 0.75s ease;
+    }
+    
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .btn-mag {
+      display: inline-block;
+      margin-top: 24px;
+      font-weight: 800;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      color: var(--accent);
+      border-bottom: 2px solid var(--accent);
+      letter-spacing: 0.08em;
+    }
+
+    .section {
+      padding: 105px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .section-title {
+      margin-bottom: 58px;
+    }
+
+    .section-title h2 {
+      margin-top: 14px;
+      font-size: clamp(2.7rem, 5vw, 4rem);
+      color: var(--deep-teal);
+      letter-spacing: -0.03em;
+    }
+
+    .mag-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 70px;
+      align-items: start;
+    }
+
+    .text-block {
+      font-size: 1.04rem;
+      color: var(--text);
+      line-height: 1.85;
+    }
+
+    .text-block p {
+      color: var(--text);
+      margin-bottom: 18px;
+    }
+
+    .side-box {
+      background: var(--deep-teal);
+      color: var(--sand);
+      padding: 38px;
+    }
+
+    .side-box h3 {
+      color: var(--sand);
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+
+    .side-box p {
+      color: rgba(237, 228, 217, 0.9);
+      margin-bottom: 24px;
+    }
+
+    .oval-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .oval-grid span {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(237, 228, 217, 0.12);
+      border: 1px solid rgba(237, 228, 217, 0.26);
+      color: var(--sand);
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .method-section {
+      background: var(--sand);
+      padding: 100px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .method-list {
+      display: grid;
+      gap: 22px;
+    }
+
+    .method-item {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 26px;
+      border-bottom: 1px solid rgba(26, 60, 64, 0.16);
+      padding-bottom: 22px;
+    }
+
+    .method-num {
+      font-family: 'Cormorant Garamond', serif;
+      color: var(--accent);
+      font-size: 2rem;
+      font-style: italic;
+    }
+
+    .method-item h3 {
+      color: var(--deep-teal);
+      font-size: 1.55rem;
+      margin-bottom: 8px;
+    }
+
+    .method-item p {
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .model-card {
+      background: var(--bg);
+      border: 1px solid var(--line);
+      padding: 34px;
+    }
+
+    .model-card h3 {
+      color: var(--deep-teal);
+      font-size: 2rem;
+      margin-bottom: 18px;
+    }
+
+    .model-card p {
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    .model-card ul {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+    }
+
+    .model-card li {
+      margin-bottom: 10px;
+    }
+    
+    .model-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 22px 0;
+    }
+    
+    .model-tab {
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--deep-teal);
+      padding: 9px 12px;
+      cursor: pointer;
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: 0.3s ease;
+    }
+    
+    .model-tab:hover,
+    .model-tab.active {
+      background: var(--deep-teal);
+      color: var(--sand);
+      transform: translateY(-2px);
+    }
+    
+    .model-display {
+      margin-top: 18px;
+      padding-top: 20px;
+      border-top: 1px solid var(--line);
+    }
+    
+    .model-display h4 {
+      font-family: 'Cormorant Garamond', serif;
+      color: var(--deep-teal);
+      font-size: 1.8rem;
+      margin: 0 0 10px;
+    }
+    
+    .model-display p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    
+    .result-card {
+      position: relative;
+      background: var(--sand-2);
+      border: 1px solid rgba(26, 60, 64, 0.12);
+      padding: 30px;
+      transition: 0.3s ease;
+    }
+    
+    .result-card.best {
+      border: 1px solid var(--accent);
+    }
+    
+    .result-card.best::after {
+      content: "Meilleur score";
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      color: var(--accent);
+      font-size: 0.58rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+    
+    .result-card strong {
+      display: block;
+      color: var(--accent);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      margin-bottom: 18px;
+    }
+    
+    .result-card span {
+      display: block;
+      font-family: 'Cormorant Garamond', serif;
+      color: var(--deep-teal);
+      font-size: 2.75rem;
+      line-height: 1;
+    }
+    
+    .result-card p {
+      margin: 20px 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    
+    .bar {
+      height: 6px;
+      background: rgba(26, 60, 64, 0.12);
+      margin-top: 18px;
+      overflow: hidden;
+    }
+    
+    .bar div {
+      height: 100%;
+      width: 0%;
+      background: var(--accent);
+      transition: width 1.1s ease;
+    }
+    
+    .result-card.best .bar div {
+      background: var(--deep-teal);
+    }
+    
+    .result-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 18px 40px rgba(26, 60, 64, 0.08);
+    }
+    
+    .limits-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+    }
+    
+    .limit-card {
+      border-top: 3px solid var(--deep-teal);
+      padding-top: 22px;
+    }
+    
+    .limit-card h3 {
+      color: var(--deep-teal);
+      font-size: 1.7rem;
+      margin-bottom: 12px;
+    }
+    
+    .limit-card p {
+      color: var(--muted);
+      margin: 0;
+      font-size: 0.94rem;
+    }
+
+    .learning-panel {
+      background: rgba(26, 60, 64, 0.08);
+      padding: 80px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .learning-inner {
+      background: rgba(26, 60, 64, 0.88);
+      color: var(--sand);
+      padding: 58px;
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+
+    .learning-inner h2 {
+      color: var(--sand);
+      font-size: clamp(2.4rem, 5vw, 3.6rem);
+      margin-bottom: 30px;
+    }
+
+    .learning-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 50px;
+    }
+
+    .learning-inner p {
+      color: rgba(237, 228, 217, 0.88);
+    }
+
+    .learning-inner ul {
+      margin: 0;
+      padding-left: 18px;
+      color: rgba(237, 228, 217, 0.88);
+    }
+
+    .learning-inner li {
+      margin-bottom: 12px;
+    }
+
+    footer {
+      padding: 75px 0;
+      background: var(--deep-teal);
+      color: var(--sand);
+      text-align: center;
+    }
+
+    footer h2 {
+      color: var(--sand);
+      font-size: 2.8rem;
+      margin-bottom: 20px;
+    }
+
+    footer p {
+      margin: 0;
+      color: rgba(237, 228, 217, 0.78);
+    }
+    
+    footer {
+      padding: 75px 0;
+      background: var(--deep-teal);
+      color: var(--sand);
+      text-align: center;
+    }
+
+    footer h2 {
+      color: var(--sand);
+      font-size: 2.8rem;
+      margin-bottom: 20px;
+    }
+
+    footer p {
+      margin: 0;
+      color: rgba(237, 228, 217, 0.78);
+    }
+    
+    .project-footer{
+      background: #10282b;
+      color: var(--sand);
+      padding: 90px 0 42px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .project-footer::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(circle at top right,
+        rgba(65,125,122,0.18),
+        transparent 35%);
+      pointer-events:none;
+    }
+    
+    .footer-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:end;
+      gap:30px;
+      margin-bottom:50px;
+    }
+    
+    .footer-top h2{
+      color:var(--sand);
+      margin-top:12px;
+      font-size:clamp(2.4rem,5vw,4rem);
+    }
+    
+    .footer-link{
+      color:rgba(237,228,217,0.78);
+      font-size:0.75rem;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:0.1em;
+      border-bottom:2px solid rgba(237,228,217,0.4);
+      padding-bottom:6px;
+      transition:0.3s ease;
+    }
+    
+    .footer-link:hover{
+      color:white;
+      border-color:white;
+    }
+    
+    .footer-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:22px;
+    }
+    
+    .footer-card{
+      background:rgba(255,255,255,0.04);
+      border:1px solid rgba(237,228,217,0.08);
+      padding:34px;
+      min-height:220px;
+      display:flex;
+      flex-direction:column;
+      justify-content:flex-end;
+      transition:0.45s cubic-bezier(.16,1,.3,1);
+      position:relative;
+      overflow:hidden;
+    }
+    
+    .footer-card::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(
+        135deg,
+        rgba(65,125,122,0.95),
+        rgba(26,60,64,0.98)
+      );
+      opacity:0;
+      transition:0.45s ease;
+    }
+    
+    .footer-card *{
+      position:relative;
+      z-index:2;
+    }
+    
+    .footer-card span{
+      color:rgba(237,228,217,0.6);
+      font-size:0.68rem;
+      font-weight:800;
+      letter-spacing:0.12em;
+      text-transform:uppercase;
+      margin-bottom:14px;
+    }
+    
+    .footer-card h3{
+      color:var(--sand);
+      font-size:2rem;
+      line-height:1.1;
+      transition:0.35s ease;
+    }
+    
+    .footer-card:hover{
+      transform:translateY(-8px);
+      border-color:rgba(237,228,217,0.16);
+      box-shadow:0 26px 60px rgba(0,0,0,0.28);
+    }
+    
+    .footer-card:hover::before{
+      opacity:1;
+    }
+    
+    .footer-bottom{
+      margin-top:55px;
+      padding-top:24px;
+      border-top:1px solid rgba(237,228,217,0.08);
+      color:rgba(237,228,217,0.52);
+      font-size:0.82rem;
+    }
+    
+    @media (max-width:950px){
+    
+      .footer-grid{
+        grid-template-columns:1fr;
+      }
+    
+      .footer-top{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+    }
+    
+        .footer-nav {
+      display: grid;
+      grid-template-columns: 1fr 1.15fr 1fr;
+      gap: 22px;
+    }
+    
+    .footer-related {
+      margin-top: 28px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    
+    .footer-related a {
+      border: 1px solid rgba(237,228,217,0.12);
+      color: rgba(237,228,217,0.72);
+      padding: 10px 13px;
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: 0.3s ease;
+    }
+    
+    .footer-related a:hover {
+      background: var(--sand);
+      color: var(--deep-teal);
+    }
+
+    @media (max-width: 950px) {
+      .hero-layout,
+      .mag-grid,
+      .result-grid,
+      .learning-grid {
+        grid-template-columns: 1fr;
+        gap: 38px;
+      }
+
+      .hero-card {
+        min-height: auto;
+      }
+
+      .section,
+      .method-section {
+        padding: 78px 0;
+      }
+      
+      .limits-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .nav-inner {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 16px 0;
+      }
+
+      .nav-links {
+        justify-content: flex-start;
+        gap: 12px;
+      }
+
+      .hero {
+        padding: 70px 0 55px;
+      }
+
+      .hero-card,
+      .side-box,
+      .model-card,
+      .learning-inner {
+        padding: 28px;
+      }
+
+      .method-item {
+        grid-template-columns: 1fr;
+        gap: 4px;
+      }
+
+      .oval-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="progress-bar" id="progressBar"></div>
+
+  <nav>
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo">I. Saunier</a>
+
+      <div class="nav-links">
+        <a href="index.html">Portfolio</a>
+        <a href="#contexte">Contexte</a>
+        <a href="#methodes">Méthodes</a>
+        <a href="#choix">Choix</a>
+        <a href="#resultats">Résultats</a>
+        <a href="#limites">Limites</a>
+        <a href="#bilan">Bilan</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero container">
+    <div class="hero-layout">
+      <div>
+        <div class="caps">Projet · NLP et classification</div>
+        <h1>Reconnaissance automatique de la langue</h1>
+
+        <p>
+          Ce projet consiste à construire et comparer plusieurs modèles statistiques capables d’identifier
+          automatiquement la langue d’un texte. L’objectif était de transformer des données textuelles en variables
+          exploitables, puis d’évaluer différentes approches de classification supervisée afin d’obtenir un modèle
+          précis, robuste et interprétable.
+        </p>
+        
+        <p class="hero-angle">
+          Objectif : reconnaître automatiquement une langue à partir de textes courts, avec un modèle précis, simple et interprétable.
+        </p>
+
+        <a href="#contexte" class="btn-mag">Lire l’étude de cas</a>
+      </div>
+
+      <aside class="hero-card">
+        <div>
+          <h3>Fiche projet</h3>
+
+          <div class="meta-list">
+            <div class="meta-item">
+              <strong>Type</strong>
+              <span>Modélisation statistique</span>
+            </div>
+
+            <div class="meta-item">
+              <strong>Domaine</strong>
+              <span>NLP / text mining</span>
+            </div>
+
+            <div class="meta-item">
+              <strong>Outils</strong>
+              <span>R · classification · DTM</span>
+            </div>
+
+            <div class="meta-item">
+              <strong>Cadre</strong>
+              <span>Travail en binôme</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </header>
+
+  <main>
+    <section id="contexte" class="section container reveal">
+      <div class="section-title">
+        <div class="caps">01 / Contexte</div>
+        <h2>Identifier automatiquement la langue d’un texte</h2>
+      </div>
+
+      <div class="mag-grid">
+        <div class="text-block">
+          <p>
+            La reconnaissance automatique de langue est une problématique centrale en traitement automatique du langage
+            naturel. Elle intervient dans des usages variés, comme les moteurs de recherche, la traduction automatique
+            ou encore le traitement de documents multilingues.
+          </p>
+
+          <p>
+            Dans ce projet, nous cherchions à prédire automatiquement la langue d’un document parmi plusieurs langues
+            possibles à partir de ses caractéristiques textuelles. Le jeu de données contenait des textes en anglais,
+            français, espagnol, allemand, italien et arabe.
+          </p>
+        </div>
+
+        <aside class="side-box">
+          <h3>Objectif du projet</h3>
+
+          <p>
+            L’enjeu principal était double : construire une représentation pertinente des textes, puis comparer
+            plusieurs modèles statistiques afin d’identifier le meilleur compromis entre précision, temps de calcul
+            et interprétabilité.
+          </p>
+
+          <div class="oval-grid">
+            <span>Classification supervisée</span>
+            <span>Text mining</span>
+            <span>Réduction de dimension</span>
+            <span>Comparaison de modèles</span>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="methodes" class="method-section reveal">
+      <div class="container">
+        <div class="section-title">
+          <div class="caps">02 / Méthodes</div>
+          <h2>Démarche de modélisation</h2>
+        </div>
+
+        <div class="mag-grid">
+          <div class="method-list">
+            <div class="method-item">
+              <div class="method-num">01</div>
+              <div>
+                <h3>Vectoriser</h3>
+                <p>Transformer les textes en variables numériques à l’aide d’une matrice terme-document.</p>
+              </div>
+            </div>
+
+            <div class="method-item">
+              <div class="method-num">02</div>
+              <div>
+                <h3>Réduire</h3>
+                <p>Tester une approche bag-of-words complète puis une représentation réduite par dictionnaire.</p>
+              </div>
+            </div>
+
+            <div class="method-item">
+              <div class="method-num">03</div>
+              <div>
+                <h3>Comparer</h3>
+                <p>Évaluer plusieurs modèles supervisés sur un même objectif de prédiction.</p>
+              </div>
+            </div>
+
+            <div class="method-item">
+              <div class="method-num">04</div>
+              <div>
+                <h3>Interpréter</h3>
+                <p>Identifier le meilleur compromis entre précision, simplicité et stabilité des scores.</p>
+              </div>
+            </div>
+          </div>
+
+          <aside class="model-card">
+            <h3>Modèles comparés</h3>
+          
+            <p id="modelText">
+              Sélectionne un modèle pour afficher son rôle dans le projet.
+            </p>
+          
+            <div class="model-tabs">
+              <button class="model-tab active" data-model="bayes">Naive Bayes</button>
+              <button class="model-tab" data-model="glasso">Graphical Lasso</button>
+              <button class="model-tab" data-model="multinomiale">Multinomiale</button>
+              <button class="model-tab" data-model="regularisation">Lasso / Ridge / Elastic Net</button>
+              <button class="model-tab" data-model="forest">Random Forest</button>
+            </div>
+          
+            <div class="model-display">
+              <h4 id="modelTitle">Naive Bayes</h4>
+              <p id="modelDesc">
+                Modèle probabiliste simple, utilisé comme référence principale. Il offre ici le meilleur compromis entre performance, simplicité et interprétabilité.
+              </p>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section id="choix" class="section container reveal">
+      <div class="section-title">
+        <div class="caps">03 / Choix méthodologiques</div>
+        <h2>Ce que ce projet montre</h2>
+      </div>
+
+      <div class="mag-grid">
+        <div class="text-block">
+          <p>
+            Ce travail montre ma capacité à passer d’un problème textuel à une problématique statistique exploitable.
+            J’ai mobilisé des notions de représentation de données, de réduction de dimension, de régularisation et de
+            classification afin de comparer plusieurs approches sur un même objectif de prédiction.
+          </p>
+        </div>
+
+        <div class="text-block">
+          <p>
+            Il met également en avant une réflexion méthodologique importante : la complexité d’un modèle n’est pas
+            toujours synonyme de meilleure performance. Ici, une bonne construction des variables s’est révélée
+            déterminante pour obtenir d’excellents résultats.
+          </p>
+        </div>
+      </div>
+      
+      <div class="demo-card">
+        <div class="caps">Mini démonstration</div>
+        <h3>Tester une phrase</h3>
+    
+        <p>
+          Cette version simplifiée illustre le principe : comparer un texte à des mots caractéristiques.
+        </p>
+    
+        <div class="language-demo" aria-label="Démonstration de reconnaissance de langue">
+          <label for="languageInput" class="demo-label">Entrer une phrase</label>
+    
+          <div class="demo-input-row">
+            <input id="languageInput" type="text" placeholder="Ex : Hello, how are you?" autocomplete="off" />
+            <span class="demo-lang" id="demoLang">--</span>
+          </div>
+    
+          <p class="demo-result" id="demoResult">La langue détectée apparaîtra ici.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="resultats" class="section container reveal">
+      <div class="section-title">
+        <div class="caps">04 / Résultats</div>
+        <h2>Performances observées</h2>
+      </div>
+
+      <div class="result-grid">
+        <article class="result-card best">
+          <strong>Naive Bayes</strong>
+          <span>98,23 %</span>
+          <div class="bar"><div data-width="98.23%"></div></div>
+          <p>Meilleur compromis entre précision, simplicité et interprétabilité.</p>
+        </article>
+        
+        <article class="result-card">
+          <strong>Ridge</strong>
+          <span>97,3 %</span>
+          <div class="bar"><div data-width="97.3%"></div></div>
+          <p>Très bonne performance avec régularisation stable.</p>
+        </article>
+        
+        <article class="result-card">
+          <strong>Random Forest</strong>
+          <span>96,5 %</span>
+          <div class="bar"><div data-width="96.5%"></div></div>
+          <p>Modèle performant mais moins lisible que Naive Bayes.</p>
+        </article>
+      </div>
+    </section>
+    
+    <section id="limites" class="section container reveal">
+      <div class="section-title">
+        <div class="caps">05 / Limites & recul</div>
+        <h2>Prendre du recul sur la performance</h2>
+      </div>
+    
+      <div class="limits-grid">
+        <article class="limit-card">
+          <h3>Jeu de données maîtrisé</h3>
+          <p>
+            Les résultats élevés peuvent être liés à des textes bien séparables selon la langue. Sur des textes très courts,
+            bruités ou mélangés, la performance pourrait diminuer.
+          </p>
+        </article>
+    
+        <article class="limit-card">
+          <h3>Représentation des textes</h3>
+          <p>
+            La matrice terme-document fonctionne bien ici, mais elle reste sensible au vocabulaire présent dans l’échantillon.
+            Des approches par n-grammes pourraient mieux gérer les mots inconnus.
+          </p>
+        </article>
+    
+        <article class="limit-card">
+          <h3>Généralisation</h3>
+          <p>
+            Le modèle gagnerait à être testé sur d’autres corpus, avec davantage de langues et des textes issus de contextes
+            variés pour confirmer sa robustesse.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section id="bilan" class="learning-panel reveal">
+      <div class="container">
+        <div class="learning-inner">
+          <h2>06 / Bilan du projet</h2>
+
+          <div class="learning-grid">
+            <div>
+              <p>
+                Les résultats obtenus montrent que tous les modèles testés atteignent des performances élevées,
+                comprises entre 94 % et 98 %. Les approches basées sur un dictionnaire réduit par langue se sont
+                révélées particulièrement efficaces, avec une excellente stabilité des scores.
+              </p>
+
+              <p>
+                Le modèle Naive Bayes est celui qui a offert le meilleur compromis entre précision, simplicité et
+                interprétabilité. Cette conclusion souligne l’importance de la représentation des données dans les
+                problèmes de traitement du langage.
+              </p>
+            </div>
+
+            <div>
+              <div class="caps" style="color: rgba(237,228,217,0.65); margin-bottom: 18px;">
+                Compétences mobilisées
+              </div>
+
+              <ul>
+                <li>Prétraitement et représentation de données textuelles</li>
+                <li>Comparaison de modèles statistiques supervisés</li>
+                <li>Analyse de performance et validation expérimentale</li>
+                <li>Réflexion sur la régularisation et la réduction de dimension</li>
+                <li>Communication d’un résultat technique de manière claire</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="project-footer">
+    <div class="container">
+  
+      <div class="footer-top">
+        <div>
+          <div class="caps">Continuer l’exploration</div>
+          <h2>Navigation projets</h2>
+        </div>
+  
+        <a href="index.html#competences" class="footer-link">
+          Tous les projets
+        </a>
+      </div>
+  
+      <div class="footer-nav">
+  
+        <a href="classif_astro.html" class="footer-card nav-prev">
+          <span>Projet précédent</span>
+          <h3>Classification d’objets astronomiques</h3>
+        </a>
+  
+        <a href="index.html#competences" class="footer-card nav-all">
+          <span>Portfolio</span>
+          <h3>Retour aux compétences & réalisations</h3>
+        </a>
+  
+        <a href="data_challenge.html" class="footer-card nav-next">
+          <span>Projet suivant</span>
+          <h3>Data challenge climat</h3>
+        </a>
+  
+      </div>
+  
+      <div class="footer-bottom">
+        Projet détaillé · Portfolio d’Ilona Saunier · Sciences des Données
+      </div>
+  
+    </div>
+  </footer>
+  
+  <script>
+    const progressBar = document.getElementById("progressBar");
+  
+    function updateProgress() {
+      const scrollTop = window.scrollY;
+      const pageHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = pageHeight > 0 ? (scrollTop / pageHeight) * 100 : 0;
+      progressBar.style.width = progress + "%";
+    }
+  
+    window.addEventListener("scroll", updateProgress, { passive: true });
+    updateProgress();
+  
+    const reveals = document.querySelectorAll(".reveal");
+  
+    const revealObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+  
+    reveals.forEach(element => revealObserver.observe(element));
+  
+    const resultSection = document.getElementById("resultats");
+    const bars = document.querySelectorAll(".bar div");
+  
+    const barObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+  
+        bars.forEach(bar => {
+          bar.style.width = bar.dataset.width;
+        });
+  
+        barObserver.unobserve(entry.target);
+      });
+    }, { threshold: 0.35 });
+  
+    if (resultSection) barObserver.observe(resultSection);
+    
+    const languageInput = document.getElementById("languageInput");
+    const demoLang = document.getElementById("demoLang");
+    const demoResult = document.getElementById("demoResult");
+    
+    const languageDictionaries = {
+      FR: [
+        "bonjour", "salut", "merci", "oui", "non", "comment", "allez", "vous", "je", "tu", "il", "elle",
+        "nous", "vous", "ils", "elles", "être", "avoir", "avec", "dans", "pour", "sur", "pas", "plus",
+        "très", "bien", "mal", "aujourd", "demain", "hier", "langue", "texte", "donnée", "modèle",
+        "analyse", "résultat", "travail", "projet", "étude", "maison", "école", "entreprise"
+      ],
+    
+      EN: [
+        "hello", "hi", "thanks", "thank", "yes", "no", "how", "are", "you", "i", "we", "they", "he", "she",
+        "is", "are", "was", "were", "with", "for", "from", "about", "not", "very", "good", "bad",
+        "today", "tomorrow", "yesterday", "language", "text", "data", "model", "analysis", "result",
+        "work", "project", "study", "school", "company", "business", "decision"
+      ],
+    
+      ES: [
+        "hola", "gracias", "sí", "no", "como", "estás", "usted", "yo", "tú", "nosotros", "ellos", "ellas",
+        "es", "son", "con", "para", "desde", "sobre", "muy", "bien", "mal", "hoy", "mañana", "ayer",
+        "idioma", "texto", "datos", "modelo", "análisis", "resultado", "trabajo", "proyecto", "estudio",
+        "escuela", "empresa", "decisión"
+      ],
+    
+      DE: [
+        "hallo", "danke", "ja", "nein", "wie", "geht", "dir", "ich", "du", "wir", "sie", "er", "ist",
+        "sind", "mit", "für", "von", "über", "nicht", "sehr", "gut", "schlecht", "heute", "morgen",
+        "gestern", "sprache", "text", "daten", "modell", "analyse", "ergebnis", "arbeit", "projekt",
+        "studie", "schule", "unternehmen", "entscheidung"
+      ],
+    
+      IT: [
+        "ciao", "grazie", "sì", "no", "come", "stai", "io", "tu", "noi", "loro", "lui", "lei", "è",
+        "sono", "con", "per", "da", "su", "non", "molto", "bene", "male", "oggi", "domani", "ieri",
+        "lingua", "testo", "dati", "modello", "analisi", "risultato", "lavoro", "progetto", "studio",
+        "scuola", "azienda", "decisione"
+      ],
+    
+      AR: [
+        "مرحبا", "شكرا", "نعم", "لا", "كيف", "حال", "اليوم", "غدا", "أمس", "أنا", "أنت", "هو", "هي",
+        "نحن", "هم", "لغة", "نص", "بيانات", "نموذج", "تحليل", "نتيجة", "عمل", "مشروع", "دراسة",
+        "مدرسة", "شركة", "قرار"
+      ]
+    };
+    
+    const languageNames = {
+      FR: "français",
+      EN: "anglais",
+      ES: "espagnol",
+      DE: "allemand",
+      IT: "italien",
+      AR: "arabe"
+    };
+    
+    function normalizeText(text) {
+      return text
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[.,!?;:()"']/g, " ");
+    }
+    
+    function detectLanguage(text) {
+      const normalized = normalizeText(text);
+      const words = normalized.split(/\s+/).filter(Boolean);
+    
+      const scores = {};
+    
+      Object.entries(languageDictionaries).forEach(([lang, dictionary]) => {
+        scores[lang] = 0;
+    
+        dictionary.forEach(keyword => {
+          const normalizedKeyword = normalizeText(keyword);
+    
+          if (words.includes(normalizedKeyword)) {
+            scores[lang] += 2;
+          }
+    
+          if (normalized.includes(normalizedKeyword) && normalizedKeyword.length > 3) {
+            scores[lang] += 1;
+          }
+        });
+      });
+    
+      if (/[\u0600-\u06FF]/.test(text)) {
+        scores.AR += 5;
+      }
+    
+      const best = Object.entries(scores).sort((a, b) => b[1] - a[1])[0];
+    
+      if (!best || best[1] === 0) {
+        return {
+          code: "--",
+          label: "Langue non reconnue",
+          confidence: "Ajoute quelques mots plus caractéristiques."
+        };
+      }
+    
+      return {
+        code: best[0],
+        label: languageNames[best[0]],
+        confidence: best[1] >= 5 ? "confiance élevée" : "confiance moyenne"
+      };
+    }
+    
+    if (languageInput && demoLang && demoResult) {
+      languageInput.addEventListener("input", () => {
+        const value = languageInput.value.trim();
+    
+        if (!value) {
+          demoLang.textContent = "--";
+          demoResult.textContent = "La langue détectée apparaîtra ici.";
+          return;
+        }
+    
+        const detected = detectLanguage(value);
+    
+        demoLang.textContent = detected.code;
+        demoResult.textContent =
+          detected.code === "--"
+            ? detected.confidence
+            : `Langue probable : ${detected.label} · ${detected.confidence}.`;
+      });
+    }
+    
+    const modelButtons = document.querySelectorAll(".model-tab");
+    const modelTitle = document.getElementById("modelTitle");
+    const modelDesc = document.getElementById("modelDesc");
+    
+    const modelData = {
+      bayes: {
+        title: "Naive Bayes",
+        desc: "Modèle probabiliste simple, utilisé comme référence principale. Il offre ici le meilleur compromis entre performance, simplicité et interprétabilité."
+      },
+      glasso: {
+        title: "Naive Bayes + Graphical Lasso",
+        desc: "Version plus structurée qui cherche à tenir compte des dépendances entre variables, mais elle est plus complexe à interpréter."
+      },
+      multinomiale: {
+        title: "Régression multinomiale",
+        desc: "Modèle linéaire adapté à la classification en plusieurs langues. Il sert de comparaison interprétable face aux modèles pénalisés."
+      },
+      regularisation: {
+        title: "Lasso, Ridge et Elastic Net",
+        desc: "Méthodes de pénalisation permettant de limiter le surapprentissage, stabiliser les coefficients et améliorer la généralisation."
+      },
+      forest: {
+        title: "Random Forest",
+        desc: "Modèle performant et flexible, mais moins lisible qu’un modèle probabiliste simple comme Naive Bayes."
+      }
+    };
+    
+    modelButtons.forEach(button => {
+      button.addEventListener("click", () => {
+        const key = button.dataset.model;
+    
+        modelButtons.forEach(btn => btn.classList.remove("active"));
+        button.classList.add("active");
+    
+        modelTitle.style.opacity = 0;
+        modelDesc.style.opacity = 0;
+    
+        setTimeout(() => {
+          modelTitle.textContent = modelData[key].title;
+          modelDesc.textContent = modelData[key].desc;
+    
+          modelTitle.style.opacity = 1;
+          modelDesc.style.opacity = 1;
+        }, 160);
+      });
+    });
+
+  </script>
+
+</body>
+</html>

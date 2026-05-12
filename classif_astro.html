@@ -1,0 +1,1872 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Étude de cas — Classification d’objets astronomiques à partir de données SDSS." />
+
+  <title>Projet — Classification d’objets astronomiques</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600&family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg: #fcfaf7;
+      --paper: #fffdf9;
+      --deep-teal: #1a3c40;
+      --accent: #417d7a;
+      --sand: #ede4d9;
+      --sand-2: #f5eee6;
+      --text: #1d1d1d;
+      --muted: #666;
+      --line: rgba(26, 60, 64, 0.12);
+      --shadow: 0 24px 70px rgba(26, 60, 64, 0.12);
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      background: var(--bg);
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Montserrat', sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(65, 125, 122, 0.12), transparent 30vw),
+        var(--bg);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 600;
+      line-height: 1.05;
+      margin: 0;
+    }
+
+    p { margin-top: 0; }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .container {
+      width: min(1180px, calc(100% - 48px));
+      margin: 0 auto;
+    }
+
+    .caps {
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    .progress-bar {
+      position: fixed;
+      inset: 0 auto auto 0;
+      width: 0%;
+      height: 3px;
+      background: var(--accent);
+      z-index: 500;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      background: rgba(252, 250, 247, 0.9);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .nav-inner {
+      min-height: 74px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 28px;
+    }
+
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.8rem;
+      font-style: italic;
+      font-weight: 700;
+      color: var(--deep-teal);
+      white-space: nowrap;
+    }
+
+    .nav-links {
+      display: flex;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+      gap: 18px;
+    }
+
+    .nav-links a {
+      position: relative;
+      color: var(--text);
+      font-size: 0.69rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: 0.3s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--accent);
+    }
+
+    .hero {
+      min-height: calc(100svh - 74px);
+      display: grid;
+      align-items: center;
+      padding: clamp(42px, 6vh, 78px) 0;
+      border-bottom: 1px solid var(--line);
+      background:
+        linear-gradient(90deg, transparent 0 64%, rgba(237, 228, 217, 0.62) 64% 100%),
+        var(--bg);
+      position: relative;
+    }
+    
+    .hero-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.82fr);
+      gap: clamp(36px, 5vw, 70px);
+      align-items: center;
+    }
+    
+    .hero h1 {
+      margin: 18px 0 22px;
+      font-size: clamp(3rem, 6.4vw, 5.7rem);
+      color: var(--deep-teal);
+      letter-spacing: -0.05em;
+      max-width: 780px;
+    }
+    
+    .hero p {
+      max-width: 680px;
+      color: var(--muted);
+      font-size: clamp(0.98rem, 1.15vw, 1.08rem);
+      line-height: 1.75;
+    }
+    
+    .hero-card {
+      background: var(--deep-teal);
+      color: var(--sand);
+      border: 1px solid var(--deep-teal);
+      padding: clamp(28px, 3.4vw, 40px);
+      min-height: clamp(360px, 52vh, 470px);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .hero-card::before {
+      content: "";
+      position: absolute;
+      inset: 18px;
+      border: 1px solid rgba(237, 228, 217, 0.18);
+      pointer-events: none;
+    }
+    
+    .hero-card::after {
+      content: "ASTRO DATA";
+      position: absolute;
+      right: 22px;
+      bottom: 18px;
+      color: rgba(237, 228, 217, 0.22);
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+    }
+    
+    .hero-card h3 {
+      color: var(--sand);
+      font-size: clamp(1.8rem, 3vw, 2.25rem);
+      margin-bottom: 24px;
+    }
+    
+    .hero-angle {
+      margin: 28px 0 26px;
+      padding-left: 18px;
+      border-left: 3px solid var(--accent);
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: clamp(1.25rem, 2vw, 1.55rem) !important;
+      color: var(--deep-teal) !important;
+      line-height: 1.35 !important;
+    }
+
+    .btn-filled,
+    .btn-mag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      transition: transform 0.28s var(--ease), background 0.28s var(--ease), color 0.28s var(--ease);
+    }
+
+    .btn-filled {
+      background: var(--deep-teal);
+      color: var(--sand);
+      padding: 14px 18px;
+      border: 1px solid var(--deep-teal);
+    }
+
+    .btn-filled:hover {
+      background: transparent;
+      color: var(--deep-teal);
+      transform: translateY(-3px);
+    }
+
+    .btn-mag {
+      color: var(--accent);
+      border-bottom: 2px solid currentColor;
+      padding-bottom: 4px;
+    }
+
+    .btn-mag:hover {
+      transform: translateY(-3px);
+    }
+
+    .project-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      margin-top: 38px;
+      max-width: 720px;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .project-metrics div {
+      padding: 20px 18px 18px 0;
+      border-right: 1px solid var(--line);
+    }
+
+    .project-metrics div:nth-child(2),
+    .project-metrics div:nth-child(3) {
+      padding-left: 18px;
+    }
+
+    .project-metrics div:last-child {
+      border-right: none;
+    }
+
+    .project-metrics strong {
+      display: block;
+      font-family: 'Cormorant Garamond', serif;
+      color: var(--deep-teal);
+      font-size: 2.45rem;
+      line-height: 1;
+    }
+
+    .project-metrics span {
+      display: block;
+      margin-top: 8px;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .meta-list {
+      display: grid;
+      gap: 0;
+      border-top: 1px solid rgba(237, 228, 217, 0.22);
+    }
+
+    .meta-item {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 18px;
+      border-bottom: 1px solid rgba(237, 228, 217, 0.16);
+      padding: 16px 0;
+    }
+
+    .meta-item strong {
+      display: block;
+      color: rgba(237, 228, 217, 0.62);
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+    }
+
+    .meta-item span {
+      color: rgba(237, 228, 217, 0.9);
+      font-weight: 600;
+      font-size: 0.92rem;
+    }
+    
+    
+    .hero-mini-metrics {
+      max-width: none;
+      margin-top: 30px;
+      border-color: rgba(237, 228, 217, 0.18);
+    }
+    
+    .hero-mini-metrics div {
+      border-color: rgba(237, 228, 217, 0.16);
+    }
+    
+    .hero-mini-metrics strong {
+      color: var(--sand);
+      font-size: 2rem;
+    }
+    
+    .hero-mini-metrics span {
+      color: rgba(237, 228, 217, 0.68);
+      font-size: 0.62rem;
+    }
+
+    .section {
+      padding: clamp(82px, 9vw, 112px) 0;
+      border-bottom: 1px solid var(--line);
+      scroll-margin-top: 125px;
+    }
+
+    .section-title {
+      display: grid;
+      grid-template-columns: 0.85fr 1.15fr;
+      gap: 50px;
+      align-items: end;
+      margin-bottom: 58px;
+    }
+
+    .section-title h2 {
+      margin-top: 14px;
+      font-size: clamp(2.6rem, 5vw, 4rem);
+      color: var(--deep-teal);
+      letter-spacing: -0.03em;
+    }
+
+    .section-title p {
+      margin: 0;
+      color: var(--muted);
+      max-width: 620px;
+    }
+
+    .mag-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(38px, 6vw, 70px);
+      align-items: start;
+    }
+
+    .text-block {
+      font-size: 1.02rem;
+      color: var(--text);
+      line-height: 1.85;
+    }
+
+    .text-block p {
+      color: var(--text);
+      margin-bottom: 18px;
+      opacity: 0.78;
+      transition: opacity 0.35s ease;
+    }
+
+    .text-block p:hover {
+      opacity: 1;
+    }
+
+    .side-box {
+      background: var(--deep-teal);
+      color: var(--sand);
+      padding: clamp(30px, 4vw, 42px);
+      position: sticky;
+      top: 145px;
+    }
+
+    .side-box h3 {
+      color: var(--sand);
+      font-size: 2.15rem;
+      margin-bottom: 20px;
+    }
+
+    .side-box p {
+      color: rgba(237, 228, 217, 0.86);
+      margin-bottom: 24px;
+    }
+
+    .oval-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .oval-grid span {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 10px 14px;
+      border: 1px solid rgba(237, 228, 217, 0.24);
+      color: rgba(237, 228, 217, 0.92);
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .method-section {
+      background: var(--sand);
+    }
+
+    .method-list {
+      display: grid;
+      gap: 0;
+      border-top: 1px solid rgba(26, 60, 64, 0.16);
+    }
+
+    .method-item {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 26px;
+      border-bottom: 1px solid rgba(26, 60, 64, 0.16);
+      padding: 24px 0;
+    }
+
+    .method-num {
+      font-family: 'Cormorant Garamond', serif;
+      color: var(--accent);
+      font-size: 2rem;
+      font-style: italic;
+      line-height: 1;
+    }
+
+    .method-item h3 {
+      color: var(--deep-teal);
+      font-size: 1.65rem;
+      margin-bottom: 8px;
+    }
+
+    .method-item p {
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .model-card {
+      background: rgba(252, 250, 247, 0.68);
+      border: 1px solid var(--line);
+      padding: clamp(30px, 4vw, 42px);
+    }
+
+    .model-card h3 {
+      color: var(--deep-teal);
+      font-size: 2.1rem;
+      margin-bottom: 18px;
+    }
+
+    .model-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 24px 0;
+    }
+
+    .model-tab {
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--deep-teal);
+      padding: 9px 12px;
+      cursor: pointer;
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: 0.3s;
+    }
+
+    .model-tab.active,
+    .model-tab:hover {
+      background: var(--deep-teal);
+      color: var(--sand);
+    }
+
+    .model-note {
+      color: var(--muted);
+      margin: 0;
+      min-height: 85px;
+    }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .result-card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      padding: 28px;
+      position: relative;
+      transition: transform 0.3s var(--ease), opacity 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .result-grid .result-card:hover {
+      opacity: 1;
+      transform: translateY(-6px);
+      box-shadow: 0 22px 50px rgba(26, 60, 64, 0.1);
+      z-index: 2;
+    }
+
+    .result-card.best {
+      background: var(--deep-teal);
+      color: var(--sand);
+    }
+
+    .result-card strong {
+      display: block;
+      color: var(--accent);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      margin-bottom: 12px;
+    }
+
+    .result-card span {
+      display: block;
+      font-family: 'Cormorant Garamond', serif;
+      color: var(--deep-teal);
+      font-size: 2.7rem;
+      line-height: 1.05;
+    }
+
+    .result-card.best strong,
+    .result-card.best span {
+      color: var(--sand);
+    }
+
+    .result-card p {
+      margin: 18px 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .result-card.best p {
+      color: rgba(237, 228, 217, 0.82);
+    }
+
+    .bar {
+      height: 8px;
+      background: rgba(26, 60, 64, 0.12);
+      margin-top: 18px;
+      overflow: hidden;
+    }
+
+    .bar div {
+      height: 100%;
+      width: 0%;
+      background: var(--accent);
+      transition: width 1.1s var(--ease);
+    }
+
+    .result-card.best .bar {
+      background: rgba(237, 228, 217, 0.18);
+    }
+
+    .result-card.best .bar div {
+      background: var(--sand);
+    }
+
+    .limits-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+    }
+
+    .limit-card {
+      border-top: 3px solid var(--deep-teal);
+      padding-top: 22px;
+    }
+
+    .limit-card h3 {
+      color: var(--deep-teal);
+      font-size: 1.7rem;
+      margin-bottom: 12px;
+    }
+
+    .limit-card p {
+      color: var(--muted);
+      margin: 0;
+      font-size: 0.94rem;
+    }
+
+    .learning-panel {
+      background: rgba(26, 60, 64, 0.08);
+      padding: clamp(76px, 9vw, 100px) 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .learning-inner {
+      background: rgba(26, 60, 64, 0.9);
+      color: var(--sand);
+      padding: clamp(38px, 6vw, 64px);
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+
+    .learning-inner h2 {
+      color: var(--sand);
+      font-size: clamp(2.4rem, 5vw, 3.7rem);
+      margin-bottom: 30px;
+    }
+
+    .learning-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 50px;
+    }
+
+    .learning-inner p,
+    .learning-inner li {
+      color: rgba(237, 228, 217, 0.88);
+    }
+
+    .learning-inner ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .learning-inner li {
+      margin-bottom: 12px;
+    }
+    
+    .compare-layout {
+      display: grid;
+      grid-template-columns: minmax(280px, .65fr) minmax(0, 1.35fr);
+      gap: 28px;
+      align-items: stretch;
+    }
+    
+    .compare-panel,
+    .radar-card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      padding: clamp(28px, 4vw, 42px);
+      box-shadow: 0 18px 45px rgba(26, 60, 64, 0.07);
+    }
+    
+    .compare-panel {
+      background: var(--deep-teal);
+      color: var(--sand);
+    }
+    
+    .compare-panel h3,
+    .compare-text h4 {
+      color: var(--sand);
+    }
+    
+    .compare-panel h3 {
+      font-size: 2.2rem;
+      margin-bottom: 24px;
+    }
+    
+    .compare-buttons {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 34px;
+    }
+    
+    .compare-buttons button {
+      border: 1px solid rgba(237, 228, 217, 0.22);
+      background: transparent;
+      color: var(--sand);
+      padding: 14px 16px;
+      text-align: left;
+      cursor: pointer;
+      font-size: .72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      transition: .25s var(--ease);
+    }
+    
+    .compare-buttons button:hover,
+    .compare-buttons button.active {
+      background: var(--sand);
+      color: var(--deep-teal);
+    }
+    
+    .compare-text {
+      border-top: 1px solid rgba(237, 228, 217, 0.18);
+      padding-top: 24px;
+    }
+    
+    .compare-text h4 {
+      font-size: 2rem;
+      margin: 12px 0;
+    }
+    
+    .compare-text p {
+      color: rgba(237, 228, 217, .82);
+      margin: 0;
+    }
+    
+    .radar-card {
+      display: grid;
+      place-items: center;
+      min-height: 520px;
+    }
+    
+    #radarChart {
+      width: min(520px, 100%);
+      height: auto;
+      overflow: visible;
+    }
+    
+    .radar-axis {
+      stroke: rgba(26, 60, 64, 0.22);
+      stroke-width: 1;
+    }
+    
+    .radar-grid {
+      fill: none;
+      stroke: rgba(26, 60, 64, 0.13);
+      stroke-width: 1;
+    }
+    
+    .radar-shape {
+      fill: rgba(65, 125, 122, 0.28);
+      stroke: var(--deep-teal);
+      stroke-width: 3;
+      transition: .35s var(--ease);
+    }
+    
+    .radar-dot {
+      fill: var(--deep-teal);
+    }
+    
+    .radar-label {
+      font-family: Montserrat, sans-serif;
+      font-size: 12px;
+      font-weight: 800;
+      fill: var(--deep-teal);
+      text-transform: uppercase;
+    }
+    
+    .radar-score {
+      font-family: "Cormorant Garamond", serif;
+      font-size: 28px;
+      fill: var(--accent);
+    }
+    
+    .radar-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+    
+    .radar-legend span {
+      border: 1px solid var(--line);
+      padding: 8px 11px;
+      font-size: .68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--deep-teal);
+    }
+    
+    @media (max-width: 950px) {
+      .compare-layout {
+        grid-template-columns: 1fr;
+      }
+    
+      .radar-card {
+        min-height: auto;
+      }
+    }
+
+    footer {
+      padding: 75px 0;
+      background: var(--deep-teal);
+      color: var(--sand);
+      text-align: center;
+    }
+
+    footer h2 {
+      color: var(--sand);
+      font-size: 2.8rem;
+      margin-bottom: 20px;
+    }
+
+    footer p {
+      margin: 0;
+      color: rgba(237, 228, 217, 0.78);
+    }
+    
+    footer {
+      padding: 75px 0;
+      background: var(--deep-teal);
+      color: var(--sand);
+      text-align: center;
+    }
+
+    footer h2 {
+      color: var(--sand);
+      font-size: 2.8rem;
+      margin-bottom: 20px;
+    }
+
+    footer p {
+      margin: 0;
+      color: rgba(237, 228, 217, 0.78);
+    }
+    
+    .project-footer{
+      background: #10282b;
+      color: var(--sand);
+      padding: 90px 0 42px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .project-footer::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(circle at top right,
+        rgba(65,125,122,0.18),
+        transparent 35%);
+      pointer-events:none;
+    }
+    
+    .footer-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:end;
+      gap:30px;
+      margin-bottom:50px;
+    }
+    
+    .footer-top h2{
+      color:var(--sand);
+      margin-top:12px;
+      font-size:clamp(2.4rem,5vw,4rem);
+    }
+    
+    .footer-link{
+      color:rgba(237,228,217,0.78);
+      font-size:0.75rem;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:0.1em;
+      border-bottom:2px solid rgba(237,228,217,0.4);
+      padding-bottom:6px;
+      transition:0.3s ease;
+    }
+    
+    .footer-link:hover{
+      color:white;
+      border-color:white;
+    }
+    
+    .footer-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:22px;
+    }
+    
+    .footer-card{
+      background:rgba(255,255,255,0.04);
+      border:1px solid rgba(237,228,217,0.08);
+      padding:34px;
+      min-height:220px;
+      display:flex;
+      flex-direction:column;
+      justify-content:flex-end;
+      transition:0.45s cubic-bezier(.16,1,.3,1);
+      position:relative;
+      overflow:hidden;
+    }
+    
+    .footer-card::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(
+        135deg,
+        rgba(65,125,122,0.95),
+        rgba(26,60,64,0.98)
+      );
+      opacity:0;
+      transition:0.45s ease;
+    }
+    
+    .footer-card *{
+      position:relative;
+      z-index:2;
+    }
+    
+    .footer-card span{
+      color:rgba(237,228,217,0.6);
+      font-size:0.68rem;
+      font-weight:800;
+      letter-spacing:0.12em;
+      text-transform:uppercase;
+      margin-bottom:14px;
+    }
+    
+    .footer-card h3{
+      color:var(--sand);
+      font-size:2rem;
+      line-height:1.1;
+      transition:0.35s ease;
+    }
+    
+    .footer-card:hover{
+      transform:translateY(-8px);
+      border-color:rgba(237,228,217,0.16);
+      box-shadow:0 26px 60px rgba(0,0,0,0.28);
+    }
+    
+    .footer-card:hover::before{
+      opacity:1;
+    }
+    
+    .footer-bottom{
+      margin-top:55px;
+      padding-top:24px;
+      border-top:1px solid rgba(237,228,217,0.08);
+      color:rgba(237,228,217,0.52);
+      font-size:0.82rem;
+    }
+    
+    @media (max-width:950px){
+    
+      .footer-grid{
+        grid-template-columns:1fr;
+      }
+    
+      .footer-top{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+    }
+    
+        .footer-nav {
+      display: grid;
+      grid-template-columns: 1fr 1.15fr 1fr;
+      gap: 22px;
+    }
+    
+    .footer-related {
+      margin-top: 28px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    
+    .footer-related a {
+      border: 1px solid rgba(237,228,217,0.12);
+      color: rgba(237,228,217,0.72);
+      padding: 10px 13px;
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: 0.3s ease;
+    }
+    
+    .footer-related a:hover {
+      background: var(--sand);
+      color: var(--deep-teal);
+    }
+    
+    .model-display {
+      margin-top: 24px;
+      transition: 0.3s;
+    }
+    
+    .model-display h4 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.7rem;
+      color: var(--deep-teal);
+      margin-bottom: 10px;
+    }
+    
+    .formula {
+      font-size: 1.15rem;
+      color: var(--accent);
+      margin: 18px 0;
+      padding: 18px 20px;
+      border-left: 3px solid var(--accent);
+      background: rgba(65, 125, 122, 0.08);
+      overflow-x: auto;
+    }
+    
+    .formula mjx-container {
+      margin: 0 !important;
+    }
+    
+    .model-insight {
+      font-size: 0.9rem;
+      color: var(--muted);
+      font-style: italic;
+    }
+    
+    .model-tab {
+      transition: all 0.3s ease;
+    }
+    
+    .model-tab.active {
+      transform: translateY(-2px);
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.75s var(--ease), transform 0.75s var(--ease);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 950px) {
+      .hero-layout,
+      .mag-grid,
+      .result-grid,
+      .learning-grid,
+      .limits-grid,
+      .section-title {
+        grid-template-columns: 1fr;
+        gap: 38px;
+      }
+
+      .project-metrics {
+        grid-template-columns: 1fr;
+      }
+
+      .project-metrics div {
+        border-right: none;
+        border-bottom: 1px solid var(--line);
+        padding-left: 0 !important;
+      }
+
+      .project-metrics div:last-child {
+        border-bottom: none;
+      }
+
+      .side-box {
+        position: static;
+      }
+
+      .hero-card {
+        min-height: auto;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .container {
+        width: min(100% - 34px, 1180px);
+      }
+
+      .nav-inner {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 16px 0;
+      }
+
+      .nav-links {
+        justify-content: flex-start;
+        gap: 12px;
+      }
+
+      .hero {
+        padding: 58px 0 48px;
+      }
+
+      .meta-item,
+      .method-item {
+        grid-template-columns: 1fr;
+        gap: 6px;
+      }
+
+      .oval-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .project-index {
+        top: 104px;
+      }
+    }
+  </style>
+  <script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['\\(', '\\)']],
+      displayMath: [['\\[', '\\]']]
+    },
+    svg: {
+      fontCache: 'global'
+    }
+  };
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+
+<body>
+  <div class="progress-bar" id="progressBar"></div>
+
+  <nav>
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo">Ilona Saunier</a>
+
+      <div class="nav-links">
+        <a href="index.html">Portfolio</a>
+        <a href="#contexte">Contexte</a>
+        <a href="#methodes">Méthodes</a>
+        <a href="#lecture">Lecture</a>
+        <a href="#resultats">Résultats</a>
+        <a href="#limites">Limites</a>
+        <a href="#bilan">Bilan</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero container">
+  <div class="hero-layout">
+    <div>
+      <div class="caps">Projet · Analyse et classification</div>
+      <h1>Classification d’objets astronomiques</h1>
+
+      <p>
+        Ce projet vise à comparer plusieurs méthodes de classification supervisée afin de prédire la classe d’objets
+        astronomiques observés. À partir des données du Sloan Digital Sky Survey, l’objectif était d’identifier les
+        variables les plus discriminantes et d’évaluer la robustesse de différents modèles sur un problème réel de
+        classification multiclasse.
+      </p>
+      
+      <p class="hero-angle">
+        Objectif : comparer performance, stabilité et interprétabilité pour identifier le modèle le plus pertinent.
+      </p>
+
+      <a href="#contexte" class="btn-mag">Lire l’étude de cas</a>
+    </div>
+
+    <aside class="hero-card">
+      <div>
+        <h3>Fiche projet</h3>
+
+        <div class="meta-list">
+          <div class="meta-item">
+            <strong>Type</strong>
+            <span>Analyse statistique</span>
+          </div>
+
+          <div class="meta-item">
+            <strong>Domaine</strong>
+            <span>Données astronomiques</span>
+          </div>
+
+          <div class="meta-item">
+            <strong>Outils</strong>
+            <span>R · glmnet · ggplot2</span>
+          </div>
+
+          <div class="meta-item">
+            <strong>Données</strong>
+            <span>SDSS · 100 000 observations</span>
+          </div>
+        </div>
+        
+        <div class="project-metrics hero-mini-metrics">
+          <div>
+            <strong data-counter="6">0</strong>
+            <span>modèles comparés</span>
+          </div>
+        
+          <div>
+            <strong data-counter="2">0</strong>
+            <span>modèles dominants</span>
+          </div>
+        
+          <div>
+            <strong data-counter="3">0</strong>
+            <span>critères de lecture</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+</header>
+
+  <main>
+    <section id="contexte" class="section container reveal">
+      <div class="section-title">
+        <div>
+          <div class="caps">01 / Contexte</div>
+          <h2>Comprendre et distinguer les objets célestes</h2>
+        </div>
+        <p>
+          Le projet repose sur des données astronomiques réelles afin de prédire la catégorie d’un objet observé :
+          galaxie, étoile ou quasar.
+        </p>
+      </div>
+
+      <div class="mag-grid">
+        <div class="text-block">
+          <p>
+            Les données proviennent du Sloan Digital Sky Survey et décrivent différents objets célestes observés à
+            travers plusieurs variables photométriques, spectrales et contextuelles. La variable cible correspond à la
+            classe de l’objet, avec trois catégories : GALAXY, STAR et QSO.
+          </p>
+
+          <p>
+            Le projet consistait à analyser ces données, à comparer plusieurs méthodes de classification et à comprendre
+            quelles variables contribuent le plus à différencier les classes.
+          </p>
+        </div>
+
+        <aside class="side-box">
+          <h3>Objectif d’analyse</h3>
+
+          <p>
+            Certaines variables purement identifiantes ont été retirées afin de conserver uniquement les informations
+            utiles à la prédiction. L’analyse s’est appuyée sur un échantillonnage répété apprentissage/test afin
+            d’obtenir des résultats stables et comparables entre modèles.
+          </p>
+
+          <div class="oval-grid">
+            <span>Classification multiclasse</span>
+            <span>Comparaison de modèles</span>
+            <span>Sélection de variables</span>
+            <span>Validation répétée</span>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="methodes" class="section method-section reveal">
+      <div class="container">
+        <div class="section-title">
+          <div>
+            <div class="caps">02 / Méthodes</div>
+            <h2>Approche d’analyse</h2>
+          </div>
+          <p>
+            Une démarche structurée pour préparer les données, comparer les modèles et interpréter les performances.
+          </p>
+        </div>
+
+        <div class="mag-grid">
+          <div class="method-list">
+            <div class="method-item">
+              <div class="method-num">01</div>
+              <div>
+                <h3>Préparer</h3>
+                <p>Retrait des variables identifiantes et conservation des variables utiles à la prédiction.</p>
+              </div>
+            </div>
+
+            <div class="method-item">
+              <div class="method-num">02</div>
+              <div>
+                <h3>Comparer</h3>
+                <p>Test de plusieurs familles de modèles de classification supervisée multiclasse.</p>
+              </div>
+            </div>
+
+            <div class="method-item">
+              <div class="method-num">03</div>
+              <div>
+                <h3>Valider</h3>
+                <p>Évaluation des performances sur 1000 répétitions d’un découpage apprentissage/test.</p>
+              </div>
+            </div>
+
+            <div class="method-item">
+              <div class="method-num">04</div>
+              <div>
+                <h3>Interpréter</h3>
+                <p>Analyse des variables discriminantes et de la stabilité des modèles retenus.</p>
+              </div>
+            </div>
+          </div>
+
+          <aside class="model-card">
+            <h3>Méthodes testées</h3>
+            <p class="model-note" id="modelNote">
+              Les modèles ont été comparés afin d’évaluer à la fois leur performance, leur robustesse et leur intérêt
+              pour l’interprétation des résultats.
+            </p>
+
+           <div class="model-tabs">
+
+            <button class="model-tab active"
+              data-title="Naive Bayes"
+              data-desc="Modèle probabiliste basé sur une hypothèse d’indépendance entre variables."
+              data-formula="\[ P(C \mid X) \propto P(X \mid C) \]"
+              data-insight="Rapide et efficace, mais repose sur une hypothèse forte.">
+              Naive Bayes
+            </button>
+          
+            <button class="model-tab"
+              data-title="Régression multinomiale"
+              data-desc="Modèle linéaire pour prédire plusieurs classes."
+              data-formula="\[ P(Y=k) = \frac{e^{score_k}}{\sum e^{score}} \]"
+              data-insight="Interprétable, permet de comprendre l’impact des variables.">
+              Multinomiale
+            </button>
+          
+            <button class="model-tab"
+              data-title="LASSO"
+              data-desc="Régression pénalisée qui sélectionne les variables importantes."
+              data-formula="\[ Erreur + \lambda \times \sum |\beta| \]"
+              data-insight="Supprime les variables inutiles → modèle plus lisible.">
+              LASSO
+            </button>
+          
+            <button class="model-tab"
+              data-title="Ridge"
+              data-desc="Régularisation qui réduit l’impact des variables corrélées."
+              data-formula="\[ Erreur + \lambda \times \sum \beta^2 \]"
+              data-insight="Stabilise le modèle sans supprimer les variables.">
+              Ridge
+            </button>
+          
+            <button class="model-tab"
+              data-title="Elastic Net"
+              data-desc="Combinaison de LASSO et Ridge."
+              data-formula="\[ \alpha \times LASSO + (1-\alpha) \times Ridge \]"
+              data-insight="Très performant quand les variables sont nombreuses et corrélées.">
+              Elastic Net
+            </button>
+          
+            <button class="model-tab"
+              data-title="Graphical LASSO"
+              data-desc="Modèle permettant d’analyser les relations entre variables."
+              data-formula="\[ Réseau\ de\ dépendance \]"
+              data-insight="Utile pour comprendre la structure des données, moins pour prédire.">
+              GLASSO
+            </button>
+          
+          </div>
+            
+            <!-- zone d'affichage -->
+            <div class="model-display">
+              <h4 id="modelTitle">Naive Bayes</h4>
+            
+              <p id="modelDesc">
+                Modèle probabiliste simple basé sur l’indépendance des variables.
+              </p>
+            
+              <div class="formula" id="modelFormula">
+                \[ P(C \mid X) \propto P(X \mid C)P(C) \]
+              </div>
+            
+              <p class="model-insight" id="modelInsight">
+                Rapide et efficace mais repose sur une hypothèse forte d’indépendance.
+              </p>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+    
+    <section id="comparateur" class="section container reveal">
+      <div class="section-title">
+        <div>
+          <div class="caps">03 / Comparateur interactif</div>
+          <h2>Comparer les modèles autrement</h2>
+        </div>
+        <p>
+          Cette section permet de comparer les modèles selon trois critères : performance,
+          stabilité et interprétabilité.
+        </p>
+      </div>
+    
+      <div class="compare-layout">
+        <aside class="compare-panel">
+          <h3>Choisir un modèle</h3>
+    
+          <div class="compare-buttons">
+            <button class="active" data-astro-model="lasso">LASSO</button>
+            <button data-astro-model="elastic">Elastic Net</button>
+            <button data-astro-model="bayes">Naive Bayes</button>
+            <button data-astro-model="ridge">Ridge</button>
+          </div>
+    
+          <div class="compare-text">
+            <div class="caps">Lecture</div>
+            <h4 id="astroModelTitle">LASSO</h4>
+            <p id="astroModelText">
+              Le LASSO obtient le meilleur équilibre entre performance et interprétabilité.
+            </p>
+          </div>
+        </aside>
+    
+        <div class="radar-card">
+          <svg id="radarChart" viewBox="0 0 420 420" aria-label="Radar de comparaison des modèles"></svg>
+    
+          <div class="radar-legend">
+            <span>Performance</span>
+            <span>Stabilité</span>
+            <span>Interprétabilité</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="lecture" class="section container reveal">
+      <div class="section-title">
+        <div>
+          <div class="caps">03 / Lecture des résultats</div>
+          <h2>Ce que l’analyse met en évidence</h2>
+        </div>
+        <p>
+          Les meilleurs modèles combinent performance, stabilité et capacité d’interprétation.
+        </p>
+      </div>
+
+      <div class="mag-grid">
+        <div class="text-block">
+          <p>
+            Les méthodes pénalisées, en particulier LASSO et Elastic Net, obtiennent les meilleurs résultats. Elles
+            offrent un bon compromis entre performance prédictive et interprétabilité, en réduisant l’effet des
+            variables peu informatives et en sélectionnant les plus pertinentes.
+          </p>
+
+          <p>
+            Le redshift ressort comme une variable majeure pour distinguer les quasars des étoiles, tandis que plusieurs
+            variables photométriques confirment leur importance dans la caractérisation physique des objets célestes.
+          </p>
+        </div>
+
+        <div class="text-block">
+          <p>
+            L’analyse de la variabilité des accuracies montre que les modèles LASSO et Elastic Net ne sont pas seulement
+            performants, mais également robustes. Leur dispersion plus faible sur les répétitions traduit une bonne
+            stabilité face aux variations de l’échantillonnage.
+          </p>
+
+          <p>
+            À l’inverse, le modèle basé sur GLASSO semble moins adapté à la structure de ces données, ce qui souligne
+            l’importance de choisir une méthode cohérente avec la nature du jeu de données.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="resultats" class="section container reveal">
+      <div class="section-title">
+        <div>
+          <div class="caps">04 / Résultats</div>
+          <h2>Comparaison des performances</h2>
+        </div>
+        <p>
+          Les résultats montrent une supériorité des méthodes pénalisées, notamment LASSO et Elastic Net.
+        </p>
+      </div>
+
+      <div class="result-grid">
+        <article class="result-card best">
+          <strong>LASSO</strong>
+          <span>94,2 %</span>
+          <div class="bar"><div data-width="94.2%"></div></div>
+          <p>Meilleur équilibre entre performance et interprétabilité.</p>
+        </article>
+
+        <article class="result-card">
+          <strong>Elastic Net</strong>
+          <span>93,7 %</span>
+          <div class="bar"><div data-width="93.7%"></div></div>
+          <p>Très robuste, avec une bonne stabilité sur les répétitions.</p>
+        </article>
+
+        <article class="result-card">
+          <strong>Naive Bayes</strong>
+          <span>90,8 %</span>
+          <div class="bar"><div data-width="90.8%"></div></div>
+          <p>Modèle simple servant de base de comparaison.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="limites" class="section container reveal">
+      <div class="section-title">
+        <div>
+          <div class="caps">05 / Limites & améliorations</div>
+          <h2>Prendre du recul sur l’analyse</h2>
+        </div>
+        <p>
+          Une bonne analyse ne se limite pas aux résultats : elle doit aussi identifier ses limites et ses pistes d’amélioration.
+        </p>
+      </div>
+
+      <div class="limits-grid">
+        <article class="limit-card">
+          <h3>Choix des modèles</h3>
+          <p>
+            Des modèles non testés, comme Random Forest ou Gradient Boosting, pourraient être comparés pour enrichir l’analyse.
+          </p>
+        </article>
+
+        <article class="limit-card">
+          <h3>Interprétation</h3>
+          <p>
+            Certaines méthodes plus performantes peuvent être moins lisibles. Il faut garder un équilibre entre précision et explicabilité.
+          </p>
+        </article>
+
+        <article class="limit-card">
+          <h3>Stabilité</h3>
+          <p>
+            La validation répétée améliore la robustesse, mais les résultats pourraient être complétés par une validation croisée.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section id="bilan" class="learning-panel reveal">
+      <div class="container">
+        <div class="learning-inner">
+          <h2>Bilan du projet</h2>
+
+          <div class="learning-grid">
+            <div>
+              <p>
+                Ce projet m’a permis de mobiliser des compétences en exploration de données, comparaison de modèles,
+                interprétation statistique et sélection de variables sur un jeu de données réel et volumineux.
+              </p>
+
+              <p>
+                Il m’a également permis de mieux comprendre l’intérêt des méthodes pénalisées pour améliorer à la fois
+                la performance et la lisibilité d’un modèle, notamment dans un contexte de classification multiclasse.
+              </p>
+            </div>
+
+            <div>
+              <div class="caps" style="color: rgba(237,228,217,0.65); margin-bottom: 18px;">
+                Compétences mobilisées
+              </div>
+
+              <ul>
+                <li>Analyse exploratoire de données structurées</li>
+                <li>Classification supervisée multiclasse</li>
+                <li>Comparaison rigoureuse de modèles</li>
+                <li>Sélection et interprétation de variables</li>
+                <li>Communication claire de résultats statistiques</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="project-footer">
+    <div class="container">
+  
+      <div class="footer-top">
+        <div>
+          <div class="caps">Continuer l’exploration</div>
+          <h2>Navigation projets</h2>
+        </div>
+  
+        <a href="index.html#competences" class="footer-link">
+          Tous les projets
+        </a>
+      </div>
+  
+      <div class="footer-nav">
+  
+        <a href="paymatch.html" class="footer-card nav-prev">
+          <span>Projet précédent</span>
+          <h3>Paymatch</h3>
+        </a>
+  
+        <a href="index.html#competences" class="footer-card nav-all">
+          <span>Portfolio</span>
+          <h3>Retour aux compétences & réalisations</h3>
+        </a>
+  
+        <a href="reconnaissance-langue.html" class="footer-card nav-next">
+          <span>Projet suivant</span>
+          <h3>Reconnaissance automatique de langue</h3>
+        </a>
+  
+      </div>
+  
+      <div class="footer-bottom">
+        Projet détaillé · Portfolio d’Ilona Saunier · Sciences des Données
+      </div>
+  
+    </div>
+  </footer>
+
+  <script>
+    const progressBar = document.getElementById("progressBar");
+
+    function updateProgress() {
+      const scrollTop = window.scrollY;
+      const pageHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = pageHeight > 0 ? (scrollTop / pageHeight) * 100 : 0;
+      progressBar.style.width = progress + "%";
+    }
+
+    window.addEventListener("scroll", updateProgress, { passive: true });
+    updateProgress();
+
+    const reveals = document.querySelectorAll(".reveal");
+
+    const revealObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    reveals.forEach(element => revealObserver.observe(element));
+
+    const counters = document.querySelectorAll("[data-counter]");
+
+    const counterObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+
+        const el = entry.target;
+        const target = Number(el.dataset.counter);
+        const originalText = el.textContent;
+        const suffix = originalText.replace(/[0-9]/g, "");
+        const duration = 900;
+        const start = performance.now();
+
+        function animate(now) {
+          const progress = Math.min((now - start) / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          el.textContent = Math.round(target * eased) + suffix;
+
+          if (progress < 1) requestAnimationFrame(animate);
+        }
+
+        requestAnimationFrame(animate);
+        counterObserver.unobserve(el);
+      });
+    }, { threshold: 0.7 });
+
+    counters.forEach(counter => counterObserver.observe(counter));
+
+    const resultSection = document.getElementById("resultats");
+    const bars = document.querySelectorAll(".bar div");
+
+    const barObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+
+        bars.forEach(bar => {
+          bar.style.width = bar.dataset.width;
+        });
+
+        barObserver.unobserve(entry.target);
+      });
+    }, { threshold: 0.35 });
+
+    if (resultSection) barObserver.observe(resultSection);
+
+
+    const tabs = document.querySelectorAll(".model-tab");
+
+    const title = document.getElementById("modelTitle");
+    const desc = document.getElementById("modelDesc");
+    const formula = document.getElementById("modelFormula");
+    const insight = document.getElementById("modelInsight");
+    
+    tabs.forEach(tab => {
+      tab.addEventListener("click", () => {
+    
+        tabs.forEach(t => t.classList.remove("active"));
+        tab.classList.add("active");
+    
+        // animation sortie
+        [title, desc, formula, insight].forEach(el => {
+          el.style.opacity = 0;
+          el.style.transform = "translateY(6px)";
+        });
+    
+        setTimeout(() => {
+    
+          title.textContent = tab.dataset.title;
+          desc.textContent = tab.dataset.desc;
+          formula.innerHTML = tab.dataset.formula;
+          insight.textContent = tab.dataset.insight;
+    
+          // 🔥 fix MathJax
+          if (window.MathJax) {
+            MathJax.typesetClear([formula]);
+            MathJax.typesetPromise([formula]);
+          }
+    
+          // animation entrée
+          [title, desc, formula, insight].forEach(el => {
+            el.style.opacity = 1;
+            el.style.transform = "translateY(0)";
+          });
+    
+        }, 180);
+      });
+    });
+    
+    const astroModels = {
+      lasso: {
+        title: "LASSO",
+        text: "Le LASSO obtient le meilleur équilibre : très bonne performance, bonne stabilité et forte interprétabilité grâce à la sélection de variables.",
+        scores: [94.2, 91, 95]
+      },
+      elastic: {
+        title: "Elastic Net",
+        text: "Elastic Net est très proche du LASSO. Il est robuste lorsque les variables sont corrélées, tout en gardant une bonne lisibilité.",
+        scores: [93.7, 94, 86]
+      },
+      bayes: {
+        title: "Naive Bayes",
+        text: "Naive Bayes sert de modèle simple de comparaison. Il est rapide et interprétable, mais moins performant et moins stable.",
+        scores: [90.8, 82, 78]
+      },
+      ridge: {
+        title: "Ridge",
+        text: "Ridge stabilise les coefficients mais ne sélectionne pas vraiment les variables. Il est donc moins lisible que LASSO.",
+        scores: [92.6, 90, 72]
+      }
+    };
+    
+    const radarSvg = document.getElementById("radarChart");
+    const astroTitle = document.getElementById("astroModelTitle");
+    const astroText = document.getElementById("astroModelText");
+    const astroButtons = document.querySelectorAll("[data-astro-model]");
+    
+    function polarToPoint(cx, cy, radius, angle) {
+      const rad = (angle - 90) * Math.PI / 180;
+      return {
+        x: cx + radius * Math.cos(rad),
+        y: cy + radius * Math.sin(rad)
+      };
+    }
+    
+    function drawRadar(modelKey) {
+      if (!radarSvg) return;
+    
+      const model = astroModels[modelKey];
+      const labels = ["Performance", "Stabilité", "Interprétabilité"];
+      const cx = 210;
+      const cy = 210;
+      const maxRadius = 130;
+      const angles = [0, 120, 240];
+    
+      radarSvg.innerHTML = "";
+    
+      [0.25, 0.5, 0.75, 1].forEach(level => {
+        const points = angles.map(angle => {
+          const p = polarToPoint(cx, cy, maxRadius * level, angle);
+          return `${p.x},${p.y}`;
+        }).join(" ");
+    
+        const polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+        polygon.setAttribute("points", points);
+        polygon.setAttribute("class", "radar-grid");
+        radarSvg.appendChild(polygon);
+      });
+    
+      angles.forEach((angle, index) => {
+        const end = polarToPoint(cx, cy, maxRadius, angle);
+    
+        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        line.setAttribute("x1", cx);
+        line.setAttribute("y1", cy);
+        line.setAttribute("x2", end.x);
+        line.setAttribute("y2", end.y);
+        line.setAttribute("class", "radar-axis");
+        radarSvg.appendChild(line);
+    
+        const labelPoint = polarToPoint(cx, cy, maxRadius + 42, angle);
+        const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        label.setAttribute("x", labelPoint.x);
+        label.setAttribute("y", labelPoint.y);
+        label.setAttribute("text-anchor", "middle");
+        label.setAttribute("dominant-baseline", "middle");
+        label.setAttribute("class", "radar-label");
+        label.textContent = labels[index];
+        radarSvg.appendChild(label);
+      });
+    
+      const dataPoints = model.scores.map((score, index) => {
+        const p = polarToPoint(cx, cy, maxRadius * (score / 100), angles[index]);
+        return `${p.x},${p.y}`;
+      }).join(" ");
+    
+      const shape = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+      shape.setAttribute("points", dataPoints);
+      shape.setAttribute("class", "radar-shape");
+      radarSvg.appendChild(shape);
+    
+      model.scores.forEach((score, index) => {
+        const p = polarToPoint(cx, cy, maxRadius * (score / 100), angles[index]);
+    
+        const dot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        dot.setAttribute("cx", p.x);
+        dot.setAttribute("cy", p.y);
+        dot.setAttribute("r", 5);
+        dot.setAttribute("class", "radar-dot");
+        radarSvg.appendChild(dot);
+    
+        const value = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        value.setAttribute("x", p.x);
+        value.setAttribute("y", p.y - 14);
+        value.setAttribute("text-anchor", "middle");
+        value.setAttribute("class", "radar-score");
+        value.textContent = Math.round(score);
+        radarSvg.appendChild(value);
+      });
+    }
+    
+    astroButtons.forEach(button => {
+      button.addEventListener("click", () => {
+        const key = button.dataset.astroModel;
+        const model = astroModels[key];
+    
+        astroButtons.forEach(btn => btn.classList.remove("active"));
+        button.classList.add("active");
+    
+        astroTitle.style.opacity = 0;
+        astroText.style.opacity = 0;
+    
+        setTimeout(() => {
+          astroTitle.textContent = model.title;
+          astroText.textContent = model.text;
+          drawRadar(key);
+    
+          astroTitle.style.opacity = 1;
+          astroText.style.opacity = 1;
+        }, 160);
+      });
+    });
+
+    drawRadar("lasso");
+  </script>
+</body>
+</html>

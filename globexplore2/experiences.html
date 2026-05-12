@@ -1,0 +1,1471 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>GlobExplore — Expériences & Excursions</title>
+
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@600;700;800&display=swap");
+
+    :root{
+      --bg:#f8f5ef;
+      --paper:#fffdf9;
+      --deep:#182236;
+      --muted:#697386;
+      --aqua:#7bd6d0;
+      --brand:#9bb7ff;
+      --sand:#f1d6a8;
+      --shadow:0 40px 120px rgba(24,34,54,.22);
+      --ease:cubic-bezier(.16,1,.3,1);
+    }
+
+    *{margin:0;padding:0;box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      font-family:Inter,sans-serif;
+      color:var(--deep);
+      background:
+        radial-gradient(circle at 8% 0%,rgba(123,214,208,.18),transparent 30rem),
+        radial-gradient(circle at 92% 0%,rgba(155,183,255,.2),transparent 30rem),
+        linear-gradient(180deg,#f8f5ef,#fffdf9);
+      overflow-x:hidden;
+    }
+
+    a{text-decoration:none;color:inherit}
+    img{display:block;width:100%}
+    button,input,textarea{font:inherit}
+
+    .container{
+      width:min(1180px,calc(100% - 34px));
+      margin:auto;
+    }
+
+    .progress{
+      position:fixed;
+      top:0;
+      left:0;
+      height:3px;
+      width:0;
+      z-index:10000;
+      background:linear-gradient(90deg,var(--brand),var(--aqua),var(--sand));
+    }
+
+    .nav{
+      position:fixed;
+      top:16px;
+      left:50%;
+      transform:translateX(-50%);
+      z-index:9999;
+      width:min(1180px,calc(100% - 24px));
+      background:rgba(255,255,255,.18);
+      border:1px solid rgba(255,255,255,.34);
+      backdrop-filter:blur(24px);
+      border-radius:999px;
+      box-shadow:0 18px 60px rgba(0,0,0,.18);
+    }
+
+    .nav.scrolled{
+      background:rgba(255,255,255,.86);
+      border-color:rgba(24,34,54,.1);
+    }
+
+    .nav-inner{
+      height:66px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      padding:0 14px 0 24px;
+    }
+
+    .brand{
+      font-family:"Playfair Display",serif;
+      font-size:1.5rem;
+      font-weight:800;
+      color:white;
+      white-space:nowrap;
+    }
+
+    .nav.scrolled .brand{color:var(--deep)}
+
+    .nav-links{
+      display:flex;
+      gap:5px;
+      align-items:center;
+    }
+
+    .nav-links a{
+      padding:10px 12px;
+      border-radius:999px;
+      color:rgba(255,255,255,.86);
+      font-size:.7rem;
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      transition:.25s;
+      white-space:nowrap;
+    }
+
+    .nav.scrolled .nav-links a{
+      color:rgba(24,34,54,.72);
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active,
+    .nav.scrolled .nav-links a:hover,
+    .nav.scrolled .nav-links a.active{
+      background:var(--deep);
+      color:white;
+    }
+
+    .menu-btn{
+      display:none;
+      border:0;
+      border-radius:999px;
+      background:white;
+      color:var(--deep);
+      padding:10px 14px;
+      font-weight:900;
+      cursor:pointer;
+    }
+
+    .hero{
+      position:relative;
+      min-height:92vh;
+      display:flex;
+      align-items:center;
+      overflow:hidden;
+      padding:145px 0 90px;
+    }
+
+    .hero-media{
+      position:absolute;
+      inset:0;
+      height:100%;
+      object-fit:cover;
+      z-index:-3;
+    }
+
+    .hero::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      z-index:-2;
+      background:
+        linear-gradient(90deg,rgba(10,18,34,.84),rgba(10,18,34,.36)),
+        linear-gradient(180deg,rgba(10,18,34,.12),rgba(10,18,34,.76));
+    }
+
+    .hero-grid{
+      display:grid;
+      grid-template-columns:1fr 380px;
+      gap:42px;
+      align-items:end;
+    }
+
+    .eyebrow{
+      color:var(--aqua);
+      text-transform:uppercase;
+      letter-spacing:.16em;
+      font-size:.72rem;
+      font-weight:900;
+      margin-bottom:18px;
+    }
+
+    h1,h2,h3{
+      font-family:"Playfair Display",serif;
+      line-height:1;
+      letter-spacing:-.05em;
+    }
+
+    h1{
+      color:white;
+      font-size:clamp(3rem,7vw,6.6rem);
+      max-width:950px;
+    }
+
+    h2{
+      font-size:clamp(2.35rem,5vw,4.4rem);
+      margin-bottom:18px;
+    }
+
+    .hero p{
+      margin-top:24px;
+      max-width:760px;
+      color:rgba(255,255,255,.84);
+      line-height:1.8;
+      font-size:1.08rem;
+    }
+
+    .hero-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-top:28px;
+    }
+
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      border:0;
+      border-radius:999px;
+      padding:14px 22px;
+      background:white;
+      color:var(--deep);
+      font-weight:900;
+      cursor:pointer;
+      transition:.25s var(--ease);
+      box-shadow:0 16px 44px rgba(24,34,54,.12);
+    }
+
+    .btn:hover{transform:translateY(-2px)}
+    .btn.dark{background:var(--deep);color:white}
+    .btn.full{width:100%}
+
+    .hero-panel{
+      padding:26px;
+      border-radius:34px;
+      background:rgba(255,255,255,.16);
+      border:1px solid rgba(255,255,255,.25);
+      backdrop-filter:blur(24px);
+      color:white;
+      box-shadow:0 24px 90px rgba(0,0,0,.22);
+    }
+
+    .hero-panel h3{
+      color:white;
+      font-size:1.9rem;
+      margin-bottom:12px;
+    }
+
+    .hero-panel p{
+      margin:0;
+      color:rgba(255,255,255,.76);
+    }
+
+    .hero-panel-list{
+      display:grid;
+      gap:10px;
+      margin-top:20px;
+    }
+
+    .hero-panel-list button{
+      border:0;
+      text-align:left;
+      padding:12px 14px;
+      border-radius:18px;
+      background:rgba(255,255,255,.13);
+      color:white;
+      font-weight:850;
+      cursor:pointer;
+      transition:.25s;
+    }
+
+    .hero-panel-list button:hover{
+      background:rgba(255,255,255,.25);
+      transform:translateX(5px);
+    }
+
+    .section{padding:105px 0}
+    .section.alt{
+      background:
+        radial-gradient(circle at 10% 0%,rgba(241,214,168,.28),transparent 28rem),
+        linear-gradient(180deg,#fffdf9,#f8f5ef);
+    }
+
+    .section-head{
+      max-width:820px;
+      margin-bottom:42px;
+    }
+
+    .section p{
+      color:var(--muted);
+      line-height:1.8;
+    }
+
+    .tool{
+      display:grid;
+      grid-template-columns:.9fr 1.1fr;
+      gap:24px;
+      align-items:stretch;
+    }
+
+    .tool-card{
+      padding:34px;
+      border-radius:38px;
+      background:
+        radial-gradient(circle at 88% 0%,rgba(123,214,208,.28),transparent 20rem),
+        linear-gradient(135deg,#182236,#405384);
+      color:white;
+      box-shadow:var(--shadow);
+    }
+
+    .tool-card p{color:rgba(255,255,255,.76)}
+
+    .tool-options{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:12px;
+      margin-top:24px;
+    }
+
+    .tool-options button{
+      border:1px solid rgba(255,255,255,.18);
+      border-radius:22px;
+      padding:16px;
+      background:rgba(255,255,255,.12);
+      color:white;
+      font-weight:900;
+      cursor:pointer;
+      text-align:left;
+      transition:.25s;
+    }
+
+    .tool-options button:hover,
+    .tool-options button.active{
+      background:white;
+      color:var(--deep);
+      transform:translateY(-3px);
+    }
+
+    .tool-result{
+      border-radius:38px;
+      overflow:hidden;
+      background:white;
+      box-shadow:0 24px 80px rgba(24,34,54,.12);
+    }
+
+    .tool-result img{
+      height:300px;
+      object-fit:cover;
+    }
+
+    .tool-result-body{
+      padding:28px;
+    }
+
+    .tool-result h3{
+      font-size:2.2rem;
+      margin:10px 0;
+    }
+
+    .result-meta{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:18px;
+    }
+
+    .result-meta span{
+      padding:8px 11px;
+      border-radius:999px;
+      background:#eef3ff;
+      font-size:.72rem;
+      font-weight:900;
+    }
+
+    .filterbar{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin:-16px 0 34px;
+    }
+
+    .filterbar button{
+      border:1px solid rgba(24,34,54,.12);
+      border-radius:999px;
+      background:white;
+      color:var(--deep);
+      padding:12px 16px;
+      font-weight:900;
+      cursor:pointer;
+      transition:.25s var(--ease);
+    }
+
+    .filterbar button:hover,
+    .filterbar button.active{
+      background:var(--deep);
+      color:white;
+      transform:translateY(-2px);
+    }
+
+    .experience-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:22px;
+    }
+
+    .experience-card{
+      overflow:hidden;
+      border-radius:34px;
+      background:white;
+      box-shadow:0 24px 80px rgba(24,34,54,.12);
+      transition:.35s var(--ease);
+    }
+
+    .experience-card.hide{display:none}
+
+    .experience-card:hover{
+      transform:translateY(-7px);
+    }
+
+    .experience-media{
+      position:relative;
+      height:260px;
+      overflow:hidden;
+    }
+
+    .experience-media img{
+      height:100%;
+      object-fit:cover;
+      transition:.7s var(--ease);
+    }
+
+    .experience-card:hover img{
+      transform:scale(1.08);
+    }
+
+    .badge{
+      position:absolute;
+      top:18px;
+      left:18px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.92);
+      color:var(--deep);
+      font-size:.68rem;
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+    }
+
+    .experience-body{
+      padding:24px;
+    }
+
+    .experience-body h3{
+      font-size:2rem;
+      margin-bottom:10px;
+    }
+
+    .meta{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:18px;
+    }
+
+    .meta span{
+      padding:8px 11px;
+      border-radius:999px;
+      background:#f3f6ff;
+      font-size:.72rem;
+      font-weight:900;
+    }
+
+    .highlights{
+      display:grid;
+      gap:8px;
+      margin-top:18px;
+      color:var(--muted);
+      font-weight:700;
+      font-size:.92rem;
+    }
+
+    .journey{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:22px;
+    }
+
+    .journey-card{
+      padding:30px;
+      border-radius:34px;
+      background:white;
+      box-shadow:0 24px 80px rgba(24,34,54,.10);
+    }
+
+    .journey-card span{
+      font-size:2rem;
+    }
+
+    .journey-card h3{
+      font-size:1.8rem;
+      margin:18px 0 10px;
+    }
+
+    .cta{
+      overflow:hidden;
+      border-radius:42px;
+      padding:70px;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(123,214,208,.22), transparent 28rem),
+        linear-gradient(135deg,#111827,#182236 58%,#405384);
+      color:white;
+      box-shadow:var(--shadow);
+    }
+
+    .cta h2{color:white;max-width:760px}
+    .cta p{color:rgba(255,255,255,.75);max-width:640px}
+
+    .booking-modal{
+      position:fixed;
+      inset:0;
+      z-index:10000;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+      background:rgba(8,14,26,.64);
+      backdrop-filter:blur(18px);
+    }
+
+    .booking-modal.open{display:flex}
+
+    .booking-box{
+      position:relative;
+      width:min(540px,100%);
+      padding:34px;
+      border-radius:34px;
+      background:white;
+      box-shadow:0 30px 100px rgba(0,0,0,.28);
+    }
+
+    .booking-box h2{
+      font-size:2.35rem;
+      margin-bottom:12px;
+    }
+
+    .booking-box p{
+      color:var(--muted);
+      line-height:1.7;
+    }
+
+    .booking-close{
+      position:absolute;
+      top:16px;
+      right:16px;
+      width:38px;
+      height:38px;
+      border:0;
+      border-radius:999px;
+      background:#eef3ff;
+      color:var(--deep);
+      font-size:1.4rem;
+      font-weight:900;
+      cursor:pointer;
+    }
+
+    #bookingForm{
+      display:grid;
+      gap:12px;
+      margin-top:24px;
+    }
+
+    #bookingForm input,
+    #bookingForm textarea{
+      width:100%;
+      border:1px solid rgba(24,34,54,.12);
+      border-radius:18px;
+      padding:15px 16px;
+      outline:none;
+      resize:none;
+    }
+
+    #bookingForm input:focus,
+    #bookingForm textarea:focus{
+      border-color:var(--brand);
+      box-shadow:0 0 0 4px rgba(155,183,255,.22);
+    }
+
+    .booking-success{
+      display:none;
+      margin-top:18px;
+      padding:14px;
+      border-radius:18px;
+      background:#eefaf8;
+      color:#17645f !important;
+      font-weight:800;
+    }
+
+    .booking-success.show{display:block}
+
+    .footer{
+      background:#0f172a;
+      color:white;
+      padding:70px 0 34px;
+    }
+
+    .footer-grid{
+      display:grid;
+      grid-template-columns:1.3fr repeat(3,1fr);
+      gap:34px;
+      margin-bottom:40px;
+    }
+
+    .footer h3,
+    .footer h4{
+      color:white;
+      margin-bottom:14px;
+    }
+
+    .footer p,
+    .footer a{
+      color:rgba(255,255,255,.68);
+      line-height:1.9;
+    }
+
+    .footer a{display:block}
+
+    .footer-bottom{
+      border-top:1px solid rgba(255,255,255,.12);
+      padding-top:24px;
+      text-align:center;
+      color:rgba(255,255,255,.55);
+    }
+
+    @media(max-width:1100px){
+      .hero-grid,
+      .tool{
+        grid-template-columns:1fr;
+      }
+
+      .hero-panel{
+        max-width:580px;
+      }
+
+      .experience-grid{
+        grid-template-columns:repeat(2,1fr);
+      }
+
+      .journey{
+        grid-template-columns:1fr;
+      }
+    }
+
+    @media(max-width:980px){
+      .nav-links{
+        position:absolute;
+        top:calc(100% + 10px);
+        right:0;
+        width:min(330px,calc(100vw - 28px));
+        display:none;
+        flex-direction:column;
+        align-items:stretch;
+        padding:12px;
+        border-radius:28px;
+        background:rgba(18,34,54,.94);
+        border:1px solid rgba(255,255,255,.18);
+      }
+
+      .nav-links.show{
+        display:flex;
+      }
+
+      .nav-links a,
+      .nav.scrolled .nav-links a{
+        color:white;
+      }
+
+      .menu-btn{
+        display:inline-flex;
+      }
+
+      .footer-grid{
+        grid-template-columns:1fr 1fr;
+      }
+    }
+
+    @media(max-width:720px){
+      .experience-grid,
+      .footer-grid{
+        grid-template-columns:1fr;
+      }
+
+      .filterbar{
+        overflow-x:auto;
+        flex-wrap:nowrap;
+        padding-bottom:8px;
+      }
+
+      .filterbar button{
+        white-space:nowrap;
+      }
+
+      .tool-options{
+        grid-template-columns:1fr;
+      }
+    }
+
+    @media(max-width:620px){
+      .container{width:calc(100% - 24px)}
+      .nav{top:10px}
+      .nav-inner{height:58px;padding:0 12px 0 18px}
+      .brand{font-size:1.28rem}
+
+      h1{font-size:clamp(2.7rem,15vw,4.5rem)}
+      h2{font-size:clamp(2.1rem,11vw,3.4rem)}
+
+      .hero{
+        min-height:auto;
+        padding:118px 0 74px;
+      }
+
+      .hero-panel{display:none}
+
+      .hero-actions .btn{
+        width:100%;
+      }
+
+      .section{
+        padding:78px 0;
+      }
+
+      .tool-card,
+      .tool-result,
+      .experience-card,
+      .journey-card{
+        border-radius:28px;
+      }
+
+      .tool-card,
+      .experience-body,
+      .journey-card{
+        padding:22px;
+      }
+
+      .tool-result img,
+      .experience-media{
+        height:220px;
+      }
+
+      .cta{
+        padding:38px 24px;
+        border-radius:30px;
+      }
+    }
+    
+    .experience-body .btn,
+    .tool-result-body .btn{
+      margin-top:28px;
+    }
+    
+    @media (max-width: 1366px) and (min-width: 981px) {
+      .container {
+        width: min(1120px, calc(100% - 34px));
+      }
+
+      .hero {
+        min-height: auto;
+        padding: 115px 0 64px;
+      }
+
+      .hero-layout {
+        grid-template-columns: minmax(0, 1fr) 340px;
+        gap: 26px;
+        align-items: start;
+      }
+
+      h1 {
+        font-size: clamp(3rem, 6vw, 5.8rem);
+      }
+
+      .hero-copy p:not(.eyebrow) {
+        font-size: 1rem;
+        margin-top: 14px;
+      }
+
+      .smart-search {
+        margin-top: 22px;
+      }
+
+      .actions {
+        margin-top: 14px;
+      }
+
+      .dash-card {
+        padding: 20px;
+      }
+
+      .dash-card h3 {
+        font-size: 1.55rem;
+      }
+
+      .dash-card p {
+        margin: 8px 0 14px;
+        font-size: .92rem;
+      }
+
+      .mini-stat {
+        padding: 13px;
+      }
+
+      .mini-stat strong {
+        font-size: 1.35rem;
+      }
+
+      .section {
+        padding: 86px 0;
+      }
+    }
+    
+    /* RESET du correctif précédent */
+    .hero {
+      min-height: auto !important;
+      height: auto !important;
+    }
+    
+    /* Hero qui s’adapte vraiment à une fenêtre intégrée / portfolio */
+    /* FIX PROPRE PORTFOLIO + GRAND ÉCRAN */
+    .hero {
+      min-height: 100svh !important;
+      height: auto !important;
+      padding: 120px 0 80px !important;
+      align-items: center !important;
+    }
+    
+    .hero-layout {
+      align-items: center !important;
+    }
+    
+    /* Grand écran fixe : on agrandit un peu, mais sans forcer 100vh */
+    @media (min-width: 1400px) {
+      .hero {
+        padding: 135px 0 80px !important;
+      }
+    
+      .container {
+        width: min(1180px, calc(100% - 60px)) !important;
+      }
+    
+      .nav {
+        width: min(1180px, calc(100% - 60px)) !important;
+      }
+    
+      .hero-layout {
+        grid-template-columns: minmax(0, 1.08fr) 380px !important;
+        gap: 38px !important;
+      }
+    
+      h1 {
+        font-size: clamp(4rem, 6.4vw, 7rem) !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="progress"></div>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="index.html">GlobExplore</a>
+
+      <button class="menu-btn" aria-label="menu">Menu</button>
+
+      <div class="nav-links">
+        <a href="index.html">Accueil</a>
+        <a href="destinations.html">Destinations</a>
+        <a href="experiences.html" class="active">Expériences</a>
+        <a href="planificateur.html">Planner</a>
+        <a href="contact.html">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <img
+      class="hero-media"
+      src="https://images.unsplash.com/photo-1551632811-561732d1e306?auto=format&fit=crop&w=1800&q=90"
+      alt="Expériences et excursions"
+    >
+
+    <div class="container hero-grid">
+      <div>
+        <p class="eyebrow">Expériences & excursions</p>
+        <h1>Choisissez ce que vous voulez vivre.</h1>
+        <p>
+          Sortie mer, food tour, safari, spa, trek, train panoramique ou soirée rooftop :
+          trouvez facilement l’expérience qui rend votre voyage mémorable.
+        </p>
+
+        <div class="hero-actions">
+          <a class="btn" href="#outil">Trouver mon expérience</a>
+          <a class="btn dark" href="#catalogue">Voir le catalogue</a>
+        </div>
+      </div>
+
+      <aside class="hero-panel">
+        <h3>Envie rapide</h3>
+        <p>Cliquez sur une envie, on filtre directement les expériences.</p>
+
+        <div class="hero-panel-list">
+          <button data-jump-filter="sea">🌊 Je veux la mer</button>
+          <button data-jump-filter="food">🍜 Je veux manger local</button>
+          <button data-jump-filter="adventure">🎒 Je veux de l’aventure</button>
+          <button data-jump-filter="wellness">🧘 Je veux me détendre</button>
+        </div>
+      </aside>
+    </div>
+  </header>
+
+  <section class="section" id="outil">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Outil intelligent</p>
+        <h2>Quelle expérience est faite pour vous ?</h2>
+        <p>
+          Un outil simple et visuel pour aider l’utilisateur à choisir rapidement sans comparer pendant 20 minutes.
+        </p>
+      </div>
+
+      <div class="tool">
+        <article class="tool-card">
+          <p class="eyebrow">Mood scanner</p>
+          <h2>Choisissez votre vibe.</h2>
+          <p>
+            GlobExplore vous propose instantanément une expérience adaptée à votre envie du moment.
+          </p>
+
+          <div class="tool-options">
+            <button class="active" data-tool="sea">🌊 Mer & soleil</button>
+            <button data-tool="food">🍜 Food locale</button>
+            <button data-tool="adventure">🎒 Aventure</button>
+            <button data-tool="wellness">🧘 Bien-être</button>
+          </div>
+        </article>
+
+        <article class="tool-result">
+          <img id="toolImg" src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=85" alt="Expérience recommandée">
+
+          <div class="tool-result-body">
+            <p class="eyebrow" id="toolMood">Mer premium</p>
+            <h3 id="toolTitle">Criques secrètes en bateau</h3>
+            <p id="toolText">
+              Bateau privé, snorkeling, criques calmes, déjeuner léger et coucher de soleil.
+            </p>
+
+            <div class="result-meta">
+              <span id="toolDuration">Demi-journée</span>
+              <span id="toolPrice">À partir de 180 €</span>
+              <span id="toolLevel">Privé / chic</span>
+            </div>
+
+            <button class="btn dark reserve-btn" data-trip="Criques secrètes">
+              Réserver cette expérience
+            </button>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt" id="catalogue">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Catalogue premium</p>
+        <h2>Excursions, activités et expériences à ajouter au voyage.</h2>
+        <p>
+          Tout est pensé pour être simple : durée, prix, niveau, style et réservation rapide.
+        </p>
+      </div>
+
+      <div class="filterbar">
+        <button class="active" data-filter="all">Tout</button>
+        <button data-filter="adventure">Aventure</button>
+        <button data-filter="nature">Nature</button>
+        <button data-filter="food">Food</button>
+        <button data-filter="sea">Mer</button>
+        <button data-filter="wellness">Bien-être</button>
+        <button data-filter="city">Ville</button>
+        <button data-filter="business">Corporate</button>
+      </div>
+
+      <div class="experience-grid">
+
+        <article class="experience-card" data-category="sea premium">
+          <div class="experience-media">
+            <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=85" alt="Criques secrètes">
+            <span class="badge">Mer</span>
+          </div>
+          <div class="experience-body">
+            <h3>Criques secrètes</h3>
+            <p>Bateau, snorkeling, déjeuner léger et criques calmes loin des foules.</p>
+            <div class="meta">
+              <span>À partir de 180 €</span>
+              <span>Demi-journée</span>
+              <span>Privé</span>
+            </div>
+            <div class="highlights">
+              <span>✓ Bateau confortable</span>
+              <span>✓ Spots baignade</span>
+              <span>✓ Option sunset</span>
+            </div>
+            <button class="btn dark reserve-btn" data-trip="Criques secrètes">Réserver</button>
+          </div>
+        </article>
+
+        <article class="experience-card" data-category="food culture city">
+          <div class="experience-media">
+            <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1200&q=85" alt="Food tour signature">
+            <span class="badge">Food</span>
+          </div>
+          <div class="experience-body">
+            <h3>Food tour signature</h3>
+            <p>Marché, street food, table cachée et storytelling culinaire local.</p>
+            <div class="meta">
+              <span>À partir de 75 €</span>
+              <span>3h</span>
+              <span>Local</span>
+            </div>
+            <div class="highlights">
+              <span>✓ Guide local</span>
+              <span>✓ Dégustations incluses</span>
+              <span>✓ Adresses cachées</span>
+            </div>
+            <button class="btn dark reserve-btn" data-trip="Food tour signature">Réserver</button>
+          </div>
+        </article>
+
+        <article class="experience-card" data-category="adventure sea">
+
+          <div class="experience-media">
+            <img
+              src="https://images.unsplash.com/photo-1682687982501-1e58ab814714?auto=format&fit=crop&w=1200&q=85"
+              alt="Plongée immersive"
+            >
+        
+            <span class="badge">
+              Exploration
+            </span>
+          </div>
+        
+          <div class="experience-body">
+        
+            <h3>
+              Plongée immersive
+            </h3>
+        
+            <p>
+              Exploration sous-marine, récifs colorés,
+              sortie bateau privée et expérience premium accompagnée.
+            </p>
+        
+            <div class="meta">
+              <span>À partir de 160 €</span>
+              <span>Demi-journée</span>
+              <span>Premium</span>
+            </div>
+        
+            <div class="highlights">
+              <span>✓ Bateau privé</span>
+              <span>✓ Guide expérimenté</span>
+              <span>✓ Eaux cristallines</span>
+            </div>
+        
+            <button
+              class="btn dark reserve-btn"
+              data-trip="Plongée immersive"
+            >
+              Réserver
+            </button>
+        
+          </div>
+        
+        </article>
+
+        <article class="experience-card" data-category="nature adventure">
+          <div class="experience-media">
+            <img src="https://images.unsplash.com/photo-1551632811-561732d1e306?auto=format&fit=crop&w=1200&q=85" alt="Trek accessible">
+            <span class="badge">Nature</span>
+          </div>
+          <div class="experience-body">
+            <h3>Trek accessible</h3>
+            <p>Parcours guidé, vue panoramique, sécurité et pause pique-nique chic.</p>
+            <div class="meta">
+              <span>À partir de 95 €</span>
+              <span>4-6h</span>
+              <span>Actif</span>
+            </div>
+            <div class="highlights">
+              <span>✓ Guide privé</span>
+              <span>✓ Niveau adaptable</span>
+              <span>✓ Spots photo</span>
+            </div>
+            <button class="btn dark reserve-btn" data-trip="Trek accessible">Réserver</button>
+          </div>
+        </article>
+
+        <article class="experience-card" data-category="wellness premium">
+          <div class="experience-media">
+            <img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=85" alt="Spa reset">
+            <span class="badge">Bien-être</span>
+          </div>
+          <div class="experience-body">
+            <h3>Spa & reset</h3>
+            <p>Hammam, massage, respiration, sunset drink et retour doux.</p>
+            <div class="meta">
+              <span>À partir de 120 €</span>
+              <span>2-3h</span>
+              <span>Slow</span>
+            </div>
+            <div class="highlights">
+              <span>✓ Massage</span>
+              <span>✓ Hammam</span>
+              <span>✓ Pause premium</span>
+            </div>
+            <button class="btn dark reserve-btn" data-trip="Spa & reset">Réserver</button>
+          </div>
+        </article>
+
+        <article class="experience-card" data-category="city culture">
+          <div class="experience-media">
+            <img src="https://images.unsplash.com/photo-1514565131-fce0801e5785?auto=format&fit=crop&w=1200&q=85" alt="Night city tour">
+            <span class="badge">Ville</span>
+          </div>
+          <div class="experience-body">
+            <h3>Night city tour</h3>
+            <p>Rooftops, quartiers créatifs, néons, adresses social et spots photo.</p>
+            <div class="meta">
+              <span>À partir de 85 €</span>
+              <span>Soirée</span>
+              <span>Social</span>
+            </div>
+            <div class="highlights">
+              <span>✓ Rooftops</span>
+              <span>✓ Photo spots</span>
+              <span>✓ Guide urbain</span>
+            </div>
+            <button class="btn dark reserve-btn" data-trip="Night city tour">Réserver</button>
+          </div>
+        </article>
+
+        <article class="experience-card" data-category="nature slow">
+          <div class="experience-media">
+            <img src="https://images.unsplash.com/photo-1474487548417-781cb71495f3?auto=format&fit=crop&w=1200&q=85" alt="Train panoramique">
+            <span class="badge">Slow travel</span>
+          </div>
+          <div class="experience-body">
+            <h3>Train panoramique</h3>
+            <p>Trajet scénique, stops photo, déjeuner local et carnet de route.</p>
+            <div class="meta">
+              <span>À partir de 110 €</span>
+              <span>1 jour</span>
+              <span>Confort</span>
+            </div>
+            <div class="highlights">
+              <span>✓ Paysages</span>
+              <span>✓ Carnet de route</span>
+              <span>✓ Déjeuner local</span>
+            </div>
+            <button class="btn dark reserve-btn" data-trip="Train panoramique">Réserver</button>
+          </div>
+        </article>
+
+        <article class="experience-card" data-category="business city premium">
+          <div class="experience-media">
+            <img src="https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=1200&q=85" alt="Retraite corporate">
+            <span class="badge">Corporate</span>
+          </div>
+          <div class="experience-body">
+            <h3>Retraite corporate</h3>
+            <p>Agenda équipe, workshops, activités privées et hébergement inspirant.</p>
+            <div class="meta">
+              <span>Sur devis</span>
+              <span>1-3 jours</span>
+              <span>Groupe</span>
+            </div>
+            <div class="highlights">
+              <span>✓ Team building</span>
+              <span>✓ Lieu premium</span>
+              <span>✓ Planning complet</span>
+            </div>
+            <button class="btn dark reserve-btn" data-trip="Retraite corporate">Demander</button>
+          </div>
+        </article>
+
+        <article class="experience-card" data-category="culture city">
+          <div class="experience-media">
+            <img src="https://images.unsplash.com/photo-1564399579883-451a5d44ec08?auto=format&fit=crop&w=1200&q=85" alt="Art pass immersif">
+            <span class="badge">Culture</span>
+          </div>
+          <div class="experience-body">
+            <h3>Art pass immersif</h3>
+            <p>Galeries, musées, ateliers créatifs, cafés design et storytelling culturel.</p>
+            <div class="meta">
+              <span>À partir de 65 €</span>
+              <span>Demi-journée</span>
+              <span>Curated</span>
+            </div>
+            <div class="highlights">
+              <span>✓ Galeries</span>
+              <span>✓ Atelier créatif</span>
+              <span>✓ Café design</span>
+            </div>
+            <button class="btn dark reserve-btn" data-trip="Art pass immersif">Réserver</button>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Composer sa journée</p>
+        <h2>Un planning simple, premium et logique.</h2>
+        <p>
+          L’utilisateur comprend vite comment l’expérience s’intègre dans son voyage.
+        </p>
+      </div>
+
+      <div class="journey">
+        <article class="journey-card">
+          <span>☕</span>
+          <h3>Matin doux</h3>
+          <p>Petit-déjeuner local, départ guidé, premiers spots photo et rythme confortable.</p>
+        </article>
+
+        <article class="journey-card">
+          <span>📍</span>
+          <h3>Moment fort</h3>
+          <p>Excursion principale : mer, désert, food tour, trek, spa ou expérience culturelle.</p>
+        </article>
+
+        <article class="journey-card">
+          <span>🌅</span>
+          <h3>Fin mémorable</h3>
+          <p>Sunset, rooftop, dîner signature ou retour calme selon le style choisi.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="container">
+      <div class="cta">
+        <p class="eyebrow">Planner intelligent</p>
+        <h2>Ajoutez ces expériences à votre itinéraire.</h2>
+        <p>
+          Choisissez vos activités préférées, indiquez vos dates et recevez une proposition cohérente avec votre budget, votre rythme et votre style de voyage.
+        </p>
+
+        <a class="btn" href="planificateur.html">Construire mon itinéraire</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="booking-modal" id="bookingModal">
+    <div class="booking-box">
+      <button class="booking-close" id="bookingClose">×</button>
+
+      <p class="eyebrow">Demande de réservation</p>
+      <h2 id="bookingTitle">Réserver cette expérience</h2>
+      <p id="bookingText">Remplissez vos informations, notre équipe vous recontactera.</p>
+
+      <form id="bookingForm">
+        <input type="text" placeholder="Nom complet" required>
+        <input type="email" placeholder="Adresse email" required>
+        <input type="tel" placeholder="Numéro de téléphone" required>
+        <input type="text" placeholder="Dates souhaitées">
+        <textarea rows="4" placeholder="Préférence : ville, budget, nombre de personnes..."></textarea>
+
+        <button class="btn dark full" type="submit">Envoyer ma demande</button>
+      </form>
+
+      <p class="booking-success" id="bookingSuccess">
+        Merci, votre demande a bien été envoyée.
+      </p>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <h3>GlobExplore</h3>
+          <p>
+            Voyages premium, expériences choisies et itinéraires personnalisés pour partir plus facilement.
+          </p>
+        </div>
+
+        <div>
+          <h4>Explorer</h4>
+          <a href="destinations.html">Destinations</a>
+          <a href="experiences.html">Expériences</a>
+          <a href="offres.html">Offres</a>
+          <a href="planificateur.html">Planner</a>
+        </div>
+
+        <div>
+          <h4>Préparer</h4>
+          <a href="contact.html">Demander un devis</a>
+          <a href="#">Budget voyage</a>
+          <a href="#">Conseils départ</a>
+          <a href="#">Assistance</a>
+        </div>
+
+        <div>
+          <h4>Contact</h4>
+          <p>contact@globexplore.com</p>
+          <p>+33 6 00 00 00 00</p>
+          <p>Paris, France</p>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        © 2026 GlobExplore — Voyages visuels, expériences choisies, planner intelligent.
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const $ = (s, c = document) => c.querySelector(s);
+    const $$ = (s, c = document) => [...c.querySelectorAll(s)];
+
+    window.addEventListener("scroll", () => {
+      const h = document.documentElement.scrollHeight - window.innerHeight;
+      $(".progress").style.width = h > 0 ? `${(window.scrollY / h) * 100}%` : "0%";
+      $(".nav").classList.toggle("scrolled", window.scrollY > 80);
+    });
+
+    $(".menu-btn")?.addEventListener("click", () => {
+      $(".nav-links")?.classList.toggle("show");
+    });
+
+    const experienceData = {
+      sea: {
+        img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=85",
+        mood: "Mer premium",
+        title: "Criques secrètes en bateau",
+        text: "Bateau privé, snorkeling, criques calmes, déjeuner léger et coucher de soleil.",
+        duration: "Demi-journée",
+        price: "À partir de 180 €",
+        level: "Privé / chic"
+      },
+      food: {
+        img: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1200&q=85",
+        mood: "Food locale",
+        title: "Food tour signature",
+        text: "Marchés, street food, table cachée et storytelling culinaire avec guide local.",
+        duration: "3h",
+        price: "À partir de 75 €",
+        level: "Local"
+      },
+      adventure: {
+        img: "https://images.unsplash.com/photo-1682687982501-1e58ab814714?auto=format&fit=crop&w=1200&q=85",
+        mood: "Exploration premium",
+        title: "Plongée immersive",
+        text: "Exploration sous-marine, eaux cristallines, récifs colorés et sortie bateau privée accompagnée.",
+        duration: "Demi-journée",
+        price: "À partir de 160 €",
+        level: "Mer / aventure"
+      },
+      wellness: {
+        img: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=85",
+        mood: "Bien-être",
+        title: "Spa & reset",
+        text: "Hammam, massage, respiration, sunset drink et retour doux.",
+        duration: "2-3h",
+        price: "À partir de 120 €",
+        level: "Slow"
+      }
+    };
+
+    function updateTool(type) {
+      const item = experienceData[type];
+      if (!item) return;
+
+      $("#toolImg").src = item.img;
+      $("#toolImg").alt = item.title;
+      $("#toolMood").textContent = item.mood;
+      $("#toolTitle").textContent = item.title;
+      $("#toolText").textContent = item.text;
+      $("#toolDuration").textContent = item.duration;
+      $("#toolPrice").textContent = item.price;
+      $("#toolLevel").textContent = item.level;
+
+      $(".tool-result .reserve-btn").dataset.trip = item.title;
+    }
+
+    $$(".tool-options button").forEach(button => {
+      button.addEventListener("click", () => {
+        $$(".tool-options button").forEach(btn => btn.classList.remove("active"));
+        button.classList.add("active");
+        updateTool(button.dataset.tool);
+      });
+    });
+
+    const filterButtons = $$(".filterbar button");
+    const cards = $$(".experience-card");
+
+    filterButtons.forEach(button => {
+      button.addEventListener("click", () => {
+        filterButtons.forEach(btn => btn.classList.remove("active"));
+        button.classList.add("active");
+
+        const filter = button.dataset.filter;
+
+        cards.forEach(card => {
+          const categories = card.dataset.category.split(" ");
+          const visible = filter === "all" || categories.includes(filter);
+          card.classList.toggle("hide", !visible);
+        });
+      });
+    });
+
+    $$("[data-jump-filter]").forEach(option => {
+      option.addEventListener("click", () => {
+        const filter = option.dataset.jumpFilter;
+        const targetButton = $(`.filterbar button[data-filter="${filter}"]`);
+
+        if (!targetButton) return;
+
+        $("#catalogue").scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+
+        setTimeout(() => {
+          targetButton.click();
+        }, 450);
+      });
+    });
+
+    function openBooking(name) {
+      $("#bookingTitle").textContent = "Réserver : " + name;
+      $("#bookingText").textContent = "Expérience sélectionnée : " + name + ". Remplissez vos informations, notre équipe vous recontactera.";
+      $("#bookingSuccess").classList.remove("show");
+      $("#bookingModal").classList.add("open");
+    }
+
+    $$(".reserve-btn").forEach(button => {
+      button.addEventListener("click", () => {
+        openBooking(button.dataset.trip);
+      });
+    });
+
+    $("#bookingClose").addEventListener("click", () => {
+      $("#bookingModal").classList.remove("open");
+    });
+
+    $("#bookingModal").addEventListener("click", event => {
+      if (event.target.id === "bookingModal") {
+        $("#bookingModal").classList.remove("open");
+      }
+    });
+
+    $("#bookingForm").addEventListener("submit", event => {
+      event.preventDefault();
+      $("#bookingSuccess").classList.add("show");
+      event.target.reset();
+    });
+  </script>
+
+</body>
+</html>

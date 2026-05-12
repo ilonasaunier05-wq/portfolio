@@ -1,0 +1,1 @@
+Version reprise depuis la vibe GlobExplore : palette douce, Playfair/Inter, board Pinterest-like, globe 3D WebGL manipulable, planner avec logique de filtrage conservée. Ouvrir index.html. Les images sont chargées via Unsplash et le globe via Three.js CDN. Nécessite internet pour les images et le globe 3D.

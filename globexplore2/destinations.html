@@ -1,0 +1,2150 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <title>GlobExplore — Destinations</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@600;700;800&display=swap");
+
+    :root{
+      --bg:#f8f5ef;
+      --paper:#fffdf9;
+      --deep:#182236;
+      --muted:#697386;
+      --aqua:#7bd6d0;
+      --brand:#9bb7ff;
+      --sand:#f1d6a8;
+      --shadow:0 40px 120px rgba(24,34,54,.25);
+      --ease:cubic-bezier(.16,1,.3,1);
+    }
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
+
+    html{
+      scroll-behavior:smooth;
+    }
+
+    body{
+      font-family:Inter,sans-serif;
+      overflow-x:hidden;
+      color:var(--deep);
+      background:
+        radial-gradient(circle at top left, rgba(123,214,208,.18), transparent 30rem),
+        radial-gradient(circle at top right, rgba(155,183,255,.18), transparent 30rem),
+        linear-gradient(180deg,#f8f5ef,#fffdf9);
+    }
+
+    a{
+      text-decoration:none;
+      color:inherit;
+    }
+
+    img{
+      display:block;
+      width:100%;
+    }
+
+    button,
+    input{
+      font:inherit;
+    }
+
+    .container{
+      width:min(1180px,calc(100% - 34px));
+      margin:auto;
+    }
+
+    .nav{
+      position:fixed;
+      top:16px;
+      left:50%;
+      transform:translateX(-50%);
+      z-index:9999;
+      width:min(1180px,calc(100% - 24px));
+      background:rgba(255,255,255,.14);
+      border:1px solid rgba(255,255,255,.26);
+      backdrop-filter:blur(24px);
+      border-radius:999px;
+      box-shadow:0 18px 50px rgba(0,0,0,.18);
+    }
+
+    .nav-inner{
+      height:66px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:0 24px;
+    }
+
+    .brand{
+      font-family:"Playfair Display",serif;
+      font-size:1.5rem;
+      font-weight:800;
+      color:white;
+      white-space:nowrap;
+    }
+
+    .nav-links{
+      display:flex;
+      gap:6px;
+    }
+
+    .nav-links a{
+      padding:10px 14px;
+      border-radius:999px;
+      font-size:.72rem;
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      color:rgba(255,255,255,.84);
+      transition:.25s;
+      white-space:nowrap;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active{
+      background:white;
+      color:var(--deep);
+    }
+
+    .hero{
+      position:relative;
+      min-height:94vh;
+      display:flex;
+      align-items:center;
+      overflow:hidden;
+      padding:150px 0 90px;
+    }
+
+    .hero-media{
+      position:absolute;
+      inset:0;
+      height:100%;
+      object-fit:cover;
+      z-index:-3;
+    }
+
+    .hero::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      z-index:-2;
+      background:
+        linear-gradient(90deg,rgba(10,18,34,.86),rgba(10,18,34,.42)),
+        linear-gradient(180deg,rgba(10,18,34,.10),rgba(10,18,34,.72));
+    }
+
+    .hero-grid{
+      display:grid;
+      grid-template-columns:1fr 390px;
+      gap:44px;
+      align-items:end;
+    }
+
+    .eyebrow{
+      color:var(--aqua);
+      text-transform:uppercase;
+      letter-spacing:.16em;
+      font-size:.72rem;
+      font-weight:900;
+      margin-bottom:18px;
+    }
+
+    h1,h2,h3{
+      font-family:"Playfair Display",serif;
+      line-height:1;
+      letter-spacing:-.05em;
+    }
+
+    h1{
+      color:white;
+      font-size:clamp(3rem,7vw,6.6rem);
+      max-width:950px;
+    }
+
+    h2{
+      font-size:clamp(2.35rem,5vw,4.4rem);
+      margin-bottom:20px;
+    }
+
+    .hero p{
+      margin-top:24px;
+      max-width:760px;
+      color:rgba(255,255,255,.84);
+      line-height:1.8;
+      font-size:1.08rem;
+    }
+
+    .hero-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-top:28px;
+    }
+
+    .hero-panel{
+      padding:26px;
+      border-radius:34px;
+      background:rgba(255,255,255,.16);
+      border:1px solid rgba(255,255,255,.24);
+      backdrop-filter:blur(24px);
+      color:white;
+      box-shadow:0 24px 90px rgba(0,0,0,.22);
+    }
+
+    .hero-panel h3{
+      font-size:2rem;
+      margin-bottom:12px;
+      color:white;
+    }
+
+    .hero-panel p{
+      margin:0;
+      color:rgba(255,255,255,.76);
+    }
+
+    .hero-panel-list{
+      display:grid;
+      gap:10px;
+      margin-top:20px;
+    }
+
+    .hero-panel-list span{
+      padding:12px 14px;
+      border-radius:18px;
+      background:rgba(255,255,255,.12);
+      font-weight:800;
+      color:rgba(255,255,255,.86);
+    }
+    
+    .hero-panel-list span {
+      cursor: pointer;
+      transition: .25s var(--ease);
+    }
+    
+    .hero-panel-list span:hover {
+      background: rgba(255,255,255,.24);
+      transform: translateX(5px);
+    }
+
+    .section{
+      padding:105px 0;
+    }
+
+    .section.alt{
+      background:
+        radial-gradient(circle at 10% 0%, rgba(241,214,168,.28), transparent 28rem),
+        linear-gradient(180deg,#fffdf9,#f8f5ef);
+    }
+
+    .section-head{
+      max-width:820px;
+      margin-bottom:42px;
+    }
+
+    .section p{
+      color:var(--muted);
+      line-height:1.8;
+    }
+
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      margin-top:22px;
+      padding:14px 22px;
+      border-radius:999px;
+      border:0;
+      background:white;
+      color:var(--deep);
+      font-weight:900;
+      cursor:pointer;
+      transition:.25s var(--ease);
+      box-shadow:0 16px 44px rgba(24,34,54,.10);
+    }
+
+    .btn:hover{
+      transform:translateY(-2px);
+    }
+
+    .btn.dark{
+      background:var(--deep);
+      color:white;
+    }
+
+    .quick-grid{
+      display:grid;
+      grid-template-columns:1.1fr .9fr .9fr;
+      gap:22px;
+    }
+
+    .quick-card{
+      padding:30px;
+      border-radius:34px;
+      background:white;
+      box-shadow:0 24px 80px rgba(24,34,54,.10);
+    }
+
+    .quick-card.big{
+      background:
+        radial-gradient(circle at 90% 0%, rgba(123,214,208,.28), transparent 18rem),
+        linear-gradient(135deg,#182236,#405384);
+      color:white;
+    }
+
+    .quick-card.big p{
+      color:rgba(255,255,255,.74);
+    }
+
+    .quick-card h3{
+      font-size:2rem;
+      margin-bottom:12px;
+    }
+
+    .quick-options{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:20px;
+    }
+
+    .quick-options span{
+      padding:10px 13px;
+      border-radius:999px;
+      background:#eef3ff;
+      font-size:.78rem;
+      font-weight:900;
+    }
+
+    .quick-card.big .quick-options span{
+      background:rgba(255,255,255,.14);
+      color:white;
+    }
+
+    .filterbar{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin:-18px 0 34px;
+    }
+
+    .filterbar button{
+      border:1px solid rgba(24,34,54,.12);
+      border-radius:999px;
+      background:white;
+      color:var(--deep);
+      padding:12px 16px;
+      font-weight:900;
+      cursor:pointer;
+      transition:.25s var(--ease);
+    }
+
+    .filterbar button:hover,
+    .filterbar button.active{
+      background:var(--deep);
+      color:white;
+      transform:translateY(-2px);
+    }
+
+    .trip-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:22px;
+    }
+
+    .trip-card{
+      overflow:hidden;
+      border-radius:34px;
+      background:white;
+      box-shadow:0 24px 80px rgba(24,34,54,.12);
+      transition:.35s var(--ease);
+    }
+
+    .trip-card.hide{
+      display:none;
+    }
+
+    .trip-card:hover{
+      transform:translateY(-7px);
+    }
+
+    .trip-media{
+      position:relative;
+      height:270px;
+      overflow:hidden;
+    }
+
+    .trip-media img{
+      height:100%;
+      object-fit:cover;
+      transition:.7s var(--ease);
+    }
+
+    .trip-card:hover .trip-media img{
+      transform:scale(1.08);
+    }
+
+    .trip-badge{
+      position:absolute;
+      left:18px;
+      top:18px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.9);
+      font-size:.7rem;
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+    }
+
+    .trip-body{
+      padding:24px;
+    }
+
+    .trip-body h3{
+      font-size:2.1rem;
+      margin-bottom:10px;
+    }
+
+    .trip-meta{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:18px;
+    }
+
+    .trip-meta span{
+      padding:8px 11px;
+      border-radius:999px;
+      background:#f3f6ff;
+      color:var(--deep);
+      font-size:.72rem;
+      font-weight:900;
+    }
+
+    .trip-highlights{
+      display:grid;
+      gap:8px;
+      margin-top:18px;
+      color:var(--muted);
+      font-weight:700;
+      font-size:.92rem;
+    }
+
+    .experience-layout{
+      display:grid;
+      grid-template-columns:.8fr 1.2fr;
+      gap:26px;
+      align-items:stretch;
+    }
+
+    .experience-focus{
+      position:relative;
+      overflow:hidden;
+      border-radius:38px;
+      min-height:560px;
+      box-shadow:var(--shadow);
+    }
+
+    .experience-focus img{
+      height:100%;
+      object-fit:cover;
+      position:absolute;
+      inset:0;
+    }
+
+    .experience-focus::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(180deg,transparent 25%,rgba(8,14,26,.9));
+    }
+
+    .experience-focus div{
+      position:absolute;
+      left:0;
+      right:0;
+      bottom:0;
+      z-index:2;
+      padding:34px;
+      color:white;
+    }
+
+    .experience-focus p{
+      color:rgba(255,255,255,.78);
+    }
+
+    .experience-list{
+      display:grid;
+      gap:16px;
+    }
+
+    .experience-item{
+      display:grid;
+      grid-template-columns:150px 1fr;
+      gap:18px;
+      padding:16px;
+      border-radius:28px;
+      background:white;
+      box-shadow:0 18px 60px rgba(24,34,54,.10);
+    }
+
+    .experience-item img{
+      height:130px;
+      object-fit:cover;
+      border-radius:22px;
+    }
+
+    .experience-item h3{
+      font-size:1.55rem;
+      margin-bottom:8px;
+    }
+
+    .chip{
+      display:inline-flex;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.14);
+      border:1px solid rgba(255,255,255,.22);
+      font-size:.7rem;
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+    }
+
+    .profile-grid{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:22px;
+    }
+
+    .profile-card{
+      padding:28px;
+      border-radius:34px;
+      background:white;
+      box-shadow:0 24px 80px rgba(24,34,54,.10);
+    }
+
+    .profile-card span{
+      font-size:2.2rem;
+    }
+
+    .profile-card h3{
+      font-size:1.85rem;
+      margin:18px 0 10px;
+    }
+
+    .globe-layout{
+      display:grid;
+      grid-template-columns:.9fr 1.1fr;
+      gap:48px;
+      align-items:center;
+    }
+
+    #globeWrap{
+      position:relative;
+      min-height:700px;
+      overflow:hidden;
+      border-radius:42px;
+      background:
+        radial-gradient(circle at 50% 50%, rgba(123,214,208,.16), transparent 30%),
+        radial-gradient(circle at top right, rgba(155,183,255,.18), transparent 40%),
+        linear-gradient(135deg,#111827,#182236 55%,#405384);
+      box-shadow:var(--shadow);
+    }
+
+    #globeCanvas{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      cursor:grab;
+    }
+
+    .globe-card{
+      position:absolute;
+      right:28px;
+      bottom:28px;
+      z-index:5;
+      width:min(390px,calc(100% - 56px));
+      overflow:hidden;
+      padding:0;
+      border-radius:32px;
+      background:rgba(255,255,255,.14);
+      border:1px solid rgba(255,255,255,.24);
+      backdrop-filter:blur(22px);
+      color:white;
+      box-shadow:0 24px 80px rgba(0,0,0,.28);
+      opacity:0;
+      transform:translateY(18px) scale(.96);
+      pointer-events:none;
+      transition:.35s var(--ease);
+    }
+
+    .globe-card.open{
+      opacity:1;
+      transform:translateY(0) scale(1);
+      pointer-events:auto;
+    }
+
+    .globe-card img{
+      height:190px;
+      object-fit:cover;
+    }
+
+    .globe-card-body{
+      padding:24px;
+    }
+
+    .globe-card h3{
+      font-size:2rem;
+      margin:14px 0 10px;
+      color:white;
+    }
+
+    .globe-card p{
+      color:rgba(255,255,255,.78);
+    }
+
+    .globe-meta{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:18px;
+    }
+
+    .globe-meta span{
+      padding:8px 11px;
+      border-radius:999px;
+      font-size:.72rem;
+      font-weight:900;
+      background:rgba(255,255,255,.12);
+      border:1px solid rgba(255,255,255,.16);
+    }
+
+    .globe-close{
+      position:absolute;
+      top:12px;
+      right:12px;
+      z-index:6;
+      width:34px;
+      height:34px;
+      border:0;
+      border-radius:999px;
+      background:rgba(255,255,255,.9);
+      color:var(--deep);
+      font-size:1.3rem;
+      font-weight:900;
+      cursor:pointer;
+    }
+
+    .cta{
+      overflow:hidden;
+      border-radius:42px;
+      padding:70px;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(123,214,208,.22), transparent 28rem),
+        linear-gradient(135deg,#111827,#182236 58%,#405384);
+      color:white;
+      box-shadow:var(--shadow);
+    }
+
+    .cta h2{
+      color:white;
+      max-width:760px;
+    }
+
+    .cta p{
+      color:rgba(255,255,255,.75);
+      max-width:640px;
+    }
+
+    .booking-modal{
+      position:fixed;
+      inset:0;
+      z-index:10000;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+      background:rgba(8,14,26,.64);
+      backdrop-filter:blur(18px);
+    }
+
+    .booking-modal.open{
+      display:flex;
+    }
+
+    .booking-box{
+      position:relative;
+      width:min(520px,100%);
+      padding:34px;
+      border-radius:34px;
+      background:white;
+      box-shadow:0 30px 100px rgba(0,0,0,.28);
+    }
+
+    .booking-box h2{
+      font-size:2.4rem;
+      margin-bottom:12px;
+    }
+
+    .booking-box p{
+      color:var(--muted);
+      line-height:1.7;
+    }
+
+    .booking-close{
+      position:absolute;
+      top:16px;
+      right:16px;
+      width:38px;
+      height:38px;
+      border:0;
+      border-radius:999px;
+      background:#eef3ff;
+      color:var(--deep);
+      font-size:1.4rem;
+      font-weight:900;
+      cursor:pointer;
+    }
+
+    #bookingForm{
+      display:grid;
+      gap:12px;
+      margin-top:24px;
+    }
+
+    #bookingForm input{
+      width:100%;
+      border:1px solid rgba(24,34,54,.12);
+      border-radius:18px;
+      padding:15px 16px;
+      outline:none;
+    }
+
+    #bookingForm input:focus{
+      border-color:var(--brand);
+      box-shadow:0 0 0 4px rgba(155,183,255,.22);
+    }
+
+    #bookingForm .btn{
+      width:100%;
+    }
+
+    .booking-success{
+      display:none;
+      margin-top:18px;
+      padding:14px;
+      border-radius:18px;
+      background:#eefaf8;
+      color:#17645f !important;
+      font-weight:800;
+    }
+
+    .booking-success.show{
+      display:block;
+    }
+
+    .footer{
+      background:#0f172a;
+      color:white;
+      padding:70px 0 34px;
+    }
+
+    .footer-grid{
+      display:grid;
+      grid-template-columns:1.3fr repeat(3,1fr);
+      gap:34px;
+      margin-bottom:40px;
+    }
+
+    .footer h3,
+    .footer h4{
+      color:white;
+      margin-bottom:14px;
+    }
+
+    .footer p,
+    .footer a{
+      color:rgba(255,255,255,.68);
+      line-height:1.9;
+    }
+
+    .footer a{
+      display:block;
+    }
+
+    .footer-bottom{
+      border-top:1px solid rgba(255,255,255,.12);
+      padding-top:24px;
+      text-align:center;
+      color:rgba(255,255,255,.55);
+    }
+    
+    .nav{
+      background:rgba(255,255,255,.78);
+      border:1px solid rgba(24,34,54,.10);
+    }
+    
+    .brand{
+      color:var(--deep);
+    }
+    
+    .nav-links a{
+      color:rgba(24,34,54,.72);
+    }
+    
+    .nav-links a:hover,
+    .nav-links a.active{
+      background:var(--deep);
+      color:white;
+    }
+    
+    .nav.scrolled{
+      background:rgba(255,255,255,.82);
+      border:1px solid rgba(24,34,54,.10);
+    }
+    
+    .nav.scrolled .brand{
+      color:var(--deep);
+    }
+    
+    .nav.scrolled .nav-links a{
+      color:rgba(24,34,54,.72);
+    }
+    
+    .nav.scrolled .nav-links a:hover,
+    .nav.scrolled .nav-links a.active{
+      background:var(--deep);
+      color:white;
+    }
+
+    @media(max-width:1100px){
+      .trip-grid{
+        grid-template-columns:repeat(2,1fr);
+      }
+
+      .profile-grid{
+        grid-template-columns:repeat(2,1fr);
+      }
+    }
+
+    @media(max-width:980px){
+      .nav-links{
+        display:none;
+      }
+
+      .hero-grid,
+      .quick-grid,
+      .globe-layout,
+      .experience-layout{
+        grid-template-columns:1fr;
+      }
+
+      .footer-grid{
+        grid-template-columns:1fr 1fr;
+      }
+
+      #globeWrap{
+        min-height:560px;
+      }
+    }
+
+    @media(max-width:700px){
+      .trip-grid,
+      .profile-grid,
+      .footer-grid{
+        grid-template-columns:1fr;
+      }
+
+      .filterbar{
+        overflow-x:auto;
+        flex-wrap:nowrap;
+        padding-bottom:8px;
+      }
+
+      .filterbar button{
+        white-space:nowrap;
+      }
+    }
+
+    @media(max-width:620px){
+      .container{
+        width:calc(100% - 24px);
+      }
+
+      .nav{
+        top:10px;
+      }
+
+      .nav-inner{
+        height:58px;
+        padding:0 18px;
+      }
+
+      h1{
+        font-size:clamp(2.7rem,15vw,4.5rem);
+      }
+
+      h2{
+        font-size:clamp(2.1rem,11vw,3.4rem);
+      }
+
+      .section{
+        padding:78px 0;
+      }
+
+      .hero{
+        min-height:auto;
+        padding:120px 0 74px;
+      }
+
+      .hero-panel{
+        display:none;
+      }
+
+      .hero-actions .btn{
+        width:100%;
+      }
+
+      .trip-media{
+        height:230px;
+      }
+
+      .experience-focus{
+        min-height:420px;
+      }
+
+      .experience-item{
+        grid-template-columns:1fr;
+      }
+
+      .experience-item img{
+        height:190px;
+      }
+
+      #globeWrap{
+        min-height:500px;
+        border-radius:30px;
+      }
+
+      .globe-card{
+        right:16px;
+        bottom:16px;
+        width:calc(100% - 32px);
+      }
+
+      .globe-card img{
+        height:150px;
+      }
+
+      .cta{
+        padding:38px 24px;
+        border-radius:30px;
+      }
+    }
+    
+    /* Responsive équilibré PC portable */
+    @media (max-width: 1366px) and (min-width: 981px) {
+      .container {
+        width: min(1160px, calc(100% - 36px));
+      }
+    
+      .hero {
+        min-height: 88vh;
+        padding: 130px 0 80px;
+      }
+    
+      .hero-grid {
+        grid-template-columns: minmax(0, 1fr) 360px;
+        gap: 34px;
+      }
+    
+      h1 {
+        font-size: clamp(3.2rem, 6.4vw, 6rem);
+      }
+    
+      h2 {
+        font-size: clamp(2.5rem, 4.7vw, 4.2rem);
+      }
+    
+      .section {
+        padding: 92px 0;
+      }
+    
+      .trip-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    
+      .trip-media {
+        height: 245px;
+      }
+    
+      .experience-focus {
+        min-height: 520px;
+      }
+    
+      #globeWrap {
+        min-height: 610px;
+      }
+    }
+    
+    /* Seulement si l'écran est vraiment bas en hauteur */
+    @media (max-height: 720px) and (min-width: 981px) {
+      .hero {
+        min-height: auto;
+        padding: 115px 0 65px;
+      }
+    
+      .hero-panel {
+        padding: 22px;
+      }
+    
+      .hero-panel-list {
+        gap: 8px;
+      }
+    
+      .hero-panel-list span {
+        padding: 10px 12px;
+      }
+    
+      .section {
+        padding: 82px 0;
+      }
+    
+      #globeWrap {
+        min-height: 560px;
+      }
+    }
+    
+    /* Petit laptop en largeur */
+    @media (max-width: 1150px) and (min-width: 821px) {
+      .hero-grid,
+      .quick-grid,
+      .experience-layout,
+      .globe-layout {
+        grid-template-columns: 1fr;
+      }
+    
+      .hero-panel {
+        max-width: 620px;
+      }
+    
+      .trip-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    
+      .trip-media {
+        height: 260px;
+      }
+    }
+    
+    @media (max-width: 1366px) and (min-width: 981px) {
+      .container {
+        width: min(1120px, calc(100% - 34px));
+      }
+
+      .hero {
+        min-height: auto;
+        padding: 115px 0 64px;
+      }
+
+      .hero-layout {
+        grid-template-columns: minmax(0, 1fr) 340px;
+        gap: 26px;
+        align-items: start;
+      }
+
+      h1 {
+        font-size: clamp(3rem, 6vw, 5.8rem);
+      }
+
+      .hero-copy p:not(.eyebrow) {
+        font-size: 1rem;
+        margin-top: 14px;
+      }
+
+      .smart-search {
+        margin-top: 22px;
+      }
+
+      .actions {
+        margin-top: 14px;
+      }
+
+      .dash-card {
+        padding: 20px;
+      }
+
+      .dash-card h3 {
+        font-size: 1.55rem;
+      }
+
+      .dash-card p {
+        margin: 8px 0 14px;
+        font-size: .92rem;
+      }
+
+      .mini-stat {
+        padding: 13px;
+      }
+
+      .mini-stat strong {
+        font-size: 1.35rem;
+      }
+
+      .section {
+        padding: 86px 0;
+      }
+    }
+    
+    /* RESET du correctif précédent */
+    .hero {
+      min-height: auto !important;
+      height: auto !important;
+    }
+    
+    /* Hero qui s’adapte vraiment à une fenêtre intégrée / portfolio */
+    /* FIX PROPRE PORTFOLIO + GRAND ÉCRAN */
+    .hero {
+      min-height: 100svh !important;
+      height: auto !important;
+      padding: 120px 0 80px !important;
+      align-items: center !important;
+    }
+    
+    .hero-layout {
+      align-items: center !important;
+    }
+    
+    /* Grand écran fixe : on agrandit un peu, mais sans forcer 100vh */
+    @media (min-width: 1400px) {
+      .hero {
+        padding: 135px 0 80px !important;
+      }
+    
+      .container {
+        width: min(1180px, calc(100% - 60px)) !important;
+      }
+    
+      .nav {
+        width: min(1180px, calc(100% - 60px)) !important;
+      }
+    
+      .hero-layout {
+        grid-template-columns: minmax(0, 1.08fr) 380px !important;
+        gap: 38px !important;
+      }
+    
+      h1 {
+        font-size: clamp(4rem, 6.4vw, 7rem) !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="index.html">GlobExplore</a>
+
+      <div class="nav-links">
+        <a href="index.html">Accueil</a>
+        <a href="destinations.html" class="active">Destinations</a>
+        <a href="experiences.html">Expériences</a>
+        <a href="planificateur.html">Planner</a>
+        <a href="contact.html">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <img class="hero-media" src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=1800&q=90" alt="Voyage">
+
+    <div class="container hero-grid">
+      <div>
+        <p class="eyebrow">Destinations premium</p>
+        <h1>Trouvez le voyage qui vous correspond.</h1>
+        <p>
+          Choisissez une envie simple : plage, culture, aventure, luxe ou city break.
+          GlobExplore vous propose directement des séjours clairs, beaux et faciles à réserver.
+        </p>
+
+        <div class="hero-actions">
+          <a class="btn" href="#experiences">Voir les expériences</a>
+          <a class="btn dark" href="#sejours">Voir les séjours</a>
+        </div>
+      </div>
+
+      <aside class="hero-panel">
+        <h3>Recherche rapide</h3>
+        <p>Les utilisateurs veulent aller vite. Voici les entrées les plus simples.</p>
+
+        <div class="hero-panel-list">
+          <span data-jump-filter="soleil">🌴 Je veux du soleil</span>
+          <span data-jump-filter="city">🏙️ Je veux un city break</span>
+          <span data-jump-filter="luxe">💎 Je veux du premium</span>
+          <span data-jump-filter="aventure">🎒 Je veux de l’aventure</span>
+        </div>
+      </aside>
+    </div>
+  </header>
+
+  <section class="section" id="experiences">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Expériences à ajouter</p>
+        <h2>Commencez par ce que vous voulez vivre.</h2>
+        <p>
+          Avant de choisir une destination, l’utilisateur choisit une expérience :
+          un bel hôtel, un food tour, un road trip ou une pause wellness.
+        </p>
+      </div>
+
+      <div class="experience-layout">
+        <article class="experience-focus">
+          <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1400&q=85" alt="Hôtel premium">
+
+          <div>
+            <span class="chip">Expérience signature</span>
+            <h2>Hôtels iconiques</h2>
+            <p>
+              Suites avec vue, riads privés, villas tropicales et boutique hotels sélectionnés pour l’ambiance.
+            </p>
+          </div>
+        </article>
+
+        <div class="experience-list">
+          <article class="experience-item">
+            <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=900&q=85" alt="Food tour">
+
+            <div>
+              <h3>Food tour local</h3>
+              <p>Marchés, street food, adresses cachées et restaurants signature.</p>
+            </div>
+          </article>
+
+          <article class="experience-item">
+            <img src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=900&q=85" alt="Road trip">
+
+            <div>
+              <h3>Road trip scénique</h3>
+              <p>Routes panoramiques, pauses photo et liberté dans l’itinéraire.</p>
+            </div>
+          </article>
+
+          <article class="experience-item">
+            <img src="https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=900&q=85" alt="Wellness">
+
+            <div>
+              <h3>Pause wellness</h3>
+              <p>Spa, yoga, slow mornings et lieux calmes pour vraiment décrocher.</p>
+            </div>
+          </article>
+
+          <article class="experience-item">
+            <img src="https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=900&q=85" alt="Corporate">
+
+            <div>
+              <h3>Retraite corporate</h3>
+              <p>Villas, ateliers, activités d’équipe et organisation fluide.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Commencer sans réfléchir</p>
+        <h2>Choisissez une envie, pas une destination.</h2>
+        <p>
+          La page guide l’utilisateur avec des choix simples : budget, durée et style de voyage.
+        </p>
+      </div>
+
+      <div class="quick-grid">
+        <article class="quick-card big">
+          <h3>Je ne sais pas où partir</h3>
+          <p>Choisissez votre vibe et laissez les destinations venir à vous.</p>
+
+          <div class="quick-options">
+            <span>Soleil</span>
+            <span>Culture</span>
+            <span>Luxe</span>
+            <span>Nature</span>
+            <span>Romantique</span>
+          </div>
+        </article>
+
+        <article class="quick-card">
+          <h3>Par budget</h3>
+          <p>Des repères clairs pour éviter de chercher trop longtemps.</p>
+
+          <div class="quick-options">
+            <span>- 900 €</span>
+            <span>900 - 1800 €</span>
+            <span>Premium</span>
+          </div>
+        </article>
+
+        <article class="quick-card">
+          <h3>Par durée</h3>
+          <p>Week-end, semaine complète ou grand voyage.</p>
+
+          <div class="quick-options">
+            <span>3 jours</span>
+            <span>7 jours</span>
+            <span>10+ jours</span>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="sejours">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Séjours prêts à réserver</p>
+        <h2>Filtrez par vibe et choisissez vite.</h2>
+        <p>
+          Chaque carte donne l’essentiel : image, budget, durée, style et expériences incluses.
+        </p>
+      </div>
+
+      <div class="filterbar">
+        <button class="active" data-filter="all">Tout</button>
+        <button data-filter="culture">Culture</button>
+        <button data-filter="soleil">Soleil</button>
+        <button data-filter="nature">Nature</button>
+        <button data-filter="luxe">Luxe</button>
+        <button data-filter="aventure">Aventure</button>
+        <button data-filter="city">City break</button>
+      </div>
+
+      <div class="trip-grid">
+        <article class="trip-card" data-vibe="city culture">
+          <div class="trip-media">
+            <img src="https://images.unsplash.com/photo-1485871981521-5b1fd3805eee?auto=format&fit=crop&w=1200&q=85" alt="New York">
+            <span class="trip-badge">City iconique</span>
+          </div>
+
+          <div class="trip-body">
+            <h3>New York</h3>
+            <p>Skyline, rooftops, musées, shopping, food halls et énergie urbaine non-stop.</p>
+
+            <div class="trip-meta">
+              <span>À partir de 1 590 €</span>
+              <span>5 jours / 4 nuits</span>
+              <span>City break premium</span>
+            </div>
+
+            <div class="trip-highlights">
+              <span>✓ Rooftops sunset</span>
+              <span>✓ Times Square & Soho</span>
+              <span>✓ Hôtel Manhattan</span>
+            </div>
+
+            <button class="btn reserve-btn" data-trip="New York">Réserver ce voyage</button>
+          </div>
+        </article>
+
+        <article class="trip-card" data-vibe="nature aventure">
+          <div class="trip-media">
+            <img src="https://images.unsplash.com/photo-1504829857797-ddff29c27927?auto=format&fit=crop&w=1200&q=85" alt="Islande">
+            <span class="trip-badge">Nature extrême</span>
+          </div>
+
+          <div class="trip-body">
+            <h3>Islande</h3>
+            <p>Volcans, glaciers, lagons chauds, routes scéniques et aurores boréales.</p>
+
+            <div class="trip-meta">
+              <span>À partir de 2 390 €</span>
+              <span>8 jours / 7 nuits</span>
+              <span>Road trip premium</span>
+            </div>
+
+            <div class="trip-highlights">
+              <span>✓ Cercle d’or</span>
+              <span>✓ Sources chaudes</span>
+              <span>✓ Paysages cinématiques</span>
+            </div>
+
+            <button class="btn reserve-btn" data-trip="Islande">Réserver ce voyage</button>
+          </div>
+        </article>
+
+        <article class="trip-card" data-vibe="soleil luxe">
+          <div class="trip-media">
+            <img src="https://images.unsplash.com/photo-1573843981267-be1999ff37cd?auto=format&fit=crop&w=1200&q=85" alt="Maldives">
+            <span class="trip-badge">Îles premium</span>
+          </div>
+
+          <div class="trip-body">
+            <h3>Maldives</h3>
+            <p>Villa sur pilotis, lagon turquoise, snorkeling et dîners les pieds dans le sable.</p>
+
+            <div class="trip-meta">
+              <span>À partir de 2 890 €</span>
+              <span>7 jours / 6 nuits</span>
+              <span>Luxe plage</span>
+            </div>
+
+            <div class="trip-highlights">
+              <span>✓ Villa lagon</span>
+              <span>✓ Snorkeling</span>
+              <span>✓ Dîner privé</span>
+            </div>
+
+            <button class="btn reserve-btn" data-trip="Maldives">Réserver ce voyage</button>
+          </div>
+        </article>
+
+        <article class="trip-card" data-vibe="nature aventure">
+          <div class="trip-media">
+            <img src="https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=1200&q=85" alt="Tanzanie">
+            <span class="trip-badge">Safari</span>
+          </div>
+
+          <div class="trip-body">
+            <h3>Tanzanie</h3>
+            <p>Safari, lodges élégants, savane dorée et extension possible à Zanzibar.</p>
+
+            <div class="trip-meta">
+              <span>À partir de 2 690 €</span>
+              <span>9 jours / 8 nuits</span>
+              <span>Safari confort</span>
+            </div>
+
+            <div class="trip-highlights">
+              <span>✓ Safari guidé</span>
+              <span>✓ Lodge premium</span>
+              <span>✓ Zanzibar possible</span>
+            </div>
+
+            <button class="btn reserve-btn" data-trip="Tanzanie">Réserver ce voyage</button>
+          </div>
+        </article>
+
+        <article class="trip-card" data-vibe="city culture">
+          <div class="trip-media">
+            <!-- Séoul -->
+            <img src="https://images.unsplash.com/photo-1534274867514-d5b47ef89ed7?auto=format&fit=crop&w=1200&q=85" alt="Séoul">
+            <span class="trip-badge">K-culture</span>
+          </div>
+
+          <div class="trip-body">
+            <h3>Séoul</h3>
+            <p>Design, cafés concept, palais, street food, shopping et quartiers créatifs.</p>
+
+            <div class="trip-meta">
+              <span>À partir de 1 650 €</span>
+              <span>7 jours / 6 nuits</span>
+              <span>City culture</span>
+            </div>
+
+            <div class="trip-highlights">
+              <span>✓ Cafés design</span>
+              <span>✓ Palais & marchés</span>
+              <span>✓ Quartiers tendance</span>
+            </div>
+
+            <button class="btn reserve-btn" data-trip="Séoul">Réserver ce voyage</button>
+          </div>
+        </article>
+
+        <article class="trip-card" data-vibe="nature luxe">
+          <div class="trip-media">
+            <img src="https://images.unsplash.com/photo-1527004013197-933c4bb611b3?auto=format&fit=crop&w=1200&q=85" alt="Norvège">
+            <span class="trip-badge">Fjords</span>
+          </div>
+
+          <div class="trip-body">
+            <h3>Norvège</h3>
+            <p>Fjords, routes scéniques, cabanes design, croisière calme et paysages grandioses.</p>
+
+            <div class="trip-meta">
+              <span>À partir de 2 250 €</span>
+              <span>8 jours / 7 nuits</span>
+              <span>Nature premium</span>
+            </div>
+
+            <div class="trip-highlights">
+              <span>✓ Fjords</span>
+              <span>✓ Cabane design</span>
+              <span>✓ Route panoramique</span>
+            </div>
+
+            <button class="btn reserve-btn" data-trip="Norvège">Réserver ce voyage</button>
+          </div>
+        </article>
+
+        <article class="trip-card" data-vibe="culture soleil city">
+          <div class="trip-media">
+            <img src="https://images.unsplash.com/photo-1549144511-f099e773c147?auto=format&fit=crop&w=1200&q=85" alt="Lisbonne">
+            <span class="trip-badge">City soleil</span>
+          </div>
+
+          <div class="trip-body">
+            <h3>Lisbonne</h3>
+            <p>Ruelles colorées, rooftops, azulejos, food spots et escapade à Sintra.</p>
+
+            <div class="trip-meta">
+              <span>À partir de 690 €</span>
+              <span>4 jours / 3 nuits</span>
+              <span>City solaire</span>
+            </div>
+
+            <div class="trip-highlights">
+              <span>✓ Rooftops</span>
+              <span>✓ Sintra</span>
+              <span>✓ Food tour</span>
+            </div>
+
+            <button class="btn reserve-btn" data-trip="Lisbonne">Réserver ce voyage</button>
+          </div>
+        </article>
+
+        <article class="trip-card" data-vibe="aventure culture">
+          <div class="trip-media">
+            <!-- Jordanie -->
+            <img src="https://images.unsplash.com/photo-1579606032821-4e6161c81bd3?auto=format&fit=crop&w=1200&q=85" alt="Jordanie">
+            <span class="trip-badge">Désert aventure</span>
+          </div>
+
+          <div class="trip-body">
+            <h3>Jordanie</h3>
+            <p>Pétra, Wadi Rum, campement chic, mer Morte et paysages cinématographiques.</p>
+
+            <div class="trip-meta">
+              <span>À partir de 1 590 €</span>
+              <span>7 jours / 6 nuits</span>
+              <span>Aventure premium</span>
+            </div>
+
+            <div class="trip-highlights">
+              <span>✓ Pétra</span>
+              <span>✓ Wadi Rum</span>
+              <span>✓ Camp désert</span>
+            </div>
+
+            <button class="btn reserve-btn" data-trip="Jordanie">Réserver ce voyage</button>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt" id="globe">
+    <div class="container">
+      <div class="globe-layout">
+        <div>
+          <p class="eyebrow">Explorer autrement</p>
+          <h2>Cliquez sur un point du globe.</h2>
+          <p>
+            Le globe reste une exploration visuelle : l’utilisateur clique,
+            découvre une carte destination, puis peut demander le voyage directement.
+          </p>
+
+          <a class="btn dark" href="#sejours">Revenir aux séjours</a>
+        </div>
+
+        <div id="globeWrap">
+          <canvas id="globeCanvas"></canvas>
+
+          <article class="globe-card" id="globeCard">
+            <button class="globe-close" id="globeClose">×</button>
+
+            <img id="globeImg" src="" alt="Destination">
+
+            <div class="globe-card-body">
+              <span class="chip" id="globeMood">Destination</span>
+              <h3 id="globeTitle">Cliquez sur un point</h3>
+              <p id="globeText">Découvrez les détails de la destination sélectionnée.</p>
+
+              <div class="globe-meta">
+                <span id="globePrice">Budget</span>
+                <span id="globeDuration">Durée</span>
+                <span id="globeType">Type</span>
+              </div>
+
+              <button class="btn" id="openBooking">Réserver ce voyage</button>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Voyage selon profil</p>
+        <h2>Chaque voyageur trouve vite sa formule.</h2>
+      </div>
+
+      <div class="profile-grid">
+        <article class="profile-card">
+          <span>💑</span>
+          <h3>Couple</h3>
+          <p>Hôtels romantiques, dîners privés, couchers de soleil et moments premium.</p>
+        </article>
+
+        <article class="profile-card">
+          <span>🎒</span>
+          <h3>Solo</h3>
+          <p>Voyages inspirants, sécurisés, simples à organiser et faciles à adapter.</p>
+        </article>
+
+        <article class="profile-card">
+          <span>👥</span>
+          <h3>Amis</h3>
+          <p>Villas, activités, nightlife, excursions et planning simple à partager.</p>
+        </article>
+
+        <article class="profile-card">
+          <span>💼</span>
+          <h3>Corporate</h3>
+          <p>Retraites d’équipe, hôtels business, activités privées et organisation fluide.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="cta">
+        <p class="eyebrow">Planner intelligent</p>
+        <h2>Vous avez une envie ? On construit le voyage.</h2>
+        <p>
+          Budget, durée, style d’hôtel, rythme, activités, restaurants et transport :
+          transformez une destination en itinéraire complet.
+        </p>
+
+        <a class="btn" href="planificateur.html">Créer mon itinéraire</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="booking-modal" id="bookingModal">
+    <div class="booking-box">
+      <button class="booking-close" id="bookingClose">×</button>
+
+      <p class="eyebrow">Demande de réservation</p>
+      <h2 id="bookingTitle">Réserver ce voyage</h2>
+      <p id="bookingText">Remplissez vos informations, notre équipe vous recontactera.</p>
+
+      <form id="bookingForm">
+        <input type="text" placeholder="Nom complet" required>
+        <input type="email" placeholder="Adresse email" required>
+        <input type="tel" placeholder="Numéro de téléphone" required>
+        <input type="text" placeholder="Préférence : dates, hôtel, budget...">
+
+        <button class="btn" type="submit">Envoyer ma demande</button>
+      </form>
+
+      <p class="booking-success" id="bookingSuccess">
+        Merci, votre demande a bien été envoyée.
+      </p>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <h3>GlobExplore</h3>
+          <p>Voyages premium, destinations inspirantes et itinéraires personnalisés pour partir plus facilement.</p>
+        </div>
+
+        <div>
+          <h4>Explorer</h4>
+          <a href="destinations.html">Destinations</a>
+          <a href="experiences.html">Expériences</a>
+          <a href="offres.html">Offres</a>
+          <a href="excursions.html">Excursions</a>
+        </div>
+
+        <div>
+          <h4>Préparer</h4>
+          <a href="planificateur.html">Planner</a>
+          <a href="contact.html">Demander un devis</a>
+          <a href="#">Budget voyage</a>
+          <a href="#">Conseils départ</a>
+        </div>
+
+        <div>
+          <h4>Contact</h4>
+          <p>contact@globexplore.com</p>
+          <p>+33 6 00 00 00 00</p>
+          <p>Paris, France</p>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        © 2026 GlobExplore — Voyages visuels, expériences choisies, planner intelligent.
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const SPOTS = [
+      {
+        title:"New York",
+        mood:"City iconique",
+        lat:40.7128,
+        lng:-74.006,
+        img:"https://images.unsplash.com/photo-1485871981521-5b1fd3805eee?auto=format&fit=crop&w=1200&q=85",
+        price:"À partir de 1 590 €",
+        duration:"5 jours / 4 nuits",
+        type:"City break premium",
+        text:"Skyline, rooftops, musées, shopping et énergie urbaine."
+      },
+      {
+        title:"Islande",
+        mood:"Nature extrême",
+        lat:64.1466,
+        lng:-21.9426,
+        img:"https://images.unsplash.com/photo-1504829857797-ddff29c27927?auto=format&fit=crop&w=1200&q=85",
+        price:"À partir de 2 390 €",
+        duration:"8 jours / 7 nuits",
+        type:"Road trip premium",
+        text:"Volcans, glaciers, lagons chauds et aurores boréales."
+      },
+      {
+        title:"Maldives",
+        mood:"Îles premium",
+        lat:3.2028,
+        lng:73.2207,
+        img:"https://images.unsplash.com/photo-1573843981267-be1999ff37cd?auto=format&fit=crop&w=1200&q=85",
+        price:"À partir de 2 890 €",
+        duration:"7 jours / 6 nuits",
+        type:"Luxe plage",
+        text:"Villa sur pilotis, lagon turquoise, snorkeling et dîners les pieds dans le sable."
+      },
+      {
+        title:"Tanzanie",
+        mood:"Safari confort",
+        lat:-6.369,
+        lng:34.8888,
+        img:"https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=1200&q=85",
+        price:"À partir de 2 690 €",
+        duration:"9 jours / 8 nuits",
+        type:"Safari confort",
+        text:"Safari, lodges élégants, savane dorée et extension possible à Zanzibar."
+      },
+      {
+        title:"Séoul",
+        mood:"K-culture",
+        lat:37.5665,
+        lng:126.978,
+        img:"https://images.unsplash.com/photo-1579606032821-4e6161c81bd3?auto=format&fit=crop&w=1200&q=85",
+        price:"À partir de 1 650 €",
+        duration:"7 jours / 6 nuits",
+        type:"City culture",
+        text:"Design, cafés concept, palais, street food, shopping et quartiers créatifs."
+      },
+      {
+        title:"Norvège",
+        mood:"Fjords premium",
+        lat:60.472,
+        lng:8.4689,
+        img:"https://images.unsplash.com/photo-1527004013197-933c4bb611b3?auto=format&fit=crop&w=1200&q=85",
+        price:"À partir de 2 250 €",
+        duration:"8 jours / 7 nuits",
+        type:"Nature premium",
+        text:"Fjords, routes scéniques, cabanes design et paysages grandioses."
+      },
+      {
+        title:"Lisbonne",
+        mood:"City solaire",
+        lat:38.7223,
+        lng:-9.1393,
+        img:"https://images.unsplash.com/photo-1549144511-f099e773c147?auto=format&fit=crop&w=1200&q=85",
+        price:"À partir de 690 €",
+        duration:"4 jours / 3 nuits",
+        type:"City solaire",
+        text:"Ruelles colorées, rooftops, azulejos, food spots et escapade à Sintra."
+      },
+      {
+        title:"Jordanie",
+        mood:"Désert aventure",
+        lat:30.5852,
+        lng:36.2384,
+        img:"https://images.unsplash.com/photo-1579606032821-4e6161c81bd3?auto=format&fit=crop&w=1200&q=85",
+        price:"À partir de 1 590 €",
+        duration:"7 jours / 6 nuits",
+        type:"Aventure premium",
+        text:"Pétra, Wadi Rum, campement chic, mer Morte et paysages cinématographiques."
+      }
+    ];
+
+    let selectedTrip = null;
+
+    const filterButtons = document.querySelectorAll(".filterbar button");
+    const tripCards = document.querySelectorAll(".trip-card");
+
+    filterButtons.forEach(button => {
+      button.addEventListener("click", () => {
+        filterButtons.forEach(btn => btn.classList.remove("active"));
+        button.classList.add("active");
+
+        const filter = button.dataset.filter;
+
+        tripCards.forEach(card => {
+          const vibes = card.dataset.vibe || "";
+          const visible = filter === "all" || vibes.split(" ").includes(filter);
+          card.classList.toggle("hide", !visible);
+        });
+      });
+    });
+
+    const wrap = document.getElementById("globeWrap");
+    const canvas = document.getElementById("globeCanvas");
+    const scene = new THREE.Scene();
+
+    const camera = new THREE.PerspectiveCamera(42, wrap.clientWidth / wrap.clientHeight, 0.1, 100);
+    camera.position.z = 4;
+
+    const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
+    renderer.setSize(wrap.clientWidth, wrap.clientHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+
+    const group = new THREE.Group();
+    scene.add(group);
+
+    scene.add(new THREE.AmbientLight(0xffffff,0.95));
+
+    const light = new THREE.DirectionalLight(0xffffff,1.7);
+    light.position.set(4,3,5);
+    scene.add(light);
+
+    const backLight = new THREE.PointLight(0x7bd6d0,2.5,8);
+    backLight.position.set(-3,-2,-2);
+    scene.add(backLight);
+
+    function createGraphicWorldTexture(){
+      const c = document.createElement("canvas");
+      c.width = 2048;
+      c.height = 1024;
+
+      const ctx = c.getContext("2d");
+
+      const bg = ctx.createLinearGradient(0,0,2048,1024);
+      bg.addColorStop(0,"#111827");
+      bg.addColorStop(.45,"#263b7a");
+      bg.addColorStop(1,"#7bd6d0");
+
+      ctx.fillStyle = bg;
+      ctx.fillRect(0,0,c.width,c.height);
+
+      ctx.strokeStyle = "rgba(255,255,255,.12)";
+      ctx.lineWidth = 1;
+
+      for(let x=0;x<=2048;x+=128){
+        ctx.beginPath();
+        ctx.moveTo(x,0);
+        ctx.lineTo(x,1024);
+        ctx.stroke();
+      }
+
+      for(let y=0;y<=1024;y+=128){
+        ctx.beginPath();
+        ctx.moveTo(0,y);
+        ctx.lineTo(2048,y);
+        ctx.stroke();
+      }
+
+      function blob(points){
+        ctx.beginPath();
+        points.forEach((p,i)=> i===0 ? ctx.moveTo(p[0],p[1]) : ctx.lineTo(p[0],p[1]));
+        ctx.closePath();
+        ctx.fillStyle = "rgba(255,255,255,.22)";
+        ctx.strokeStyle = "rgba(255,255,255,.78)";
+        ctx.lineWidth = 3;
+        ctx.fill();
+        ctx.stroke();
+      }
+
+      blob([[260,230],[360,170],[520,190],[650,260],[610,360],[530,420],[450,390],[380,470],[300,430],[230,340]]);
+      blob([[560,520],[650,560],[690,680],[650,830],[560,900],[500,760],[470,620]]);
+      blob([[970,240],[1080,220],[1160,280],[1120,350],[1000,350],[930,300]]);
+      blob([[1010,390],[1140,390],[1220,520],[1180,720],[1060,800],[960,660],[930,500]]);
+      blob([[1160,250],[1390,210],[1640,300],[1720,430],[1570,520],[1380,480],[1230,400]]);
+      blob([[1530,700],[1680,690],[1750,780],[1660,850],[1510,820]]);
+      blob([[780,100],[900,80],[970,150],[900,220],[780,190]]);
+
+      const texture = new THREE.CanvasTexture(c);
+      texture.colorSpace = THREE.SRGBColorSpace;
+      texture.needsUpdate = true;
+
+      return texture;
+    }
+
+    const globe = new THREE.Mesh(
+      new THREE.SphereGeometry(1.45,160,160),
+      new THREE.MeshStandardMaterial({
+        map:createGraphicWorldTexture(),
+        roughness:.46,
+        metalness:.12,
+        transparent:true,
+        opacity:.96
+      })
+    );
+
+    group.add(globe);
+
+    const atmosphere = new THREE.Mesh(
+      new THREE.SphereGeometry(1.56,96,96),
+      new THREE.MeshBasicMaterial({
+        color:0x9bb7ff,
+        transparent:true,
+        opacity:.17,
+        side:THREE.BackSide
+      })
+    );
+
+    group.add(atmosphere);
+
+    const wire = new THREE.LineSegments(
+      new THREE.WireframeGeometry(new THREE.SphereGeometry(1.466,36,18)),
+      new THREE.LineBasicMaterial({
+        color:0xffffff,
+        transparent:true,
+        opacity:.08
+      })
+    );
+
+    group.add(wire);
+
+    const markers = [];
+
+    function latLngToVector3(lat,lng,r=1.55){
+      const phi = (90-lat) * Math.PI / 180;
+      const theta = (lng+180) * Math.PI / 180;
+
+      return new THREE.Vector3(
+        -r * Math.sin(phi) * Math.cos(theta),
+        r * Math.cos(phi),
+        r * Math.sin(phi) * Math.sin(theta)
+      );
+    }
+
+    function createMarker(spot,index){
+      const pos = latLngToVector3(spot.lat,spot.lng);
+
+      const marker = new THREE.Group();
+      marker.position.copy(pos);
+      marker.lookAt(new THREE.Vector3(0,0,0));
+      marker.userData.index = index;
+
+      const halo = new THREE.Mesh(
+        new THREE.SphereGeometry(.095,32,32),
+        new THREE.MeshBasicMaterial({
+          color:0x7bd6d0,
+          transparent:true,
+          opacity:.35
+        })
+      );
+
+      const dot = new THREE.Mesh(
+        new THREE.SphereGeometry(.045,32,32),
+        new THREE.MeshBasicMaterial({
+          color:0xffffff
+        })
+      );
+
+      const ring = new THREE.Mesh(
+        new THREE.TorusGeometry(.12,.007,12,48),
+        new THREE.MeshBasicMaterial({
+          color:0x7bd6d0,
+          transparent:true,
+          opacity:.95
+        })
+      );
+
+      ring.rotation.x = Math.PI / 2;
+
+      marker.add(halo,ring,dot);
+      group.add(marker);
+      markers.push(marker);
+    }
+
+    SPOTS.forEach(createMarker);
+
+    let autoRotate = true;
+    let dragging = false;
+    let lastX = 0;
+    let lastY = 0;
+
+    function selectSpot(index){
+      autoRotate = false;
+
+      const spot = SPOTS[index];
+      selectedTrip = spot;
+
+      document.getElementById("globeImg").src = spot.img;
+      document.getElementById("globeImg").alt = spot.title;
+      document.getElementById("globeTitle").textContent = spot.title;
+      document.getElementById("globeMood").textContent = spot.mood;
+      document.getElementById("globeText").textContent = spot.text;
+      document.getElementById("globePrice").textContent = spot.price;
+      document.getElementById("globeDuration").textContent = spot.duration;
+      document.getElementById("globeType").textContent = spot.type;
+
+      document.getElementById("globeCard").classList.add("open");
+    }
+
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+
+    canvas.addEventListener("click",event=>{
+      const rect = canvas.getBoundingClientRect();
+
+      mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+      mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+      raycaster.setFromCamera(mouse,camera);
+
+      const hits = raycaster.intersectObjects(markers,true);
+
+      if(hits.length){
+        let obj = hits[0].object;
+
+        while(obj.parent && obj.userData.index === undefined){
+          obj = obj.parent;
+        }
+
+        if(obj.userData.index !== undefined){
+          selectSpot(obj.userData.index);
+        }
+      }
+    });
+
+    canvas.addEventListener("pointerdown",event=>{
+      dragging = true;
+      lastX = event.clientX;
+      lastY = event.clientY;
+    });
+
+    canvas.addEventListener("pointermove",event=>{
+      if(!dragging) return;
+
+      group.rotation.y += (event.clientX - lastX) * .006;
+      group.rotation.x += (event.clientY - lastY) * .003;
+      group.rotation.x = Math.max(-.72,Math.min(.72,group.rotation.x));
+
+      lastX = event.clientX;
+      lastY = event.clientY;
+    });
+
+    window.addEventListener("pointerup",()=>{
+      dragging = false;
+    });
+
+    document.getElementById("globeClose").addEventListener("click",()=>{
+      document.getElementById("globeCard").classList.remove("open");
+    });
+
+    document.getElementById("openBooking").addEventListener("click",()=>{
+      if(selectedTrip) openBooking(selectedTrip);
+    });
+
+    function openBooking(trip){
+      selectedTrip = trip;
+
+      document.getElementById("bookingTitle").textContent = "Réserver : " + trip.title;
+      document.getElementById("bookingText").textContent = trip.price + " • " + trip.duration + " • " + trip.type;
+      document.getElementById("bookingSuccess").classList.remove("show");
+      document.getElementById("bookingModal").classList.add("open");
+    }
+
+    document.querySelectorAll(".reserve-btn").forEach(button=>{
+      button.addEventListener("click",()=>{
+        const trip = SPOTS.find(item => item.title === button.dataset.trip);
+
+        if(trip){
+          openBooking(trip);
+        }
+      });
+    });
+
+    document.getElementById("bookingClose").addEventListener("click",()=>{
+      document.getElementById("bookingModal").classList.remove("open");
+    });
+
+    document.getElementById("bookingModal").addEventListener("click",event=>{
+      if(event.target.id === "bookingModal"){
+        document.getElementById("bookingModal").classList.remove("open");
+      }
+    });
+
+    document.getElementById("bookingForm").addEventListener("submit",event=>{
+      event.preventDefault();
+      document.getElementById("bookingSuccess").classList.add("show");
+      event.target.reset();
+    });
+
+    window.addEventListener("resize",()=>{
+      camera.aspect = wrap.clientWidth / wrap.clientHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(wrap.clientWidth,wrap.clientHeight);
+    });
+
+    function animate(){
+      requestAnimationFrame(animate);
+
+      if(autoRotate && !dragging){
+        group.rotation.y += .00045;
+      }
+
+      markers.forEach((marker,index)=>{
+        const pulse = 1 + Math.sin(Date.now() * .003 + index) * .08;
+        marker.scale.setScalar(pulse);
+      });
+
+      renderer.render(scene,camera);
+    }
+
+    animate();
+    
+    const nav = document.querySelector(".nav");
+
+    window.addEventListener("scroll", () => {
+      nav.classList.toggle("scrolled", window.scrollY > 80);
+    });
+    
+    document.querySelectorAll("[data-jump-filter]").forEach(option => {
+      option.addEventListener("click", () => {
+        const filter = option.dataset.jumpFilter;
+        const targetButton = document.querySelector(`.filterbar button[data-filter="${filter}"]`);
+    
+        if (!targetButton) return;
+    
+        document.getElementById("sejours").scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+    
+        setTimeout(() => {
+          targetButton.click();
+        }, 450);
+      });
+    });
+  </script>
+</body>
+</html>

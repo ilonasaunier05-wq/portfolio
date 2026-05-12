@@ -1,0 +1,2281 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Portfolio d'Ilona Saunier, étudiante en BUT Sciences des Données spécialisée en Exploration et Modélisation Statistique." />
+  <meta name="theme-color" content="#1a3c40" />
+
+  <title>Ilona Saunier — Portfolio Sciences des Données</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600&family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg: #fcfaf7;
+      --paper: #fffdf9;
+      --deep-teal: #1a3c40;
+      --teal-2: #28585d;
+      --accent: #417d7a;
+      --accent-soft: rgba(65, 125, 122, 0.13);
+      --sand: #ede4d9;
+      --sand-2: #f5eee6;
+      --text: #1d1d1d;
+      --muted: #666;
+      --muted-2: #8a8179;
+      --line: rgba(26, 60, 64, 0.12);
+      --shadow: 0 24px 70px rgba(26, 60, 64, 0.12);
+      --radius: 8px;
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      background: var(--bg);
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Montserrat', sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(65, 125, 122, 0.13), transparent 30vw),
+        var(--bg);
+      background-size: auto, 76px 76px, auto;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    body.no-scroll { overflow: hidden; }
+
+    h1, h2, h3, h4 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 600;
+      line-height: 1.05;
+      margin: 0;
+    }
+
+    p { margin-top: 0; }
+    a { color: inherit; }
+    button { font: inherit; }
+
+    ::selection {
+      background: var(--deep-teal);
+      color: var(--sand);
+    }
+
+    .container {
+      width: min(1200px, calc(100% - 48px));
+      margin: 0 auto;
+    }
+
+    .caps {
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    .serif-note {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: clamp(1.2rem, 2vw, 1.65rem);
+      color: var(--deep-teal);
+      line-height: 1.25;
+    }
+
+    .btn-mag,
+    .btn-filled,
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      border: 0;
+      cursor: pointer;
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-size: 0.75rem;
+      font-weight: 800;
+      transition: transform 0.28s var(--ease), box-shadow 0.28s var(--ease), background 0.28s var(--ease), color 0.28s var(--ease);
+    }
+
+    .btn-mag {
+      color: var(--accent);
+      border-bottom: 2px solid currentColor;
+      padding-bottom: 4px;
+    }
+
+    .btn-filled {
+      background: var(--deep-teal);
+      color: var(--sand);
+      padding: 15px 20px;
+      border-radius: 999px;
+      box-shadow: 0 14px 30px rgba(26, 60, 64, 0.18);
+    }
+
+    .btn-ghost {
+      color: var(--deep-teal);
+      padding: 14px 18px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.35);
+    }
+
+    .btn-filled:hover,
+    .btn-ghost:hover,
+    .btn-mag:hover {
+      transform: translateY(-3px);
+    }
+
+    .skip-link {
+      position: absolute;
+      left: -999px;
+      top: 16px;
+      background: var(--deep-teal);
+      color: var(--sand);
+      padding: 12px 16px;
+      z-index: 999;
+      border-radius: 999px;
+    }
+
+    .skip-link:focus { left: 16px; }
+
+    .progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 0%;
+      height: 3px;
+      background: var(--accent);
+      z-index: 300;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      border-bottom: 1px solid var(--line);
+      background: rgba(252, 250, 247, 0.86);
+      backdrop-filter: blur(18px);
+    }
+
+    .nav-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 28px;
+      padding: 18px 0;
+    }
+
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.8rem;
+      font-style: italic;
+      font-weight: 700;
+      color: var(--deep-teal);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .nav-links {
+      display: flex;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+      gap: 18px;
+    }
+
+    .nav-links a {
+      position: relative;
+      text-decoration: none;
+      color: var(--text);
+      font-size: 0.69rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: 0.3s;
+    }
+
+    .nav-links a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -7px;
+      width: 0;
+      height: 2px;
+      background: var(--accent);
+      transition: width 0.28s var(--ease);
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active { color: var(--accent); }
+    .nav-links a:hover::after,
+    .nav-links a.active::after { width: 100%; }
+
+    .menu-btn {
+      display: none;
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--deep-teal);
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 0.7rem;
+      cursor: pointer;
+    }
+
+    .hero {
+      min-height: auto;
+      display: grid;
+      align-items: start;
+      padding: clamp(28px, 4vh, 52px) 0;
+      border-bottom: 1px solid var(--line);
+      position: relative;
+      isolation: isolate;
+      background:
+        linear-gradient(90deg, transparent 0 68%, rgba(237, 228, 217, 0.55) 68% 100%);
+    }
+    
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 32px 32px 32px auto;
+      width: min(34vw, 460px);
+      border: 1px solid rgba(26, 60, 64, 0.12);
+      z-index: -1;
+    }
+    
+    .hero-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.12fr) minmax(340px, 0.88fr);
+      gap: clamp(42px, 6vw, 86px);
+      align-items: stretch;
+    }
+    
+    .hero-kicker {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 26px;
+    }
+    
+    .availability {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 11px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.55);
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--deep-teal);
+    }
+    
+    .availability::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 5px rgba(65, 125, 122, 0.14);
+    }
+    
+    .hero-text h1 {
+      color: var(--deep-teal);
+      font-size: clamp(3.8rem, 8.6vw, 7.4rem);
+      letter-spacing: -0.065em;
+      max-width: 880px;
+      margin-bottom: 28px;
+    }
+    
+    .hero-lead {
+      font-size: clamp(1rem, 1.35vw, 1.16rem);
+      color: var(--muted);
+      max-width: 640px;
+      margin-bottom: 36px;
+      border-left: 3px solid var(--accent);
+      padding-left: 22px;
+    }
+    
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 46px;
+    }
+    
+    .btn-filled,
+    .btn-ghost {
+      border-radius: 0;
+    }
+    
+    .hero-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0;
+      max-width: 700px;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+    
+    .metric-card {
+      border-top: 0;
+      border-right: 1px solid var(--line);
+      padding: 20px 18px 18px 0;
+    }
+    
+    .metric-card:last-child {
+      border-right: 0;
+      padding-left: 18px;
+    }
+    
+    .metric-card:nth-child(2) {
+      padding-left: 18px;
+    }
+    
+    .metric-card strong {
+      display: block;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.35rem;
+      color: var(--deep-teal);
+      line-height: 1;
+    }
+    
+    .metric-card span {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 0.74rem;
+      line-height: 1.45;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    
+    .hero-panel {
+      position: relative;
+      min-height: auto;
+      border: 1px solid var(--deep-teal);
+      background: var(--deep-teal);
+      border-radius: 0;
+      color: var(--sand);
+      padding: clamp(30px, 4vw, 48px);
+      overflow: hidden;
+      box-shadow: none;
+    }
+    
+    .hero-panel::before {
+      content: "DOSSIER DATA";
+      position: absolute;
+      left: 28px;
+      bottom: 26px;
+      writing-mode: horizontal-tb;
+      font-size: 0.68rem;
+      letter-spacing: 0.22em;
+      opacity: 0.42;
+      font-weight: 800;
+    }
+    
+    .hero-panel::after {
+      content: "";
+      position: absolute;
+      inset: 18px;
+      border: 1px solid rgba(237, 228, 217, 0.18);
+      border-radius: 0;
+    }
+    
+    .panel-top {
+      position: relative;
+      z-index: 1;
+      display: block;
+      border-bottom: 1px solid rgba(237, 228, 217, 0.24);
+      padding-bottom: 30px;
+    }
+    
+    .panel-photo {
+      position: relative;
+      margin-top: 26px;
+      margin-bottom: 26px;
+      border: 1px solid rgba(237, 228, 217, 0.2);
+      overflow: hidden;
+    }
+
+    .panel-photo img {
+      width: 100%;
+      height: clamp(240px, 32vh, 330px);
+      object-fit: cover;
+      object-position: 20% center;
+      object-position: center 35%; /* ajuste ici */
+      display: block;
+      transition: transform 0.4s ease;
+    }
+    
+    .panel-photo::after {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      color: rgba(255,255,255,0.6);
+    }
+    
+    .panel-photo:hover img {
+      transform: scale(1.04);
+    }
+    
+    .panel-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.9rem, 5vw, 4.4rem);
+      line-height: 0.9;
+      margin-bottom: 18px;
+    }
+    
+    .panel-badge {
+      position: absolute;
+      top: 0;
+      right: 0;
+      border: 1px solid rgba(237, 228, 217, 0.35);
+      border-radius: 0;
+      width: auto;
+      height: auto;
+      padding: 10px 12px;
+      display: block;
+      font-size: 0.58rem;
+      line-height: 1.45;
+    }
+    
+    .panel-body {
+      position: relative;
+      z-index: 1;
+      margin-top: 18px;
+      display: grid;
+      gap: 0;
+    }
+    
+    .panel-row {
+      display: grid;
+      grid-template-columns: 112px 1fr;
+      gap: 20px;
+      padding: 18px 0;
+      border-bottom: 1px solid rgba(237, 228, 217, 0.16);
+    }
+    
+    .panel-row:last-child {
+      border-bottom: none;
+      padding-bottom: 30px;
+    }
+    
+    .panel-row span {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.68rem;
+      font-style: normal;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-weight: 800;
+      color: rgba(237, 228, 217, 0.72);
+    }
+    
+    .panel-row p {
+      margin: 0;
+      color: rgba(237, 228, 217, 0.86);
+      font-size: 0.92rem;
+    }
+
+    .section {
+      padding: 118px 0;
+      scroll-margin-top: 88px;
+    }
+
+    .section-title {
+      display: grid;
+      grid-template-columns: minmax(0, 0.85fr) minmax(280px, 1.15fr);
+      gap: 50px;
+      align-items: end;
+      margin-bottom: 62px;
+    }
+
+    .section-title h2 {
+      font-size: clamp(2.7rem, 5.5vw, 4.3rem);
+      color: var(--deep-teal);
+      margin-top: 14px;
+      letter-spacing: -0.025em;
+    }
+
+    .section-title p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 1rem;
+      max-width: 600px;
+    }
+
+    .mag-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(32px, 6vw, 78px);
+      align-items: start;
+    }
+
+    .about-card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      padding: clamp(28px, 4vw, 46px);
+      border-radius: var(--radius);
+      box-shadow: 0 18px 50px rgba(26, 60, 64, 0.07);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .about-card p {
+      color: var(--text);
+      font-size: 1.02rem;
+    }
+    
+    .mag-grid {
+      align-items: stretch;
+    }
+    
+    .about-card,
+    .quote-card {
+      height: 100%;
+    }
+
+    .quote-card {
+      background: var(--deep-teal);
+      color: var(--sand);
+      border-radius: var(--radius);
+      padding: clamp(30px, 5vw, 50px);
+      position: sticky;
+      top: 110px;
+      overflow: hidden;
+    }
+
+    .quote-card h3 {
+      font-size: clamp(2.4rem, 4vw, 3.6rem);
+      margin-bottom: 24px;
+      color: var(--sand);
+    }
+
+    .quote-card p {
+      color: rgba(237, 228, 217, 0.83);
+      margin-bottom: 24px;
+    }
+
+    .profile-editorial {
+      margin-top: 30px;
+      border-top: 1px solid rgba(237, 228, 217, 0.28);
+    }
+
+    .profile-line {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 24px;
+      padding: 17px 0;
+      border-bottom: 1px solid rgba(237, 228, 217, 0.2);
+    }
+
+    .profile-line span {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.35rem;
+      font-style: italic;
+    }
+
+    .profile-line p {
+      margin: 0;
+      font-size: 0.9rem;
+    }
+
+    .formation-section {
+      background: var(--sand);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .formation-section::before {
+      content: "FORMATION";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(6rem, 16vw, 16rem);
+      color: rgba(26, 60, 64, 0.045);
+      letter-spacing: -0.06em;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    .formation-layout {
+      display: grid;
+      grid-template-columns: 0.85fr 1.15fr;
+      gap: clamp(32px, 6vw, 74px);
+      align-items: start;
+      position: relative;
+      z-index: 1;
+    }
+
+    .formation-title h2 {
+      font-size: clamp(2.9rem, 6vw, 4.7rem);
+      color: var(--deep-teal);
+      margin: 18px 0 22px;
+    }
+
+    .formation-title p { color: var(--text); }
+
+    .formation-content {
+      display: grid;
+      gap: 18px;
+    }
+
+    .formation-item {
+      background: rgba(252, 250, 247, 0.72);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 26px;
+    }
+
+    .formation-item h3 {
+      color: var(--deep-teal);
+      font-size: 1.8rem;
+      margin-bottom: 8px;
+    }
+
+    .formation-item p {
+      margin: 0;
+      color: var(--text);
+    }
+
+    .skills-board {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .value-strip {
+      display: grid;
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: 24px;
+      margin-top: 22px;
+      align-items: stretch;
+    }
+
+    .value-panel {
+      background: var(--deep-teal);
+      color: var(--sand);
+      border-radius: var(--radius);
+      padding: clamp(28px, 4vw, 42px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .value-panel::after {
+      content: "DATA → IMPACT";
+      position: absolute;
+      right: -12px;
+      bottom: 22px;
+      writing-mode: vertical-rl;
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      opacity: 0.35;
+      font-weight: 800;
+    }
+
+    .value-panel h3 {
+      color: var(--sand);
+      font-size: clamp(2.2rem, 4vw, 3.2rem);
+      margin-bottom: 18px;
+    }
+
+    .value-panel p {
+      color: rgba(237, 228, 217, 0.84);
+      margin: 0;
+    }
+
+    .value-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .value-item {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 20px 22px;
+      display: grid;
+      grid-template-columns: 42px 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .value-item span {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: var(--accent-soft);
+      color: var(--deep-teal);
+      font-weight: 800;
+      font-size: 0.78rem;
+    }
+
+    .value-item strong {
+      display: block;
+      color: var(--deep-teal);
+      margin-bottom: 4px;
+    }
+
+    .value-item p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.55;
+    }
+
+    .skill-pill {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      padding: 20px;
+      border-radius: var(--radius);
+      min-height: 134px;
+      transition: transform 0.28s var(--ease), box-shadow 0.28s var(--ease);
+    }
+
+    .skill-pill:hover {
+      transform: translateY(-7px);
+      box-shadow: 0 20px 45px rgba(26, 60, 64, 0.09);
+    }
+
+    .skill-pill strong {
+      display: block;
+      font-family: 'Cormorant Garamond', serif;
+      color: var(--deep-teal);
+      font-size: 1.55rem;
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+
+    .skill-pill span {
+      color: var(--muted);
+      font-size: 0.84rem;
+      line-height: 1.55;
+      display: block;
+    }
+
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 34px;
+    }
+
+    .filter-btn {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.5);
+      color: var(--deep-teal);
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: 0.28s var(--ease);
+    }
+
+    .filter-btn.active,
+    .filter-btn:hover {
+      background: var(--deep-teal);
+      color: var(--sand);
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 22px;
+    }
+    
+    .extra-projects {
+      margin-top: 46px;
+      padding-top: 42px;
+      border-top: 1px solid var(--line);
+    }
+    
+    .extra-header {
+      display: grid;
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: 34px;
+      align-items: end;
+      margin-bottom: 24px;
+    }
+    
+    .extra-header h3 {
+      font-size: clamp(2.1rem, 4vw, 3rem);
+      color: var(--deep-teal);
+      margin-top: 10px;
+    }
+    
+    .extra-header p {
+      margin: 0;
+      color: var(--muted);
+      max-width: 580px;
+    }
+    
+    .extra-scroll {
+      display: flex;
+      gap: 14px;
+      overflow-x: auto;
+      padding: 4px 0 14px;
+      scroll-snap-type: x mandatory;
+    }
+    
+    .extra-scroll::-webkit-scrollbar {
+      height: 6px;
+    }
+    
+    .extra-scroll::-webkit-scrollbar-thumb {
+      background: rgba(26, 60, 64, 0.25);
+    }
+    
+    .extra-card {
+      min-width: 260px;
+      max-width: 260px;
+      text-decoration: none;
+      background: rgba(255, 253, 249, 0.82);
+      border: 1px solid var(--line);
+      padding: 20px;
+      scroll-snap-align: start;
+      transition: transform 0.28s var(--ease), box-shadow 0.28s var(--ease), border-color 0.28s var(--ease);
+    }
+    
+    .extra-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 18px 40px rgba(26, 60, 64, 0.08);
+      border-color: rgba(26, 60, 64, 0.28);
+    }
+    
+    .extra-card span {
+      display: block;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.8rem;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+    
+    .extra-card strong {
+      display: block;
+      color: var(--deep-teal);
+      font-size: 0.98rem;
+      line-height: 1.35;
+      margin-bottom: 10px;
+    }
+    
+    .extra-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.55;
+    }
+    
+    .hero-text h1 span {
+      display: block;
+      color: var(--accent);
+      font-style: italic;
+      transition: opacity 0.35s ease, transform 0.35s ease;
+    }
+    
+    .hero-text h1 span.is-changing {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    
+    .metric-plus {
+      display: inline-flex !important;
+      align-items: baseline;
+      gap: 2px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.55rem;
+      color: var(--deep-teal);
+      line-height: 1;
+    }
+    
+    .metric-plus span {
+      display: inline !important;
+      margin: 0 !important;
+      font: inherit;
+      color: inherit;
+      line-height: inherit;
+      text-transform: none;
+      letter-spacing: inherit;
+    }
+    
+    .metric-plus .plus-symbol {
+      position: relative;
+      top: -1px;
+    }
+    
+    .competence-groups {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 42px;
+      align-items: start;
+    }
+    
+    .comp-block {
+      padding-top: 22px;
+      border-top: 3px solid var(--deep-teal);
+    }
+    
+    .comp-block h3 {
+      font-size: clamp(2rem, 4vw, 2.5rem);
+      color: var(--deep-teal);
+      margin: 14px 0;
+    }
+    
+    .comp-block > p {
+      color: var(--muted);
+      margin-bottom: 22px;
+    }
+    
+    .comp-block.is-hidden {
+      display: none;
+    }
+    
+    .comp-block .project-card {
+      margin-bottom: 26px;
+    }
+    
+    .comp-block .project-card:last-child {
+      margin-bottom: 0;
+    }
+    
+    .competence-groups.is-filtered {
+      grid-template-columns: 1fr;
+    }
+    
+    .competence-groups.is-filtered .comp-block {
+      max-width: 980px;
+    }
+    
+    .competence-groups.is-filtered .project-card {
+      padding: 34px;
+    }
+    
+    @media (max-width: 900px) {
+      .competence-groups {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    @media (max-width: 900px) {
+      .extra-header {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+    
+      .extra-card {
+        min-width: 235px;
+        max-width: 235px;
+      }
+    }
+
+    .project-card {
+      position: relative;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 28px;
+      overflow: hidden;
+      transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease), opacity 0.25s ease;
+    }
+
+    .project-card.hidden { display: none; }
+
+    .project-card::before {
+      content: attr(data-index);
+      position: absolute;
+      right: 18px;
+      top: 12px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 4rem;
+      color: rgba(26, 60, 64, 0.055);
+      line-height: 1;
+    }
+
+    .project-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 28px 60px rgba(26, 60, 64, 0.11);
+    }
+
+    .project-card .caps { margin-bottom: 15px; display: block; }
+
+    .project-card h3 {
+      font-size: 2rem;
+      color: var(--deep-teal);
+      margin-bottom: 12px;
+      max-width: 85%;
+    }
+
+    .project-card p {
+      color: var(--muted);
+      font-size: 0.94rem;
+      margin-bottom: 20px;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-bottom: 20px;
+    }
+
+    .tag {
+      padding: 6px 9px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--deep-teal);
+      font-size: 0.64rem;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      font-weight: 800;
+    }
+
+    .transverse-section {
+      position: relative;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      padding: 118px 0;
+      overflow: hidden;
+    }
+
+    .transverse-section::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(26, 60, 64, 0.07);
+    }
+
+    .transverse-wrapper {
+      position: relative;
+      z-index: 1;
+      background: rgba(26, 60, 64, 0.9);
+      color: var(--sand);
+      padding: clamp(36px, 6vw, 72px);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .transverse-wrapper h2,
+    .transverse-wrapper h3 { color: var(--sand); }
+    .transverse-wrapper p { color: rgba(237, 228, 217, 0.84); }
+
+    .transverse-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-top: 42px;
+    }
+
+    .transverse-card {
+      padding: 28px;
+      background: rgba(255,255,255,0.055);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: var(--radius);
+    }
+
+    .transverse-card h3 {
+      font-size: 1.8rem;
+      margin-bottom: 12px;
+    }
+
+    .timeline {
+      position: relative;
+    }
+
+    .timeline::before {
+      content: "";
+      position: absolute;
+      left: 48px;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: var(--line);
+    }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 96px 1fr;
+      gap: 36px;
+      margin-bottom: 42px;
+      position: relative;
+    }
+
+    .time-num {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: var(--bg);
+      border: 1px solid var(--line);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      font-style: italic;
+      color: var(--accent);
+      z-index: 1;
+    }
+
+    .time-desc {
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 32px;
+    }
+
+    .time-desc h3 {
+      font-size: 1.9rem;
+      margin-bottom: 10px;
+      color: var(--deep-teal);
+    }
+
+    .time-desc p {
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .contact-section {
+      background: var(--deep-teal);
+      color: var(--sand);
+      padding: 92px 0 70px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .contact-section::before {
+      display: none;
+    }
+
+    .contact-layout {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 50px;
+      align-items: end;
+    }
+
+    .contact-section h2 {
+      font-size: clamp(3rem, 6vw, 5rem);
+      color: var(--sand);
+      margin: 12px 0 18px;
+    }
+
+    .contact-section p { color: rgba(237, 228, 217, 0.78); }
+
+    .contact-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: flex-end;
+    }
+
+    .contact-actions .btn-filled {
+      background: var(--sand);
+      color: var(--deep-teal);
+    }
+
+    .contact-actions .btn-ghost {
+      color: var(--sand);
+      border-color: rgba(237, 228, 217, 0.3);
+      background: rgba(255,255,255,0.04);
+    }
+
+    .back-to-top {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1px solid var(--line);
+      background: rgba(252, 250, 247, 0.86);
+      backdrop-filter: blur(12px);
+      color: var(--deep-teal);
+      cursor: pointer;
+      opacity: 0;
+      pointer-events: none;
+      transition: 0.28s var(--ease);
+      z-index: 220;
+      font-weight: 800;
+    }
+
+    .back-to-top.visible {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(-4px);
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.75s var(--ease), transform 0.75s var(--ease);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 1040px) {
+      .skills-board { grid-template-columns: repeat(2, 1fr); }
+      .value-strip { grid-template-columns: 1fr; }
+      .transverse-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 900px) {
+      .container { width: min(100% - 34px, 1200px); }
+      .hero-layout,
+      .mag-grid,
+      .formation-layout,
+      .section-title,
+      .contact-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-panel { min-height: auto; }
+      .quote-card { position: static; }
+      .projects-grid { grid-template-columns: 1fr; }
+      .contact-actions { justify-content: flex-start; }
+    }
+
+    @media (max-width: 760px) {
+      .menu-btn { display: inline-flex; }
+
+      .nav-inner {
+        padding: 15px 0;
+      }
+
+      .nav-links {
+        position: fixed;
+        inset: 68px 14px auto 14px;
+        display: none;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+        padding: 14px;
+        background: rgba(252, 250, 247, 0.97);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+      }
+
+      .nav-links.open { display: flex; }
+
+      .nav-links a {
+        padding: 13px 8px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .nav-links a:last-child { border-bottom: 0; }
+      .nav-links a::after { display: none; }
+
+      .hero {
+        min-height: auto;
+        padding: clamp(60px, 10vh, 120px) 0;
+      }
+
+      .hero-text h1 {
+        font-size: clamp(3rem, 16vw, 4.8rem);
+      }
+
+      .hero-metrics,
+      .skills-board {
+        grid-template-columns: 1fr;
+      }
+
+      .panel-top,
+      .panel-row,
+      .profile-line,
+      .timeline-item {
+        grid-template-columns: 1fr;
+      }
+
+      .panel-badge { width: 78px; height: 78px; }
+      .section { padding: 78px 0; }
+      .transverse-section { padding: 78px 0; }
+      .timeline::before { display: none; }
+      .time-num { width: 76px; height: 76px; }
+      .project-card h3 { max-width: 100%; }
+    }
+    
+    /* Ajustement accueil desktop : plus compact et mieux adapté aux fenêtres réelles */
+    /* @media (min-width: 901px) {
+      .hero {
+        min-height: calc(100svh - 72px);
+        padding: clamp(22px, 3vh, 42px) 0;
+        align-items: center;
+      }
+    
+      .hero-layout {
+        grid-template-columns: minmax(0, 1.08fr) minmax(360px, 0.72fr);
+        gap: clamp(34px, 5vw, 70px);
+        align-items: start;
+      }
+    
+      .hero-text h1 {
+        font-size: clamp(3.4rem, 6.7vw, 6.2rem);
+        margin-bottom: 20px;
+      }
+    
+      .hero-lead {
+        margin-bottom: 26px;
+      }
+    
+      .hero-actions {
+        margin-bottom: 28px;
+      }
+    
+      .panel-photo {
+        margin-top: 16px;
+        margin-bottom: 20px;
+      }
+    
+      .panel-photo img {
+        height: clamp(190px, 27vh, 285px);
+      }
+    
+      .panel-top {
+        padding-bottom: 22px;
+      }
+    
+      .panel-name {
+        font-size: clamp(2.4rem, 3.8vw, 3.6rem);
+        margin-bottom: 12px;
+      }
+    
+      .panel-body {
+        margin-top: 10px;
+      }
+    
+      .panel-row {
+        padding: 12px 0;
+      }
+    
+      .panel-tools {
+        margin-top: 22px;
+      }
+    
+      .hero-panel {
+        padding: clamp(22px, 3vw, 34px);
+      }
+    } */
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+    
+    
+    /* VERSION PC PORTABLE : même design, juste réduit et rangé */
+    @media (min-width: 901px) {
+      .container {
+        width: min(1080px, calc(100% - 64px));
+      }
+    
+      nav .nav-inner {
+        padding: 12px 0;
+      }
+    
+      .nav-logo {
+        font-size: 1.55rem;
+      }
+    
+      .nav-links {
+        gap: 14px;
+      }
+    
+      .nav-links a {
+        font-size: 0.62rem;
+      }
+    
+      .hero {
+        min-height: calc(100svh - 70px);
+        padding: 24px 0;
+        align-items: center;
+      }
+    
+      .hero-layout {
+        grid-template-columns: 1fr 0.68fr;
+        gap: 42px;
+        align-items: center;
+      }
+    
+      .hero-kicker {
+        margin-bottom: 18px;
+      }
+    
+      .hero-text h1 {
+        font-size: clamp(3rem, 5vw, 4.9rem);
+        line-height: 0.95;
+        margin-bottom: 18px;
+        max-width: 720px;
+      }
+    
+      .hero-lead {
+        font-size: 0.95rem;
+        line-height: 1.55;
+        max-width: 600px;
+        margin-bottom: 22px;
+      }
+    
+      .hero-actions {
+        margin-bottom: 24px;
+      }
+    
+      .hero-metrics {
+        max-width: 600px;
+      }
+    
+      .metric-card {
+        padding: 15px 14px 14px 0;
+      }
+    
+      .metric-card:nth-child(2),
+      .metric-card:last-child {
+        padding-left: 14px;
+      }
+    
+      .metric-card strong {
+        font-size: 2rem;
+      }
+    
+      .metric-card span {
+        font-size: 0.65rem;
+      }
+    
+      .hero-panel {
+        padding: 24px;
+        max-width: 460px;
+        justify-self: end;
+      }
+    
+      .panel-top {
+        padding-bottom: 18px;
+      }
+    
+      .panel-photo {
+        margin: 12px 0 16px;
+      }
+    
+      .panel-photo img {
+        height: clamp(180px, 25svh, 235px);
+      }
+    
+      .panel-name {
+        font-size: clamp(2.3rem, 3vw, 3.1rem);
+        margin-bottom: 10px;
+      }
+    
+      .panel-body {
+        margin-top: 8px;
+      }
+    
+      .panel-row {
+        grid-template-columns: 92px 1fr;
+        gap: 14px;
+        padding: 9px 0;
+      }
+    
+      .panel-row span {
+        font-size: 0.6rem;
+      }
+    
+      .panel-row p {
+        font-size: 0.8rem;
+        line-height: 1.4;
+      }
+    
+      .section {
+        padding: 88px 0;
+      }
+      
+       /* Agrandir uniquement le +10 */
+      .metric-plus {
+        font-size: 2rem !important;
+      }
+      
+      .metric-plus span {
+        font-size: inherit !important;
+      }
+    }
+    
+    /* =====================================================
+            GRANDS ÉCRANS / ÉCRANS HDMI
+    ===================================================== */
+    @media (min-width: 1600px) {
+    
+      .container {
+        width: min(1450px, calc(100% - 120px));
+      }
+    
+      .hero {
+        min-height: calc(100vh - 90px);
+        padding: 40px 0;
+      }
+    
+      .hero-layout {
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: 90px;
+        align-items: center;
+      }
+    
+      .hero-text h1 {
+        font-size: clamp(5rem, 6vw, 7rem);
+        max-width: 980px;
+        line-height: 0.92;
+      }
+    
+      .hero-lead {
+        font-size: 1.15rem;
+        line-height: 1.75;
+        max-width: 760px;
+      }
+    
+      .hero-actions {
+        margin-bottom: 40px;
+      }
+    
+      .hero-metrics {
+        max-width: 760px;
+      }
+    
+      .metric-card strong {
+        font-size: 2.8rem;
+      }
+    
+      .metric-card span {
+        font-size: 0.8rem;
+      }
+    
+      .hero-panel {
+        max-width: 620px;
+        padding: 34px;
+      }
+    
+      .panel-photo img {
+        height: 340px;
+      }
+    
+      .panel-name {
+        font-size: 4rem;
+      }
+    
+      .panel-row {
+        grid-template-columns: 120px 1fr;
+        gap: 24px;
+        padding: 16px 0;
+      }
+    
+      .panel-row p {
+        font-size: 0.95rem;
+        line-height: 1.6;
+      }
+    
+      .nav-logo {
+        font-size: 2rem;
+      }
+    
+      .nav-links {
+        gap: 24px;
+      }
+    
+      .nav-links a {
+        font-size: 0.74rem;
+      }
+      
+       /* Agrandir uniquement le +10 */
+    .metric-plus {
+      font-size: 2.8rem !important;
+    }
+    
+    .metric-plus span {
+      font-size: inherit !important;
+    }
+    }
+    
+
+    
+  </style>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Aller au contenu</a>
+  <div class="progress-bar" id="progressBar"></div>
+
+  <nav aria-label="Navigation principale">
+    <div class="container nav-inner">
+      <a href="#accueil" class="nav-logo" aria-label="Retour à l'accueil">Ilona Saunier</a>
+
+      <button class="menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="navLinks">Menu</button>
+
+      <div class="nav-links" id="navLinks">
+        <a href="#accueil">Accueil</a>
+        <a href="#apropos">À propos</a>
+        <a href="#formation">Formation</a>
+        <a href="#expertise">Expertise</a>
+        <a href="#competences">Projets</a>
+        <a href="#transversales">Transversales</a>
+        <a href="#parcours">Parcours</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <main id="main">
+    <header id="accueil" class="hero">
+      <div class="container hero-layout">
+        <div class="hero-text reveal">
+          <div class="hero-kicker">
+            <div class="caps">Portfolio — Sciences des Données</div>
+            <div class="availability">Disponible pour stage / alternance</div>
+          </div>
+
+          <h1>
+            Transformer la donnée en décision
+            <span id="changingWord">claire.</span>
+          </h1>
+
+          <p class="hero-lead">
+            Je suis Ilona Saunier, étudiante en BUT Sciences des Données, parcours Exploration et Modélisation Statistique. Je conçois des analyses fiables, des modèles interprétables et des restitutions visuelles pensées pour faciliter la prise de décision.
+          </p>
+
+          <div class="hero-actions">
+            <a href="#competences" class="btn-filled">Voir mes projets <span aria-hidden="true">→</span></a>
+            <a href="mailto:ilona.saunier05@gmail.com" class="btn-ghost">Me contacter</a>
+          </div>
+
+          <div class="hero-metrics" aria-label="Points forts">
+            <div class="metric-card">
+              <strong data-counter="7">0</strong>
+              <span>projets data structurés et documentés</span>
+            </div>
+            <div class="metric-card">
+              <strong>C2</strong>
+              <span>niveau d’anglais obtenu en autonomie</span>
+            </div>
+            <div class="metric-card">
+              <strong class="metric-plus"><span data-counter="10">0</span>+</strong>
+              <span>outils mobilisés : Python, R, SQL, Power BI, Airflow...</span>
+            </div>
+          </div>
+        </div>
+
+        <aside class="hero-panel reveal" aria-label="Carte de profil">
+          <div class="panel-top">
+            <div class="panel-photo">
+              <img src="images/tete.jpg" alt="Portrait Ilona Saunier">
+            </div>
+            <div>
+              <div class="panel-name">Ilona<br />Saunier</div>
+              <div class="caps" style="color:rgba(237,228,217,0.78);">Data scientist · Statistics · BI</div>
+            </div>
+          </div>
+
+          <div class="panel-body">
+            <div class="panel-row">
+              <span>Mission</span>
+              <p>Faire passer une donnée brute à une information lisible, robuste et utile.</p>
+            </div>
+            <div class="panel-row">
+              <span>Méthode</span>
+              <p>Comprendre le besoin, fiabiliser les données, modéliser, interpréter, communiquer.</p>
+            </div>
+            <div class="panel-row">
+              <span>Valeur</span>
+              <p>Une approche rigoureuse, claire et orientée impact métier.</p>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </header>
+
+    <section id="apropos" class="section container">
+      <div class="mag-grid">
+        <article class="about-card reveal">
+          <div class="caps">01 / Biographie</div>
+          <h2 style="font-size:clamp(2.7rem, 5vw, 4rem); margin:18px 0 24px; color:var(--deep-teal);">À propos</h2>
+
+          <p>
+            Étudiante en Sciences des Données, je suis motivée par la résolution de problèmes concrets et par la recherche de solutions fiables. Mon parcours m’a appris à combiner rigueur analytique, curiosité et communication claire.
+          </p>
+
+          <p>
+            Au fil de mes projets, j’ai travaillé sur des problématiques de classification, d’échantillonnage, de rapprochement automatique, de visualisation et de restitution. J’aime particulièrement les projets où la donnée doit être comprise, structurée puis transformée en résultat exploitable.
+          </p>
+
+          <p>
+            Mon expérience à l’Université Concordia a renforcé mon autonomie, mon anglais et ma capacité à évoluer dans un environnement multiculturel.
+          </p>
+        </article>
+
+        <aside class="quote-card reveal">
+          <h3>Un profil data à la fois technique, curieux et orienté décision.</h3>
+          <p>
+            Je m’intéresse à l’analyse statistique, à l’automatisation, à la visualisation et à la valorisation des données dans des contextes académiques ou professionnels.
+          </p>
+
+          <div class="profile-editorial">
+            <div class="profile-line">
+              <span>Langues</span>
+              <p>Français · Anglais courant / niveau C2</p>
+            </div>
+            <div class="profile-line">
+              <span>Outils</span>
+              <p>R · Python · SQL · PostgreSQL · SAS · Power BI · Shiny · Airflow · Docker</p>
+            </div>
+            <div class="profile-line">
+              <span>Qualités</span>
+              <p>Autonomie · Rigueur · Travail en équipe · Adaptabilité · Esprit d’analyse</p>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="formation" class="section formation-section">
+      <div class="container formation-layout">
+        <div class="formation-title reveal">
+          <div class="caps">02 / Formation</div>
+          <h2>BUT Sciences des Données</h2>
+          <p>
+            Une formation professionnalisante qui articule statistique, informatique décisionnelle, traitement des données, modélisation et restitution des résultats.
+          </p>
+        </div>
+
+        <div class="formation-content">
+          <article class="formation-item reveal">
+            <h3>Parcours EMS</h3>
+            <p>Spécialisation en Exploration et Modélisation Statistique à l’IUT d’Avignon, avec une approche complète du cycle de vie de la donnée.</p>
+          </article>
+          <article class="formation-item reveal">
+            <h3>Compétences développées</h3>
+            <p>Collecte, nettoyage, validation, analyse, modélisation, automatisation, visualisation et communication des résultats.</p>
+          </article>
+          <article class="formation-item reveal">
+            <h3>Approche projet</h3>
+            <p>Des réalisations appliquées proches de problématiques réelles : prévision, classification, data warehouse, tableaux de bord et pipelines reproductibles.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="expertise" class="section container">
+      <div class="section-title reveal">
+        <div>
+          <div class="caps">03 / Expertise</div>
+          <h2>Ce que je peux apporter</h2>
+        </div>
+        <p>
+          Un ensemble de compétences complémentaires pour aider une équipe à exploiter ses données, automatiser ses traitements et rendre ses résultats compréhensibles.
+        </p>
+      </div>
+
+      <div class="skills-board">
+        <article class="skill-pill reveal"><strong>Préparer</strong><span>Nettoyer, structurer, normaliser et fiabiliser des données issues de sources variées.</span></article>
+        <article class="skill-pill reveal"><strong>Automatiser</strong><span>Créer des traitements reproductibles avec Python, SQL, Airflow, PostgreSQL et Docker.</span></article>
+        <article class="skill-pill reveal"><strong>Analyser</strong><span>Explorer les données, repérer les tendances, comparer des populations et construire des indicateurs.</span></article>
+        <article class="skill-pill reveal"><strong>Modéliser</strong><span>Tester des modèles statistiques et supervisés en gardant une logique d’interprétation.</span></article>
+        <article class="skill-pill reveal"><strong>Visualiser</strong><span>Concevoir des graphiques, dashboards et restitutions lisibles pour rendre les résultats actionnables.</span></article>
+        <article class="skill-pill reveal"><strong>Documenter</strong><span>Produire un travail clair, structuré et compréhensible par une équipe technique ou métier.</span></article>
+        <article class="skill-pill reveal"><strong>Comparer</strong><span>Évaluer plusieurs méthodes, mesurer les performances et justifier les choix réalisés.</span></article>
+        <article class="skill-pill reveal"><strong>Communiquer</strong><span>Présenter une analyse avec rigueur, pédagogie et adaptation au public visé.</span></article>
+      </div>
+
+      <div class="value-strip reveal">
+        <div class="value-panel">
+          <h3>Ma valeur ajoutée</h3>
+          <p>
+            Je ne me limite pas à produire du code ou des graphiques : je cherche à comprendre le problème, choisir une méthode adaptée, expliquer les limites et livrer un résultat exploitable.
+          </p>
+        </div>
+
+        <div class="value-list">
+          <div class="value-item">
+            <span>01</span>
+            <div>
+              <strong>Une approche complète du cycle de la donnée</strong>
+              <p>De la donnée brute au résultat présenté : collecte, nettoyage, analyse, modélisation et restitution.</p>
+            </div>
+          </div>
+          <div class="value-item">
+            <span>02</span>
+            <div>
+              <strong>Une logique professionnelle</strong>
+              <p>Des livrables structurés, reproductibles, compréhensibles et pensés pour être repris ou présentés.</p>
+            </div>
+          </div>
+          <div class="value-item">
+            <span>03</span>
+            <div>
+              <strong>Un profil adaptable</strong>
+              <p>Capable de travailler sur des sujets statistiques, décisionnels, automatisés ou orientés communication.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="competences" class="section container">
+      <div class="section-title reveal">
+        <div>
+          <div class="caps">04 / Compétences & Réalisations</div>
+          <h2>Mes compétences illustrées par des projets</h2>
+        </div>
+        <p>
+          Une sélection de projets structurés selon les compétences de mon parcours : traitement,
+          analyse, valorisation et modélisation statistique.
+        </p>
+      </div>
+    
+      <div class="filter-bar reveal" aria-label="Filtrer les projets">
+        <button class="filter-btn active" type="button" data-filter="all">Tous</button>
+        <button class="filter-btn" type="button" data-filter="traitement">Traitement</button>
+        <button class="filter-btn" type="button" data-filter="statistique">Analyse</button>
+        <button class="filter-btn" type="button" data-filter="valorisation">Valorisation</button>
+        <button class="filter-btn" type="button" data-filter="modelisation">Modélisation</button>
+      </div>
+    
+      <div class="competence-groups">
+    
+        <div class="comp-block reveal" data-skill="traitement">
+          <div class="caps">Compétence 01</div>
+          <h3>Traiter des données</h3>
+          <p>Transformer des données hétérogènes en informations fiables et exploitables pour la décision.</p>
+    
+          <article class="project-card">
+            <span class="caps">Traiter · Modéliser</span>
+            <h3>Reconnaissance automatique de langue</h3>
+            <p>
+              Construction et comparaison de modèles statistiques pour identifier automatiquement la langue
+              d’un texte : représentation textuelle, réduction de dimension, classification supervisée et analyse des performances.
+            </p>
+            <div class="tag-row">
+              <span class="tag">Classification</span>
+              <span class="tag">Statistique</span>
+              <span class="tag">Text mining</span>
+            </div>
+            <a href="reconnaissance-langue.html" class="btn-mag">Plus de détails</a>
+          </article>
+    
+          <article class="project-card">
+            <span class="caps">Traiter · Automatiser</span>
+            <h3>Projet Paymatch</h3>
+            <p>
+              Rapprochement automatique de flux financiers avec Python, PostgreSQL, Airflow et Docker.
+              Matching intelligent, normalisation, scoring, clustering et pipeline ETL reproductible.
+            </p>
+            <div class="tag-row">
+              <span class="tag">Python</span>
+              <span class="tag">PostgreSQL</span>
+              <span class="tag">Airflow</span>
+              <span class="tag">Docker</span>
+            </div>
+            <a href="paymatch.html" class="btn-mag">Plus de détails</a>
+          </article>
+        </div>
+    
+        <div class="comp-block reveal" data-skill="statistique">
+          <div class="caps">Compétence 02</div>
+          <h3>Analyser statistiquement</h3>
+          <p>Explorer les données, faire émerger des tendances et produire des analyses lisibles et pertinentes.</p>
+    
+          <article class="project-card">
+            <span class="caps">Analyser · Visualiser</span>
+            <h3>Emploi et population active</h3>
+            <p>
+              Analyse de données Insee de 2014 à 2020 : structuration relationnelle, exploration démographique,
+              comparaison géographique et visualisation des indicateurs clés.
+            </p>
+            <div class="tag-row">
+              <span class="tag">INSEE</span>
+              <span class="tag">SQL</span>
+              <span class="tag">Dataviz</span>
+            </div>
+            <a href="analyse_pop.html" class="btn-mag">Plus de détails</a>
+          </article>
+    
+          <article class="project-card">
+            <span class="caps">Analyser · Prédire</span>
+            <h3>Classification d’objets astronomiques</h3>
+            <p>
+              Comparaison de méthodes de classification supervisée sur des données SDSS pour prédire la classe
+              d’objets célestes, avec validation répétée et interprétation des performances.
+            </p>
+            <div class="tag-row">
+              <span class="tag">Machine learning</span>
+              <span class="tag">Validation</span>
+              <span class="tag">SDSS</span>
+            </div>
+            <a href="classif_astro.html" class="btn-mag">Plus de détails</a>
+          </article>
+        </div>
+    
+        <div class="comp-block reveal" data-skill="valorisation">
+          <div class="caps">Compétence 03</div>
+          <h3>Valoriser une production</h3>
+          <p>Rendre un travail lisible, convaincant et adapté à un contexte professionnel.</p>
+    
+          <article class="project-card">
+            <span class="caps">Valoriser · Communiquer</span>
+            <h3>Data challenge · Climat</h3>
+            <p>
+              Analyse comparative des conditions climatiques entre la Guyane et les Bouches-du-Rhône réalisée en équipe,
+              avec sélection d’indicateurs, visualisation des données et restitution claire des résultats.
+            </p>
+            <div class="tag-row">
+              <span class="tag">Climat</span>
+              <span class="tag">Équipe</span>
+              <span class="tag">Restitution</span>
+            </div>
+            <a href="data_challenge.html" class="btn-mag">Plus de détails</a>
+          </article>
+    
+          <article class="project-card">
+            <span class="caps">Analyser · Interpréter</span>
+            <h3>Étude de compatibilité</h3>
+            <p>
+              Analyse statistique de données de speed dating pour identifier les critères associés à la décision de match,
+              avec une restitution orientée interprétation et communication.
+            </p>
+            <div class="tag-row">
+              <span class="tag">Analyse</span>
+              <span class="tag">Interprétation</span>
+              <span class="tag">Communication</span>
+            </div>
+            <a href="match.html" class="btn-mag">Plus de détails</a>
+          </article>
+        </div>
+    
+        <div class="comp-block reveal" data-skill="modelisation">
+          <div class="caps">Compétence 04</div>
+          <h3>Modéliser dans un cadre statistique</h3>
+          <p>
+            Utiliser des méthodes statistiques pour réduire l’incertitude, mieux comprendre les phénomènes
+            et améliorer la précision des estimations.
+          </p>
+    
+          <article class="project-card">
+            <span class="caps">Modéliser · Estimer</span>
+            <h3>Méthodes d’échantillonnage</h3>
+            <p>
+              Analyse de différentes stratégies de sondage pour estimer les salaires annuels mondiaux avec plus de précision.
+              Comparaison de la stratification, de la pondération et de l’allocation optimale afin de réduire la variance.
+            </p>
+            <div class="tag-row">
+              <span class="tag">Sondage</span>
+              <span class="tag">Variance</span>
+              <span class="tag">R</span>
+            </div>
+            <a href="methode_echan.html" class="btn-mag">Plus de détails</a>
+          </article>
+        </div>
+    
+      </div>
+    
+      <div id="extra-projects" class="extra-projects reveal">
+        <div class="extra-header">
+          <div>
+            <div class="caps">Projets complémentaires</div>
+            <h3>Autres explorations</h3>
+          </div>
+          <p>
+            Des projets réalisés en complément de mon parcours, pour explorer d’autres méthodes,
+            outils et contextes d’application.
+          </p>
+        </div>
+    
+        <div class="extra-scroll">
+          <a href="site_web.html" class="extra-card">
+            <span>08</span>
+            <strong>Développement de site web</strong>
+            <p>Conception d’une interface web structurée, responsive et pensée pour l’expérience utilisateur.</p>
+          </a>
+    
+          <a href="loan_approval.html" class="extra-card">
+            <span>09</span>
+            <strong>Classification · Approbation des prêts</strong>
+            <p>Modèle d’aide à la décision pour prédire l’acceptation ou le refus d’une demande de prêt.</p>
+          </a>
+          
+          <a href="classif_tweet.html" class="extra-card">
+            <span>10</span>
+            <strong>Détection d’opinion de tweets</strong>
+            <p>Application de méthodes statistiques et IA pour analyser l’opinion exprimée dans des tweets.</p>
+          </a>
+    
+          <a href="cube_iris.html" class="extra-card">
+            <span>11</span>
+            <strong>Cube Iris · Base de données</strong>
+            <p>Traitement, intégration et gestion de données dans une base relationnelle orientée décisionnel.</p>
+          </a>
+          
+          <a href="tourisme_powerbi.html" class="extra-card">
+            <span>12</span>
+            <strong>Dashboard Power BI · Tourisme</strong>
+            <p>Création d’un tableau de bord interactif pour analyser des indicateurs touristiques.</p>
+          </a>
+    
+          <a href="sondage.html" class="extra-card">
+            <span>13</span>
+            <strong>Mise en place de sondage</strong>
+            <p>Construction d’une enquête, réflexion sur l’échantillonnage et exploitation des résultats.</p>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section id="transversales" class="transverse-section">
+      <div class="container transverse-wrapper reveal">
+        <div class="section-title" style="margin-bottom:0; grid-template-columns:1fr 1fr;">
+          <div>
+            <div class="caps" style="color:rgba(237,228,217,0.68);">05 / Capacités transversales</div>
+            <h2>Ce que mon parcours m’a apporté</h2>
+          </div>
+          <p>
+            Au-delà de la technique, mes expériences m’ont permis de construire une posture professionnelle : claire, adaptable et tournée vers le collectif.
+          </p>
+        </div>
+
+        <div class="transverse-grid">
+          <article class="transverse-card">
+            <h3>Communication</h3>
+            <p>Je suis à l’aise en français comme en anglais, ce qui me permet d’échanger dans des contextes académiques, professionnels et internationaux.</p>
+          </article>
+          <article class="transverse-card">
+            <h3>Ouverture internationale</h3>
+            <p>Mon semestre à l’Université Concordia m’a permis d’évoluer dans un environnement multiculturel et de renforcer mon autonomie.</p>
+          </article>
+          <article class="transverse-card">
+            <h3>Esprit d’équipe</h3>
+            <p>Mes projets m’ont appris à organiser le travail, partager l’information et produire des livrables cohérents avec les objectifs communs.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="parcours" class="section container">
+      <div class="section-title reveal">
+        <div>
+          <div class="caps">06 / Parcours</div>
+          <h2>Repères clés</h2>
+        </div>
+        <p>
+          Un parcours construit autour des mathématiques, de la donnée, de l’ouverture internationale et de projets appliqués.
+        </p>
+      </div>
+
+      <div class="timeline">
+        <article class="timeline-item reveal">
+          <div class="time-num">03</div>
+          <div class="time-desc">
+            <h3>BUT Sciences des Données — IUT Avignon</h3>
+            <p>Spécialisation en Exploration et Modélisation Statistique. Développement d'une expertise technique sur le cycle complet de la donnée.</p>
+          </div>
+        </article>
+
+        <article class="timeline-item reveal">
+          <div class="time-num">02</div>
+          <div class="time-desc">
+            <h3>Immersion internationale — Université Concordia</h3>
+            <p>Semestre à Montréal ayant renforcé mon autonomie, mon anglais et mon adaptabilité dans un environnement multiculturel.</p>
+          </div>
+        </article>
+
+        <article class="timeline-item reveal">
+          <div class="time-num">01</div>
+          <div class="time-desc">
+            <h3>Baccalauréat général</h3>
+            <p>Spécialités mathématiques et physique-chimie, avec options euro anglais et mathématiques expertes.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer id="contact" class="contact-section">
+    <div class="container contact-layout">
+      <div>
+        <div class="caps" style="color:rgba(237,228,217,0.68);">07 / Contact</div>
+        <h2>Construisons quelque chose avec les données.</h2>
+        <p>
+          Ouverte aux opportunités en analyse de données, data science, business intelligence et projets statistiques appliqués.
+        </p>
+      </div>
+
+      <div class="contact-actions">
+        <a href="mailto:ilona.saunier05@gmail.com" class="btn-filled">Me contacter</a>
+        <a href="#competences" class="btn-ghost">Revoir les projets</a>
+      </div>
+    </div>
+  </footer>
+
+  <button class="back-to-top" id="backToTop" type="button" aria-label="Retour en haut">↑</button>
+
+  <script>
+    const navLinks = document.getElementById('navLinks');
+    const menuBtn = document.getElementById('menuBtn');
+    const progressBar = document.getElementById('progressBar');
+    const backToTop = document.getElementById('backToTop');
+
+    menuBtn.addEventListener('click', () => {
+      const isOpen = navLinks.classList.toggle('open');
+      menuBtn.setAttribute('aria-expanded', String(isOpen));
+      document.body.classList.toggle('no-scroll', isOpen);
+    });
+
+    navLinks.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        navLinks.classList.remove('open');
+        menuBtn.setAttribute('aria-expanded', 'false');
+        document.body.classList.remove('no-scroll');
+      });
+    });
+
+    function updateProgress() {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+      progressBar.style.width = `${progress}%`;
+      backToTop.classList.toggle('visible', scrollTop > 650);
+    }
+
+    window.addEventListener('scroll', updateProgress, { passive: true });
+    updateProgress();
+
+    backToTop.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    const revealObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.14 });
+
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+    const counters = document.querySelectorAll('[data-counter]');
+    const counterObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const el = entry.target;
+        const target = Number(el.dataset.counter);
+        const duration = 900;
+        const start = performance.now();
+
+        function animate(now) {
+          const progress = Math.min((now - start) / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          el.textContent = Math.round(target * eased);
+          if (progress < 1) requestAnimationFrame(animate);
+        }
+
+        requestAnimationFrame(animate);
+        counterObserver.unobserve(el);
+      });
+    }, { threshold: 0.7 });
+
+    counters.forEach(counter => counterObserver.observe(counter));
+
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const competenceGroups = document.querySelector('.competence-groups');
+    const compBlocks = document.querySelectorAll('.comp-block[data-skill]');
+    
+    filterButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const filter = button.dataset.filter;
+    
+        filterButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+    
+        competenceGroups.classList.toggle('is-filtered', filter !== 'all');
+    
+        compBlocks.forEach(block => {
+          const shouldShow = filter === 'all' || block.dataset.skill === filter;
+          block.classList.toggle('is-hidden', !shouldShow);
+        });
+      });
+    });
+
+    const sections = document.querySelectorAll('main section[id], header[id], footer[id]');
+    const navItems = document.querySelectorAll('.nav-links a');
+
+    const sectionObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const id = entry.target.getAttribute('id');
+        navItems.forEach(link => {
+          link.classList.toggle('active', link.getAttribute('href') === `#${id}`);
+        });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px', threshold: 0.01 });
+
+    sections.forEach(section => sectionObserver.observe(section));
+
+    document.querySelectorAll('.project-card, .skill-pill').forEach(card => {
+      card.addEventListener('mousemove', event => {
+        const rect = card.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+        const rotateX = ((y / rect.height) - 0.5) * -3;
+        const rotateY = ((x / rect.width) - 0.5) * 3;
+        card.style.transform = `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
+      });
+
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = '';
+      });
+    });
+    
+    
+    const words = [
+      "claire.",
+      "utile.",
+      "fiable.",
+      "lisible.",
+      "exploitable."
+    ];
+    
+    const changingWord = document.getElementById("changingWord");
+    let wordIndex = 0;
+    
+    function changeWord() {
+      if (!changingWord) return;
+    
+      changingWord.classList.add("is-changing");
+    
+      setTimeout(() => {
+        wordIndex = (wordIndex + 1) % words.length;
+        changingWord.textContent = words[wordIndex];
+        changingWord.classList.remove("is-changing");
+      }, 350);
+    }
+    
+    setInterval(changeWord, 2200);
+  </script>
+</body>
+</html>

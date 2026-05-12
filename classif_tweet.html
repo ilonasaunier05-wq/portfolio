@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Projet — Détection de sentiment dans les tweets</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #fcfaf7;
+      --paper: #fffdf9;
+      --deep: #1a3c40;
+      --accent: #417d7a;
+      --teal: #0f626b;
+      --sand: #ede4d9;
+      --sand2: #f6efe8;
+      --text: #1d1d1d;
+      --muted: #666;
+      --line: rgba(26, 60, 64, 0.13);
+      --shadow: 0 24px 70px rgba(26, 60, 64, 0.12);
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background: var(--bg);
+    }
+
+    body {
+      margin: 0;
+      font-family: "Montserrat", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(65, 125, 122, 0.12), transparent 34vw),
+        var(--bg);
+      overflow-x: hidden;
+      line-height: 1.7;
+    }
+
+    h1,
+    h2,
+    h3 {
+      font-family: "Cormorant Garamond", serif;
+      font-weight: 600;
+      line-height: 1.05;
+      margin: 0;
+      color: var(--deep);
+    }
+
+    p {
+      margin-top: 0;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .container {
+      width: min(1180px, calc(100% - 48px));
+      margin: 0 auto;
+    }
+
+    .caps {
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    .progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 999;
+      height: 3px;
+      width: 0%;
+      background: var(--accent);
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 300;
+      background: rgba(252, 250, 247, 0.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .nav-inner {
+      min-height: 74px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .nav-logo {
+      font-family: "Cormorant Garamond", serif;
+      font-size: 1.8rem;
+      font-style: italic;
+      font-weight: 700;
+      color: var(--deep);
+      white-space: nowrap;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      justify-content: flex-end;
+    }
+
+    .nav-links a {
+      font-size: 0.69rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: 0.25s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--accent);
+    }
+
+    .hero {
+      min-height: calc(100svh - 74px);
+      display: grid;
+      align-items: center;
+      padding: clamp(58px, 7vh, 86px) 0;
+      border-bottom: 1px solid var(--line);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: "NLP";
+      position: absolute;
+      right: -20px;
+      top: 50%;
+      transform: translateY(-50%) rotate(90deg);
+      font-family: "Cormorant Garamond", serif;
+      font-size: clamp(6rem, 15vw, 13rem);
+      color: rgba(26, 60, 64, 0.045);
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    .hero-grid {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(320px, 0.85fr);
+      gap: clamp(36px, 5vw, 76px);
+      align-items: center;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.7rem, 6vw, 5.9rem);
+      letter-spacing: -0.055em;
+      margin: 18px 0 22px;
+      max-width: 900px;
+    }
+
+    .hero-text {
+      max-width: 720px;
+      color: var(--muted);
+      font-size: clamp(0.96rem, 1.1vw, 1.06rem);
+    }
+
+    .hero-quote {
+      margin: 26px 0 0;
+      padding-left: 18px;
+      border-left: 3px solid var(--accent);
+      font-family: "Cormorant Garamond", serif;
+      font-size: clamp(1.15rem, 2vw, 1.55rem);
+      font-style: italic;
+      color: var(--deep);
+      line-height: 1.35;
+    }
+
+    .btn {
+      display: inline-block;
+      margin-top: 22px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      border-bottom: 2px solid currentColor;
+      transition: 0.3s var(--ease);
+    }
+
+    .btn:hover {
+      transform: translateY(-3px);
+    }
+
+    .project-card {
+      background: var(--deep);
+      color: var(--sand);
+      padding: clamp(28px, 4vw, 44px);
+      box-shadow: 0 24px 70px rgba(26, 60, 64, 0.15);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .project-card::before {
+      content: "";
+      position: absolute;
+      inset: 18px;
+      border: 1px solid rgba(237, 228, 217, 0.18);
+      pointer-events: none;
+    }
+
+    .project-card h3 {
+      color: var(--sand);
+      font-size: 2.25rem;
+      margin-bottom: 24px;
+    }
+
+    .meta {
+      border-top: 1px solid rgba(237, 228, 217, 0.2);
+    }
+
+    .meta div {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 18px;
+      padding: 15px 0;
+      border-bottom: 1px solid rgba(237, 228, 217, 0.15);
+    }
+
+    .meta strong {
+      color: rgba(237, 228, 217, 0.6);
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+    }
+
+    .meta span {
+      color: rgba(237, 228, 217, 0.92);
+      font-weight: 600;
+      font-size: 0.92rem;
+    }
+
+    .repo-link {
+      color: var(--sand);
+      border-color: var(--sand);
+    }
+
+    .section {
+      padding: clamp(74px, 8vw, 106px) 0;
+      border-bottom: 1px solid var(--line);
+      scroll-margin-top: 92px;
+    }
+
+    .section-title {
+      display: grid;
+      grid-template-columns: 0.85fr 1.15fr;
+      gap: 50px;
+      align-items: end;
+      margin-bottom: 52px;
+    }
+
+    .section-title h2 {
+      margin-top: 14px;
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      letter-spacing: -0.03em;
+    }
+
+    .section-title p {
+      color: var(--muted);
+      max-width: 680px;
+      margin: 0;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      padding: 30px;
+      transition: 0.35s var(--ease);
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 18px 45px rgba(26, 60, 64, 0.09);
+    }
+
+    .card span {
+      display: block;
+      color: var(--accent);
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .card h3 {
+      font-size: 1.8rem;
+      margin-bottom: 14px;
+    }
+
+    .card p {
+      color: var(--muted);
+      font-size: 0.92rem;
+      margin: 0;
+    }
+
+    .data-panel {
+      background: linear-gradient(135deg, var(--sand), rgba(245, 238, 230, 0.62));
+    }
+
+    .challenge-box {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      align-items: stretch;
+    }
+
+    .challenge-card {
+      background: var(--deep);
+      color: var(--sand);
+      padding: 34px;
+      box-shadow: var(--shadow);
+    }
+
+    .challenge-card h3 {
+      color: var(--sand);
+      font-size: 2.2rem;
+      margin-bottom: 18px;
+    }
+
+    .challenge-card p,
+    .challenge-card li {
+      color: rgba(237, 228, 217, 0.84);
+    }
+
+    .challenge-card ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .pipeline {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 14px;
+    }
+
+    .pipeline-step {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      padding: 24px;
+      min-height: 230px;
+      box-shadow: 0 14px 38px rgba(26, 60, 64, 0.07);
+    }
+
+    .pipeline-step b {
+      display: inline-grid;
+      place-items: center;
+      width: 44px;
+      height: 44px;
+      margin-bottom: 18px;
+      background: var(--deep);
+      color: var(--sand);
+      font-family: "Cormorant Garamond", serif;
+      font-size: 1.35rem;
+    }
+
+    .pipeline-step h3 {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
+
+    .pipeline-step p {
+      color: var(--muted);
+      font-size: 0.88rem;
+      margin: 0;
+    }
+
+    .model-lab {
+      display: grid;
+      grid-template-columns: 0.78fr 1.22fr;
+      gap: 28px;
+      align-items: stretch;
+    }
+
+    .model-tabs {
+      display: grid;
+      gap: 10px;
+    }
+
+    .model-tab {
+      border: 1px solid var(--line);
+      background: var(--paper);
+      padding: 18px;
+      text-align: left;
+      cursor: pointer;
+      transition: 0.3s var(--ease);
+    }
+
+    .model-tab:hover,
+    .model-tab.active {
+      background: var(--deep);
+      color: var(--sand);
+      transform: translateY(-3px);
+    }
+
+    .model-tab strong {
+      display: block;
+      font-family: "Cormorant Garamond", serif;
+      font-size: 1.45rem;
+      line-height: 1.1;
+    }
+
+    .model-tab span {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .model-tab.active span,
+    .model-tab:hover span {
+      color: rgba(237, 228, 217, 0.75);
+    }
+
+    .model-panel {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      padding: 32px;
+      box-shadow: var(--shadow);
+    }
+
+    .score-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin: 24px 0;
+    }
+
+    .score-card {
+      border: 1px solid var(--line);
+      background: var(--sand2);
+      padding: 20px;
+    }
+
+    .score-card strong {
+      display: block;
+      font-family: "Cormorant Garamond", serif;
+      color: var(--deep);
+      font-size: 2.3rem;
+      line-height: 1;
+    }
+
+    .score-card span {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .bar-chart {
+      display: grid;
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .bar-row {
+      display: grid;
+      grid-template-columns: 120px 1fr 58px;
+      gap: 14px;
+      align-items: center;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .bar-track {
+      height: 18px;
+      background: rgba(26, 60, 64, 0.08);
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--teal);
+      transition: width 0.85s var(--ease);
+    }
+
+    .bar-value {
+      text-align: right;
+      color: var(--deep);
+      font-weight: 800;
+    }
+
+    .code-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .code-card {
+      background: #102628;
+      color: var(--sand);
+      padding: 28px;
+      overflow-x: auto;
+      box-shadow: var(--shadow);
+    }
+
+    .code-card h3 {
+      color: var(--sand);
+      font-size: 1.9rem;
+      margin-bottom: 18px;
+    }
+
+    pre {
+      margin: 0;
+      font-size: 0.86rem;
+      line-height: 1.7;
+      white-space: pre-wrap;
+    }
+
+    .bilan {
+      background:
+        linear-gradient(135deg, rgba(237, 228, 217, 0.85), rgba(245, 238, 230, 0.5)),
+        var(--bg);
+    }
+
+    .bilan-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 50px;
+      align-items: start;
+    }
+
+    .bilan p,
+    .bilan li {
+      color: var(--muted);
+    }
+
+    .bilan ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    footer {
+      background: var(--deep);
+      color: var(--sand);
+      padding: 80px 0 42px;
+    }
+
+    footer h2 {
+      color: var(--sand);
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      margin-top: 12px;
+    }
+
+    .footer-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 28px;
+      align-items: end;
+      margin-bottom: 42px;
+    }
+
+    .footer-link {
+      color: rgba(237, 228, 217, 0.78);
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      border-bottom: 2px solid rgba(237, 228, 217, 0.4);
+      padding-bottom: 6px;
+    }
+
+    .footer-bottom {
+      padding-top: 24px;
+      border-top: 1px solid rgba(237, 228, 217, 0.1);
+      color: rgba(237, 228, 217, 0.55);
+      font-size: 0.82rem;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(26px);
+      transition: opacity 0.75s var(--ease), transform 0.75s var(--ease);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 1050px) {
+      .hero-grid,
+      .section-title,
+      .challenge-box,
+      .model-lab,
+      .code-grid,
+      .bilan-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .cards,
+      .score-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .pipeline {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .hero {
+        min-height: auto;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .container {
+        width: 100%;
+        padding-left: 22px;
+        padding-right: 22px;
+      }
+
+      .nav-inner {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 16px 0;
+      }
+
+      .nav-links {
+        gap: 10px;
+      }
+
+      .nav-links a {
+        font-size: 0.62rem;
+      }
+
+      .hero {
+        padding: 52px 0;
+      }
+
+      .hero::after {
+        display: none;
+      }
+
+      .hero h1 {
+        font-size: clamp(2.3rem, 12vw, 3.8rem);
+      }
+
+      .cards,
+      .score-grid,
+      .pipeline {
+        grid-template-columns: 1fr;
+      }
+
+      .meta div {
+        grid-template-columns: 1fr;
+        gap: 5px;
+      }
+
+      .project-card,
+      .card,
+      .challenge-card,
+      .pipeline-step,
+      .model-panel,
+      .code-card {
+        padding: 22px;
+      }
+
+      .bar-row {
+        grid-template-columns: 1fr;
+        gap: 7px;
+      }
+
+      .bar-value {
+        text-align: left;
+      }
+
+      .footer-top {
+        display: block;
+      }
+
+      .footer-link {
+        display: inline-block;
+        margin-top: 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="progress-bar" id="progressBar"></div>
+
+  <nav>
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo">Ilona Saunier</a>
+
+      <div class="nav-links">
+        <a href="index.html">Portfolio</a>
+        <a href="#contexte">Contexte</a>
+        <a href="#pipeline">Pipeline</a>
+        <a href="#modeles">Modèles</a>
+        <a href="#technique">Technique</a>
+        <a href="#bilan">Bilan</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="container hero-grid">
+      <div class="reveal">
+        <div class="caps">Mini projet · NLP · Classification</div>
+
+        <h1>Détection de sentiment dans les tweets</h1>
+
+        <p class="hero-text">
+          Ce projet vise à classifier automatiquement des tweets selon leur polarité.
+          Il reprend l’esprit d’un challenge académique autour de la détection de sentiment
+          dans des messages courts, en appliquant un pipeline NLP complet : nettoyage,
+          lemmatisation, vectorisation TF-IDF et comparaison de modèles.
+        </p>
+
+        <p class="hero-quote">
+          Objectif : transformer des tweets bruts, courts et bruités en représentations exploitables
+          pour prédire automatiquement leur sentiment.
+        </p>
+
+        <a href="#modeles" class="btn">Voir les modèles</a>
+      </div>
+
+      <aside class="project-card reveal">
+        <div>
+          <h3>Fiche projet</h3>
+
+          <div class="meta">
+            <div>
+              <strong>Type</strong>
+              <span>Classification de texte</span>
+            </div>
+
+            <div>
+              <strong>Domaine</strong>
+              <span>NLP · Sentiment Analysis · Tweets</span>
+            </div>
+
+            <div>
+              <strong>Outils</strong>
+              <span>Python · pandas · spaCy · NLTK · scikit-learn</span>
+            </div>
+
+            <div>
+              <strong>Modèles</strong>
+              <span>Naive Bayes · Random Forest · Linear SVM</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </header>
+
+  <main>
+    <section id="contexte" class="section container reveal">
+      <div class="section-title">
+        <div>
+          <div class="caps">01 / Contexte</div>
+          <h2>Une étude de classification de sentiments</h2>
+        </div>
+    
+        <p>
+          Ce projet porte sur la détection automatique du sentiment dans des tweets.
+          Le sujet m’a été donné dans un cadre pédagogique par mon enseignante, à partir
+          d’un ancien défi académique sur l’analyse de tweets.
+          Le lien du dépôt d’origine est mentionné uniquement comme contexte du sujet.
+        </p>
+      </div>
+    
+      <div class="challenge-box">
+        <article class="challenge-card">
+          <h3>But de l’étude</h3>
+          <p>
+            L’objectif était de prédire automatiquement la polarité d’un tweet à partir
+            de son contenu textuel. Pour cela, j’ai construit un pipeline complet :
+            nettoyage du texte, traitement des emojis, lemmatisation, vectorisation TF-IDF
+            puis comparaison de plusieurs modèles.
+          </p>
+        </article>
+    
+        <article class="challenge-card">
+          <h3>Source du sujet</h3>
+          <p>
+            Le sujet s’inspire d’un ancien travail académique sur la détection de sentiment
+            dans les tweets. Je n’ai pas participé à ce challenge : il a seulement servi
+            de base au sujet transmis en cours.
+          </p>
+    
+          <a
+            href="https://github.com/nalfein84/detectiondesentimentdanslestweets"
+            target="_blank"
+            class="btn repo-link"
+          >
+            Voir le dépôt d’origine
+          </a>
+        </article>
+      </div>
+    </section>
+
+    <section id="pipeline" class="section data-panel reveal">
+      <div class="container">
+        <div class="section-title">
+          <div>
+            <div class="caps">02 / Pipeline NLP</div>
+            <h2>Du tweet brut à la prédiction</h2>
+          </div>
+
+          <p>
+            Le projet met en place une chaîne de traitement complète pour passer d’un texte non structuré
+            à une matrice de features utilisable par les modèles.
+          </p>
+        </div>
+
+        <div class="pipeline">
+          <article class="pipeline-step">
+            <b>1</b>
+            <h3>Nettoyage</h3>
+            <p>Suppression des URLs, mentions, hashtags inutiles, ponctuation et caractères parasites.</p>
+          </article>
+
+          <article class="pipeline-step">
+            <b>2</b>
+            <h3>Emojis</h3>
+            <p>Transformation des emojis en tokens interprétables : emoji_laugh, emoji_love, emoji_cry.</p>
+          </article>
+
+          <article class="pipeline-step">
+            <b>3</b>
+            <h3>Lemmatisation</h3>
+            <p>Utilisation de spaCy pour réduire les mots à leur forme canonique.</p>
+          </article>
+
+          <article class="pipeline-step">
+            <b>4</b>
+            <h3>Vectorisation</h3>
+            <p>Création de features TF-IDF avec unigrammes et bigrammes filtrés.</p>
+          </article>
+
+          <article class="pipeline-step">
+            <b>5</b>
+            <h3>Classification</h3>
+            <p>Entraînement de modèles puis génération de fichiers .res pour les prédictions.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="modeles" class="section container reveal">
+      <div class="section-title">
+        <div>
+          <div class="caps">03 / Modèles</div>
+          <h2>Comparer les approches</h2>
+        </div>
+
+        <p>
+          La page présente les modèles testés dans ton script. Les scores ci-dessous servent à visualiser
+          les performances observées sur tes essais TF-IDF DEV et peuvent être ajustés si tu veux mettre les scores finaux TEST.
+        </p>
+      </div>
+
+      <div class="model-lab">
+        <div class="model-tabs">
+          <button class="model-tab active" data-model="nb">
+            <strong>Naive Bayes</strong>
+            <span>Rapide, simple, adapté aux textes vectorisés.</span>
+          </button>
+
+          <button class="model-tab" data-model="rf">
+            <strong>Random Forest</strong>
+            <span>Robuste, bon résultat observé avec TF-IDF.</span>
+          </button>
+
+          <button class="model-tab" data-model="svm">
+            <strong>Linear SVM</strong>
+            <span>Classique en NLP, efficace sur données textuelles.</span>
+          </button>
+        </div>
+
+        <article class="model-panel">
+          <p class="caps" id="modelLabel">Modèle sélectionné</p>
+          <h3 id="modelTitle">Naive Bayes</h3>
+          <p id="modelText">
+            Modèle probabiliste utilisé comme baseline solide pour la classification de textes courts.
+          </p>
+
+          <div class="score-grid">
+            <div class="score-card">
+              <strong id="modelAccuracy">60,6%</strong>
+              <span>Accuracy DEV</span>
+            </div>
+
+            <div class="score-card">
+              <strong id="modelF1">Macro F1</strong>
+              <span>À renseigner avec le TEST</span>
+            </div>
+          </div>
+
+          <div class="bar-chart" id="barChart"></div>
+        </article>
+      </div>
+    </section>
+
+    <section id="technique" class="section data-panel reveal">
+      <div class="container">
+        <div class="section-title">
+          <div>
+            <div class="caps">04 / Extraits techniques</div>
+            <h2>Les choix importants du code</h2>
+          </div>
+
+          <p>
+            Deux choix rendent le pipeline plus intelligent : conserver les mots de négation et transformer les emojis
+            en signaux exploitables par le modèle.
+          </p>
+        </div>
+
+        <div class="code-grid">
+          <article class="code-card">
+            <h3>Stopwords contrôlés</h3>
+<pre><code>words_to_keep = {
+  "pas", "plus", "jamais", "rien",
+  "ne", "non", "trop", "super",
+  "bien", "mal", "mdr", "lol"
+}
+
+stopwords_spacy = stopwords_spacy - words_to_keep</code></pre>
+          </article>
+
+          <article class="code-card">
+            <h3>Emojis utiles</h3>
+<pre><code>def replace_emojis(text):
+    text = emoji.demojize(text, language="en")
+    text = text.replace("face_with_tears_of_joy", "emoji_laugh")
+    text = text.replace("red_heart", "emoji_love")
+    text = text.replace("angry_face", "emoji_angry")
+    text = text.replace("crying_face", "emoji_cry")
+    return text.replace(":", " ")</code></pre>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="bilan" class="section bilan reveal">
+      <div class="container">
+        <div class="section-title">
+          <div>
+            <div class="caps">05 / Bilan</div>
+            <h2>Un mini projet NLP complet</h2>
+          </div>
+
+          <p>
+            Ce projet montre une démarche concrète de machine learning appliquée au texte :
+            prétraitement, création de features, comparaison de modèles, évaluation et export des prédictions.
+          </p>
+        </div>
+
+        <div class="bilan-grid">
+          <div>
+            <p>
+              La difficulté principale vient du format tweet : les messages sont courts, parfois ironiques,
+              et contiennent beaucoup d’éléments non standards comme les emojis, les abréviations ou les majuscules.
+            </p>
+
+            <p>
+              Le projet montre donc l’importance du prétraitement NLP avant l’entraînement :
+              un simple nettoyage naïf peut supprimer des informations importantes comme la négation ou l’intensité.
+            </p>
+          </div>
+
+          <div>
+            <div class="caps" style="margin-bottom:18px;">Compétences mobilisées</div>
+            <ul>
+              <li>Nettoyage de données textuelles</li>
+              <li>Lemmatisation avec spaCy</li>
+              <li>Gestion des stopwords et exceptions</li>
+              <li>Vectorisation TF-IDF</li>
+              <li>Classification supervisée avec scikit-learn</li>
+              <li>Évaluation par accuracy et F1-score macro</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-top">
+        <div>
+          <div class="caps" style="color:rgba(237,228,217,0.62);">Retour portfolio</div>
+          <h2>Continuer l’exploration</h2>
+          <p style="color:rgba(237,228,217,0.68);max-width:540px;margin-top:18px;">
+            Revenir à l’accueil du portfolio pour découvrir les autres mini projets.
+          </p>
+        </div>
+
+        <a href="index.html#extra-projects" class="footer-link">Voir les autres projets</a>
+      </div>
+
+      <div class="footer-bottom">
+        Projet NLP · Sentiment Analysis · Portfolio d’Ilona Saunier
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const progressBar = document.getElementById("progressBar");
+
+    function updateProgress() {
+      const scrollTop = window.scrollY;
+      const pageHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = pageHeight > 0 ? (scrollTop / pageHeight) * 100 : 0;
+      progressBar.style.width = progress + "%";
+    }
+
+    window.addEventListener("scroll", updateProgress, { passive: true });
+    updateProgress();
+
+    const reveals = document.querySelectorAll(".reveal");
+
+    const revealObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.14 });
+
+    reveals.forEach(element => revealObserver.observe(element));
+
+    const modelData = {
+      nb: {
+        title: "Naive Bayes",
+        text: "Modèle probabiliste utilisé comme baseline solide pour la classification de textes courts.",
+        accuracy: "60,6%",
+        f1: "à compléter",
+        bars: [
+          ["Accuracy", 60.6],
+          ["Rapidité", 95],
+          ["Complexité", 30]
+        ]
+      },
+      rf: {
+        title: "Random Forest",
+        text: "Modèle robuste qui obtient le meilleur score observé dans tes essais TF-IDF DEV.",
+        accuracy: "62,0%",
+        f1: "à compléter",
+        bars: [
+          ["Accuracy", 62],
+          ["Robustesse", 78],
+          ["Complexité", 72]
+        ]
+      },
+      svm: {
+        title: "Linear SVM",
+        text: "Modèle linéaire souvent performant en NLP, adapté aux matrices TF-IDF de grande dimension.",
+        accuracy: "57,7%",
+        f1: "à compléter",
+        bars: [
+          ["Accuracy", 57.7],
+          ["Texte court", 82],
+          ["Complexité", 55]
+        ]
+      }
+    };
+
+    const modelTabs = document.querySelectorAll(".model-tab");
+    const modelTitle = document.getElementById("modelTitle");
+    const modelText = document.getElementById("modelText");
+    const modelAccuracy = document.getElementById("modelAccuracy");
+    const modelF1 = document.getElementById("modelF1");
+    const barChart = document.getElementById("barChart");
+
+    function renderModel(modelKey) {
+      const model = modelData[modelKey];
+
+      modelTitle.textContent = model.title;
+      modelText.textContent = model.text;
+      modelAccuracy.textContent = model.accuracy;
+      modelF1.textContent = model.f1;
+
+      barChart.innerHTML = model.bars.map(([label, value]) => `
+        <div class="bar-row">
+          <div>${label}</div>
+          <div class="bar-track">
+            <div class="bar-fill" data-width="${value}"></div>
+          </div>
+          <div class="bar-value">${String(value).replace(".", ",")}%</div>
+        </div>
+      `).join("");
+
+      requestAnimationFrame(() => {
+        document.querySelectorAll(".bar-fill").forEach(bar => {
+          bar.style.width = bar.dataset.width + "%";
+        });
+      });
+    }
+
+    modelTabs.forEach(button => {
+      button.addEventListener("click", () => {
+        modelTabs.forEach(item => item.classList.remove("active"));
+        button.classList.add("active");
+        renderModel(button.dataset.model);
+      });
+    });
+
+    renderModel("nb");
+
+    const navLinks = document.querySelectorAll(".nav-links a[href^='#']");
+    const sections = document.querySelectorAll("main section[id]");
+
+    const sectionObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const id = entry.target.getAttribute("id");
+
+        navLinks.forEach(link => {
+          link.classList.toggle("active", link.getAttribute("href") === "#" + id);
+        });
+      });
+    }, { rootMargin: "-45% 0px -50% 0px", threshold: 0.01 });
+
+    sections.forEach(section => sectionObserver.observe(section));
+  </script>
+</body>
+</html>

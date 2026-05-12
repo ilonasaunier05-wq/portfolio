@@ -1,0 +1,1908 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Projet — Compatibilité et speed dating</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600&family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #fcfaf7;
+      --paper: #fffdf9;
+      --deep-teal: #1a3c40;
+      --accent: #417d7a;
+      --sand: #ede4d9;
+      --sand-2: #f5eee6;
+      --text: #1d1d1d;
+      --muted: #666;
+      --line: rgba(26, 60, 64, 0.12);
+      --shadow: 0 24px 70px rgba(26, 60, 64, 0.12);
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      background: var(--bg);
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Montserrat', sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(65,125,122,0.12), transparent 30vw),
+        var(--bg);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 600;
+      line-height: 1.05;
+      margin: 0;
+    }
+
+    p { margin-top: 0; }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .container {
+      width: min(1180px, calc(100% - 48px));
+      margin: 0 auto;
+    }
+
+    .caps {
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    .progress-bar {
+      position: fixed;
+      inset: 0 auto auto 0;
+      width: 0%;
+      height: 3px;
+      background: var(--accent);
+      z-index: 500;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      background: rgba(252, 250, 247, 0.9);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .nav-inner {
+      min-height: 74px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 28px;
+    }
+
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.8rem;
+      font-style: italic;
+      font-weight: 700;
+      color: var(--deep-teal);
+      white-space: nowrap;
+    }
+
+    .nav-links {
+      display: flex;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+      gap: 18px;
+    }
+
+    .nav-links a {
+      color: var(--text);
+      font-size: 0.69rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: 0.3s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--accent);
+    }
+
+    .hero {
+      min-height: calc(100svh - 74px);
+      display: grid;
+      align-items: center;
+      padding: clamp(42px, 6vh, 78px) 0;
+      border-bottom: 1px solid var(--line);
+      background:
+        linear-gradient(90deg, transparent 0 64%, rgba(237, 228, 217, 0.62) 64% 100%),
+        var(--bg);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: "MATCH DATA";
+      position: absolute;
+      right: -35px;
+      top: 50%;
+      transform: translateY(-50%) rotate(90deg);
+      font-size: clamp(4rem, 10vw, 9rem);
+      font-family: 'Cormorant Garamond', serif;
+      color: rgba(26, 60, 64, 0.045);
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    .hero-layout {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.82fr);
+      gap: clamp(36px, 5vw, 70px);
+      align-items: center;
+    }
+
+    .hero h1 {
+      margin: 18px 0 22px;
+      font-size: clamp(3.1rem, 6.4vw, 5.8rem);
+      color: var(--deep-teal);
+      letter-spacing: -0.055em;
+      max-width: 860px;
+    }
+
+    .hero p {
+      max-width: 690px;
+      color: var(--muted);
+      font-size: clamp(0.98rem, 1.15vw, 1.08rem);
+      line-height: 1.75;
+    }
+
+    .hero-angle {
+      margin: 28px 0 28px;
+      padding-left: 18px;
+      border-left: 3px solid var(--accent);
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: clamp(1.25rem, 2vw, 1.55rem) !important;
+      color: var(--deep-teal) !important;
+      line-height: 1.35 !important;
+    }
+
+    .btn-mag {
+      display: inline-block;
+      margin-top: 24px;
+      font-weight: 800;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      color: var(--accent);
+      border-bottom: 2px solid var(--accent);
+      letter-spacing: 0.08em;
+      transition: transform 0.28s var(--ease);
+    }
+
+    .btn-mag:hover {
+      transform: translateY(-3px);
+    }
+
+    .hero-card {
+      background: var(--deep-teal);
+      color: var(--sand);
+      border: 1px solid var(--deep-teal);
+      padding: clamp(30px, 4vw, 44px);
+      min-height: clamp(380px, 53vh, 480px);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card::before {
+      content: "";
+      position: absolute;
+      inset: 18px;
+      border: 1px solid rgba(237, 228, 217, 0.18);
+      pointer-events: none;
+    }
+
+    .hero-card::after {
+      content: "SPEED DATING";
+      position: absolute;
+      right: 18px;
+      bottom: 18px;
+      color: rgba(237, 228, 217, 0.22);
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+    }
+
+    .hero-card h3 {
+      color: var(--sand);
+      font-size: clamp(1.8rem, 3vw, 2.25rem);
+      margin-bottom: 24px;
+    }
+
+    .meta-list {
+      display: grid;
+      gap: 0;
+      border-top: 1px solid rgba(237, 228, 217, 0.22);
+    }
+
+    .meta-item {
+      display: grid;
+      grid-template-columns: 125px 1fr;
+      gap: 18px;
+      border-bottom: 1px solid rgba(237, 228, 217, 0.16);
+      padding: 16px 0;
+    }
+
+    .meta-item strong {
+      color: rgba(237, 228, 217, 0.62);
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+    }
+
+    .meta-item span {
+      color: rgba(237, 228, 217, 0.9);
+      font-weight: 600;
+      font-size: 0.92rem;
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      margin-top: 30px;
+      border-top: 1px solid rgba(237, 228, 217, 0.18);
+      border-bottom: 1px solid rgba(237, 228, 217, 0.18);
+    }
+
+    .hero-stats div {
+      padding: 18px 14px 16px 0;
+      border-right: 1px solid rgba(237, 228, 217, 0.16);
+    }
+
+    .hero-stats div:not(:first-child) {
+      padding-left: 14px;
+    }
+
+    .hero-stats div:last-child {
+      border-right: none;
+    }
+
+    .hero-stats strong {
+      display: flex;
+      align-items: baseline;
+      gap: 2px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      line-height: 1;
+      color: var(--sand);
+    }
+    
+    .hero-stats strong span {
+      display: inline;
+      margin: 0;
+      font: inherit;
+      color: inherit;
+      line-height: inherit;
+      letter-spacing: inherit;
+    }
+    
+    .hero-stats .metric-plus {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 2px;
+    }
+
+    .hero-stats span {
+      display: block;
+      margin-top: 8px;
+      color: rgba(237, 228, 217, 0.68);
+      font-size: 0.62rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      line-height: 1.4;
+    }
+
+    .section {
+      padding: clamp(82px, 9vw, 112px) 0;
+      border-bottom: 1px solid var(--line);
+      scroll-margin-top: 70px;
+    }
+
+    .section-title {
+      display: grid;
+      grid-template-columns: 0.85fr 1.15fr;
+      gap: 50px;
+      align-items: end;
+      margin-bottom: 58px;
+    }
+
+    .section-title h2 {
+      margin-top: 14px;
+      font-size: clamp(2.6rem, 5vw, 4rem);
+      color: var(--deep-teal);
+      letter-spacing: -0.03em;
+    }
+
+    .section-title p {
+      color: var(--muted);
+      max-width: 620px;
+      margin: 0;
+    }
+
+    .mag-grid,
+    .model-grid,
+    .learning-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(38px, 6vw, 70px);
+      align-items: start;
+    }
+
+    .text-block {
+      font-size: 1.02rem;
+      color: var(--text);
+      line-height: 1.85;
+    }
+
+    .text-block p {
+      color: var(--text);
+      margin-bottom: 18px;
+      opacity: 0.82;
+    }
+
+    .side-box {
+      background: var(--deep-teal);
+      color: var(--sand);
+      padding: clamp(30px, 4vw, 42px);
+      position: sticky;
+      top: 110px;
+    }
+
+    .side-box h3 {
+      color: var(--sand);
+      font-size: 2.05rem;
+      margin-bottom: 20px;
+    }
+
+    .side-box p,
+    .side-box li {
+      color: rgba(237, 228, 217, 0.88);
+    }
+
+    .oval-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .oval-grid span {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(237, 228, 217, 0.12);
+      border: 1px solid rgba(237, 228, 217, 0.26);
+      color: var(--sand);
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .method-list {
+      display: grid;
+      gap: 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .method-item {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 26px;
+      border-bottom: 1px solid var(--line);
+      padding: 24px 0;
+    }
+
+    .method-num {
+      font-family: 'Cormorant Garamond', serif;
+      color: var(--accent);
+      font-size: 2rem;
+      font-style: italic;
+      line-height: 1;
+    }
+
+    .method-item h3 {
+      color: var(--deep-teal);
+      font-size: 1.65rem;
+      margin-bottom: 8px;
+    }
+
+    .method-item p {
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .model-section {
+      background: var(--sand);
+      padding: clamp(82px, 9vw, 110px) 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .model-card {
+      background: rgba(252, 250, 247, 0.72);
+      border: 1px solid var(--line);
+      padding: clamp(30px, 4vw, 42px);
+    }
+
+    .model-card h3 {
+      color: var(--deep-teal);
+      font-size: 2.1rem;
+      margin-bottom: 18px;
+    }
+
+    .model-card p {
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    .model-card ul {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+    }
+
+    .model-card li {
+      margin-bottom: 10px;
+    }
+    
+    .model-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 18px 0 22px;
+    }
+    
+    .model-buttons button {
+      border: 1px solid var(--line);
+      background: transparent;
+      padding: 8px 12px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: 0.25s;
+    }
+    
+    .model-buttons button:hover {
+      background: var(--sand);
+    }
+    
+    .model-buttons button.active {
+      background: var(--deep-teal);
+      color: var(--sand);
+      border-color: var(--deep-teal);
+    }
+    
+    
+    .model-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 24px 0;
+    }
+    
+    .model-tab {
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--deep-teal);
+      padding: 9px 12px;
+      cursor: pointer;
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: 0.3s var(--ease);
+    }
+    
+    .model-tab.active,
+    .model-tab:hover {
+      background: var(--deep-teal);
+      color: var(--sand);
+      transform: translateY(-2px);
+    }
+    
+    .model-display {
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 1px solid var(--line);
+      transition: 0.3s ease;
+    }
+    
+    .model-display h4 {
+      font-family: 'Cormorant Garamond', serif;
+      color: var(--deep-teal);
+      font-size: 2rem;
+      margin: 10px 0 16px;
+    }
+    
+    .model-score span {
+      display: block;
+      font-family: 'Cormorant Garamond', serif;
+      color: var(--deep-teal);
+      font-size: 2.6rem;
+      line-height: 1;
+      margin-bottom: 14px;
+    }
+    
+    .mini-bar {
+      height: 8px;
+      background: rgba(26, 60, 64, 0.12);
+      overflow: hidden;
+      margin-bottom: 18px;
+    }
+    
+    .mini-bar div {
+      height: 100%;
+      background: var(--accent);
+      transition: width 0.8s var(--ease);
+    }
+    
+    .model-insight {
+      margin-top: 16px;
+      padding: 18px;
+      border-left: 3px solid var(--accent);
+      background: rgba(65, 125, 122, 0.08);
+      font-style: italic;
+    }
+    
+    .model-description {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.6;
+      min-height: 60px;
+      transition: opacity 0.3s ease;
+    }
+    
+    
+    .model-intro {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(32px, 5vw, 62px);
+      margin-bottom: 42px;
+    }
+    
+    .model-intro p {
+      color: var(--text);
+      opacity: 0.82;
+      font-size: 1.02rem;
+      line-height: 1.85;
+      margin: 0;
+    }
+    
+    .model-wide-card {
+      background: rgba(252, 250, 247, 0.78);
+      border: 1px solid var(--line);
+      padding: clamp(30px, 4vw, 46px);
+      box-shadow: 0 20px 55px rgba(26, 60, 64, 0.08);
+    }
+    
+    .model-wide-head {
+      display: grid;
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: 36px;
+      align-items: end;
+      margin-bottom: 28px;
+    }
+    
+    .model-wide-head h3 {
+      color: var(--deep-teal);
+      font-size: clamp(2.2rem, 4vw, 3.2rem);
+      margin-top: 12px;
+    }
+    
+    .model-wide-head p {
+      color: var(--muted);
+      margin: 0;
+    }
+    
+    .model-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 0 0 30px;
+    }
+    
+    .model-tab {
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--deep-teal);
+      padding: 10px 13px;
+      cursor: pointer;
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: 0.3s var(--ease);
+    }
+    
+    .model-tab.active,
+    .model-tab:hover {
+      background: var(--deep-teal);
+      color: var(--sand);
+      transform: translateY(-2px);
+    }
+    
+    .model-display-wide {
+      display: grid;
+      grid-template-columns: 1fr 0.7fr 1fr;
+      gap: 28px;
+      align-items: center;
+      padding-top: 30px;
+      border-top: 1px solid var(--line);
+      transition: 0.3s ease;
+    }
+    
+    .model-display-wide h4 {
+      font-family: 'Cormorant Garamond', serif;
+      color: var(--deep-teal);
+      font-size: clamp(2rem, 3vw, 2.7rem);
+      margin: 10px 0 14px;
+    }
+    
+    .model-display-wide p {
+      margin: 0;
+      color: var(--muted);
+    }
+    
+    .model-score span {
+      display: block;
+      font-family: 'Cormorant Garamond', serif;
+      color: var(--deep-teal);
+      font-size: clamp(3rem, 5vw, 4.4rem);
+      line-height: 1;
+    }
+    
+    .model-score small {
+      display: block;
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+    }
+    
+    .mini-bar {
+      height: 8px;
+      background: rgba(26, 60, 64, 0.12);
+      overflow: hidden;
+      margin-top: 18px;
+    }
+    
+    .mini-bar div {
+      height: 100%;
+      background: var(--accent);
+      transition: width 0.8s var(--ease);
+    }
+    
+    .model-insight {
+      padding: 20px;
+      border-left: 3px solid var(--accent);
+      background: rgba(65, 125, 122, 0.08);
+      font-style: italic;
+    }
+    
+    @media (max-width: 950px) {
+      .model-intro,
+      .model-wide-head,
+      .model-display-wide {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .compatibility-lab{
+      margin-top:42px;
+      background:var(--paper);
+      border:1px solid var(--line);
+      padding:clamp(28px,4vw,44px);
+      box-shadow:0 18px 45px rgba(26,60,64,.08);
+    }
+    
+    .lab-grid{
+      display:grid;
+      grid-template-columns:.85fr 1.15fr;
+      gap:32px;
+      align-items:stretch;
+    }
+    
+    .slider-box{
+      background:var(--sand-2);
+      border:1px solid var(--line);
+      padding:26px;
+    }
+    
+    .slider-field{
+      margin-bottom:26px;
+    }
+    
+    .slider-field label{
+      display:flex;
+      justify-content:space-between;
+      gap:14px;
+      color:var(--deep-teal);
+      font-weight:800;
+      font-size:.78rem;
+      text-transform:uppercase;
+      letter-spacing:.1em;
+      margin-bottom:12px;
+    }
+    
+    .slider-field input{
+      width:100%;
+      accent-color:var(--accent);
+    }
+    
+    .score-panel{
+      background:var(--deep-teal);
+      color:var(--sand);
+      padding:32px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      position:relative;
+      overflow:hidden;
+    }
+    
+    .score-panel::after{
+      content:"MATCH SCORE";
+      position:absolute;
+      right:18px;
+      bottom:18px;
+      color:rgba(237,228,217,.14);
+      font-size:.7rem;
+      font-weight:900;
+      letter-spacing:.18em;
+    }
+    
+    .score-panel h3{
+      color:var(--sand);
+      font-size:clamp(2rem,4vw,3rem);
+      margin-bottom:16px;
+    }
+    
+    .score-number{
+      font-family:'Cormorant Garamond',serif;
+      font-size:clamp(4rem,8vw,6.5rem);
+      line-height:1;
+      color:var(--sand);
+      margin:20px 0;
+    }
+    
+    .score-bar{
+      height:14px;
+      background:rgba(237,228,217,.16);
+      overflow:hidden;
+      margin:18px 0 22px;
+    }
+    
+    .score-fill{
+      height:100%;
+      width:0%;
+      background:linear-gradient(90deg,var(--sand),#ffffff);
+      transition:width .45s var(--ease);
+    }
+    
+    .score-panel p{
+      color:rgba(237,228,217,.84);
+      margin:0;
+    }
+    
+    .criteria-clicks{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:12px;
+      margin-top:24px;
+    }
+    
+    .criteria-clicks button{
+      border:1px solid var(--line);
+      background:white;
+      color:var(--deep-teal);
+      padding:14px;
+      cursor:pointer;
+      font-size:.72rem;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      transition:.25s var(--ease);
+    }
+    
+    .criteria-clicks button:hover,
+    .criteria-clicks button.active{
+      background:var(--deep-teal);
+      color:var(--sand);
+      transform:translateY(-3px);
+    }
+    
+    .criteria-note{
+      margin-top:18px;
+      padding:22px;
+      border-left:3px solid var(--accent);
+      background:rgba(65,125,122,.08);
+      color:var(--muted);
+    }
+    
+    @media(max-width:900px){
+      .lab-grid,
+      .criteria-clicks{
+        grid-template-columns:1fr;
+      }
+    }
+
+    .result-grid,
+    .limits-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .result-card {
+      background: var(--sand-2);
+      border: 1px solid rgba(26, 60, 64, 0.12);
+      padding: 30px;
+      transition: 0.3s ease;
+    }
+
+    .result-card strong {
+      display: block;
+      color: var(--accent);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      margin-bottom: 18px;
+    }
+
+    .result-card span {
+      display: block;
+      font-family: 'Cormorant Garamond', serif;
+      color: var(--deep-teal);
+      font-size: 2.2rem;
+      line-height: 1.05;
+    }
+
+    .result-card p {
+      margin: 18px 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .result-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 18px 40px rgba(26, 60, 64, 0.08);
+    }
+
+    .limit-card {
+      border-top: 3px solid var(--deep-teal);
+      padding-top: 22px;
+    }
+
+    .limit-card h3 {
+      color: var(--deep-teal);
+      font-size: 1.7rem;
+      margin-bottom: 12px;
+    }
+
+    .limit-card p {
+      color: var(--muted);
+      margin: 0;
+      font-size: 0.94rem;
+    }
+
+    .learning-panel {
+      background: rgba(26, 60, 64, 0.08);
+      padding: clamp(76px, 9vw, 100px) 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .learning-inner {
+      background: rgba(26, 60, 64, 0.9);
+      color: var(--sand);
+      padding: clamp(38px, 6vw, 64px);
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+
+    .learning-inner h2 {
+      color: var(--sand);
+      font-size: clamp(2.4rem, 5vw, 3.7rem);
+      margin-bottom: 30px;
+    }
+
+    .learning-inner p,
+    .learning-inner li {
+      color: rgba(237, 228, 217, 0.88);
+    }
+
+    .learning-inner ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .learning-inner li {
+      margin-bottom: 12px;
+    }
+
+    footer {
+      padding: 75px 0;
+      background: var(--deep-teal);
+      color: var(--sand);
+      text-align: center;
+    }
+
+    footer h2 {
+      color: var(--sand);
+      font-size: 2.8rem;
+      margin-bottom: 20px;
+    }
+
+    footer p {
+      margin: 0;
+      color: rgba(237, 228, 217, 0.78);
+    }
+    
+    footer {
+      padding: 75px 0;
+      background: var(--deep-teal);
+      color: var(--sand);
+      text-align: center;
+    }
+
+    footer h2 {
+      color: var(--sand);
+      font-size: 2.8rem;
+      margin-bottom: 20px;
+    }
+
+    footer p {
+      margin: 0;
+      color: rgba(237, 228, 217, 0.78);
+    }
+    
+    .project-footer{
+      background: #10282b;
+      color: var(--sand);
+      padding: 90px 0 42px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .project-footer::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(circle at top right,
+        rgba(65,125,122,0.18),
+        transparent 35%);
+      pointer-events:none;
+    }
+    
+    .footer-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:end;
+      gap:30px;
+      margin-bottom:50px;
+    }
+    
+    .footer-top h2{
+      color:var(--sand);
+      margin-top:12px;
+      font-size:clamp(2.4rem,5vw,4rem);
+    }
+    
+    .footer-link{
+      color:rgba(237,228,217,0.78);
+      font-size:0.75rem;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:0.1em;
+      border-bottom:2px solid rgba(237,228,217,0.4);
+      padding-bottom:6px;
+      transition:0.3s ease;
+    }
+    
+    .footer-link:hover{
+      color:white;
+      border-color:white;
+    }
+    
+    .footer-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:22px;
+    }
+    
+    .footer-card{
+      background:rgba(255,255,255,0.04);
+      border:1px solid rgba(237,228,217,0.08);
+      padding:34px;
+      min-height:220px;
+      display:flex;
+      flex-direction:column;
+      justify-content:flex-end;
+      transition:0.45s cubic-bezier(.16,1,.3,1);
+      position:relative;
+      overflow:hidden;
+    }
+    
+    .footer-card::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(
+        135deg,
+        rgba(65,125,122,0.95),
+        rgba(26,60,64,0.98)
+      );
+      opacity:0;
+      transition:0.45s ease;
+    }
+    
+    .footer-card *{
+      position:relative;
+      z-index:2;
+    }
+    
+    .footer-card span{
+      color:rgba(237,228,217,0.6);
+      font-size:0.68rem;
+      font-weight:800;
+      letter-spacing:0.12em;
+      text-transform:uppercase;
+      margin-bottom:14px;
+    }
+    
+    .footer-card h3{
+      color:var(--sand);
+      font-size:2rem;
+      line-height:1.1;
+      transition:0.35s ease;
+    }
+    
+    .footer-card:hover{
+      transform:translateY(-8px);
+      border-color:rgba(237,228,217,0.16);
+      box-shadow:0 26px 60px rgba(0,0,0,0.28);
+    }
+    
+    .footer-card:hover::before{
+      opacity:1;
+    }
+    
+    .footer-bottom{
+      margin-top:55px;
+      padding-top:24px;
+      border-top:1px solid rgba(237,228,217,0.08);
+      color:rgba(237,228,217,0.52);
+      font-size:0.82rem;
+    }
+    
+    @media (max-width:950px){
+    
+      .footer-grid{
+        grid-template-columns:1fr;
+      }
+    
+      .footer-top{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+    }
+    
+        .footer-nav {
+      display: grid;
+      grid-template-columns: 1fr 1.15fr 1fr;
+      gap: 22px;
+    }
+    
+    .footer-related {
+      margin-top: 28px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    
+    .footer-related a {
+      border: 1px solid rgba(237,228,217,0.12);
+      color: rgba(237,228,217,0.72);
+      padding: 10px 13px;
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: 0.3s ease;
+    }
+    
+    .footer-related a:hover {
+      background: var(--sand);
+      color: var(--deep-teal);
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.75s var(--ease), transform 0.75s var(--ease);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 950px) {
+      .hero-layout,
+      .mag-grid,
+      .model-grid,
+      .result-grid,
+      .learning-grid,
+      .limits-grid,
+      .section-title,
+      .criteria-grid {
+        grid-template-columns: 1fr;
+        gap: 38px;
+      }
+
+      .hero-card {
+        min-height: auto;
+      }
+
+      .side-box {
+        position: static;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .container {
+        width: min(100% - 34px, 1180px);
+      }
+
+      .nav-inner {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 16px 0;
+      }
+
+      .nav-links {
+        justify-content: flex-start;
+        gap: 12px;
+      }
+
+      .hero {
+        min-height: auto;
+        padding: 70px 0 55px;
+        background: var(--bg);
+      }
+
+      .hero-card,
+      .side-box,
+      .model-card,
+      .learning-inner,
+      .criteria-panel {
+        padding: 28px;
+      }
+
+      .meta-item,
+      .method-item {
+        grid-template-columns: 1fr;
+        gap: 6px;
+      }
+
+      .oval-grid,
+      .hero-stats {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-stats div {
+        border-right: none;
+        border-bottom: 1px solid rgba(237, 228, 217, 0.16);
+        padding-left: 0 !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="progress-bar" id="progressBar"></div>
+
+  <nav>
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo">Ilona Saunier</a>
+
+      <div class="nav-links">
+        <a href="index.html">Portfolio</a>
+        <a href="#contexte">Contexte</a>
+        <a href="#demarche">Démarche</a>
+        <a href="#appui">Statistique</a>
+        <a href="#valorisation">Valorisation</a>
+        <a href="#resultats">Résultats</a>
+        <a href="#limites">Limites</a>
+        <a href="#bilan">Bilan</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="container hero-layout">
+      <div class="reveal">
+        <div class="caps">Projet · Valoriser une production</div>
+        <h1>Compatibilité et comportements en speed dating</h1>
+
+        <p>
+          Ce projet porte sur la valorisation d’une étude statistique autour de la compatibilité perçue
+          lors d’interactions de speed dating. L’objectif principal était de transformer des résultats
+          quantitatifs en une lecture claire, accessible et interprétable d’un phénomène humain.
+        </p>
+
+        <p class="hero-angle">
+          Objectif : comprendre quels critères psychologiques semblent influencer l’envie de poursuivre une rencontre.
+        </p>
+
+        <a href="#contexte" class="btn-mag">Lire l’étude de cas</a>
+      </div>
+
+      <aside class="hero-card reveal">
+        <div>
+          <h3>Fiche projet</h3>
+
+          <div class="meta-list">
+            <div class="meta-item">
+              <strong>Type</strong>
+              <span>Étude statistique</span>
+            </div>
+
+            <div class="meta-item">
+              <strong>Compétence</strong>
+              <span>Valoriser une production</span>
+            </div>
+
+            <div class="meta-item">
+              <strong>Thème</strong>
+              <span>Compatibilité humaine</span>
+            </div>
+
+            <div class="meta-item">
+              <strong>Angle</strong>
+              <span>Interprétation des résultats</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-stats">
+          <div>
+            <strong><span data-counter="83">0</span>%</strong>
+            <span>bonne classification</span>
+          </div>
+        
+          <div>
+            <strong data-counter="2">0</strong>
+            <span>critères centraux</span>
+          </div>
+        
+          <div>
+            <strong class="metric-plus"><span data-counter="5">0</span>+</strong>
+            <span>modèles testés</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </header>
+
+  <main>
+    <section id="contexte" class="section container reveal">
+      <div class="section-title">
+        <div>
+          <div class="caps">01 / Contexte</div>
+          <h2>Comprendre les critères relationnels</h2>
+        </div>
+        <p>
+          Le sujet relie statistique, comportement humain et interprétation accessible des résultats.
+        </p>
+      </div>
+
+      <div class="mag-grid">
+        <div class="text-block">
+          <p>
+            Les données proviennent d’événements de speed dating au cours desquels les participants rencontraient
+            plusieurs personnes pendant un temps limité. Après chaque échange, ils indiquaient s’ils souhaitaient
+            ou non revoir leur partenaire, ce qui permet d’étudier les mécanismes associés à la compatibilité perçue.
+          </p>
+
+          <p>
+            L’enjeu du projet était surtout de donner du sens aux résultats : passer d’une base de données riche
+            et technique à une analyse compréhensible, capable d’expliquer quels facteurs relationnels paraissent
+            jouer un rôle dans la décision finale.
+          </p>
+        </div>
+
+        <aside class="side-box">
+          <h3>Angle d’analyse</h3>
+
+          <p>
+            Les variables étudiées portent notamment sur les préférences exprimées par les participants et sur
+            l’importance accordée à certaines qualités personnelles.
+          </p>
+
+          <div class="oval-grid">
+            <span>Compatibilité perçue</span>
+            <span>Interprétation statistique</span>
+            <span>Psychologie sociale</span>
+            <span>Prédiction et restitution</span>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="demarche" class="section container reveal">
+      <div class="section-title">
+        <div>
+          <div class="caps">02 / Démarche</div>
+          <h2>De la donnée brute à une lecture accessible</h2>
+        </div>
+        <p>
+          Le projet met l’accent sur le nettoyage, la sélection et l’interprétation des variables.
+        </p>
+      </div>
+
+      <div class="mag-grid">
+        <div class="text-block">
+          <p>
+            Un important travail de nettoyage a d’abord été réalisé afin de retirer les variables redondantes,
+            peu exploitables ou difficiles à interpréter. Cette étape a permis de construire une base plus claire,
+            centrée sur les informations utiles pour comprendre la décision de poursuivre ou non une interaction.
+          </p>
+
+          <p>
+            L’analyse a ensuite été orientée vers la sélection de variables interprétables d’un point de vue humain.
+            L’humour et la sincérité ont été retenus car ils permettent de relier les résultats statistiques à une
+            lecture psychologique simple et compréhensible.
+          </p>
+        </div>
+
+        <div class="method-list">
+          <div class="method-item">
+            <div class="method-num">01</div>
+            <div>
+              <h3>Clarifier</h3>
+              <p>Nettoyer la base et retirer les variables redondantes ou peu exploitables.</p>
+            </div>
+          </div>
+
+          <div class="method-item">
+            <div class="method-num">02</div>
+            <div>
+              <h3>Sélectionner</h3>
+              <p>Identifier des variables compréhensibles et interprétables d’un point de vue humain.</p>
+            </div>
+          </div>
+
+          <div class="method-item">
+            <div class="method-num">03</div>
+            <div>
+              <h3>Comparer</h3>
+              <p>Mobiliser plusieurs modèles afin de vérifier la cohérence des variables retenues.</p>
+            </div>
+          </div>
+
+          <div class="method-item">
+            <div class="method-num">04</div>
+            <div>
+              <h3>Restituer</h3>
+              <p>Transformer les résultats statistiques en une lecture accessible du phénomène étudié.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="appui" class="model-section reveal">
+      <div class="container">
+        <div class="section-title">
+          <div>
+            <div class="caps">03 / Appui statistique</div>
+            <h2>Une classification au service de l’interprétation</h2>
+          </div>
+          <p>
+            Les modèles servent ici à appuyer une lecture humaine, pas seulement à produire un score.
+          </p>
+        </div>
+    
+        <div class="model-intro">
+          <p>
+            Plusieurs modèles de classification ont été utilisés afin de valider la pertinence des variables
+            retenues. L’objectif n’était pas uniquement de prédire un match, mais de vérifier que les facteurs
+            identifiés permettent bien de structurer la décision observée dans les données.
+          </p>
+    
+          <p>
+            Les performances obtenues sont proches, autour de 83 % de bonne classification, ce qui confirme
+            que l’humour et la sincérité capturent une part importante de la variabilité du comportement
+            des participants.
+          </p>
+        </div>
+    
+        <div class="model-wide-card">
+          <div class="model-wide-head">
+            <div>
+              <div class="caps">Comparateur interactif</div>
+              <h3>Modèles mobilisés</h3>
+            </div>
+    
+            <p>
+              Clique sur un modèle pour comprendre sa performance et son intérêt dans l’analyse.
+            </p>
+          </div>
+    
+          <div class="model-tabs">
+            <button class="model-tab active" data-model="reg">Régression logistique</button>
+            <button class="model-tab" data-model="nbnp">Naive Bayes non paramétrique</button>
+            <button class="model-tab" data-model="p">Perceptron</button>
+            <button class="model-tab" data-model="svm">SVM</button>
+            <button class="model-tab" data-model="nb">Naive Bayes</button>
+            <button class="model-tab" data-model="skew">Loi asymétrique</button>
+            <button class="model-tab" data-model="regm">Multinomiale</button>
+          </div>
+    
+          <div class="model-display model-display-wide">
+            <div>
+              <div class="caps">Lecture du modèle</div>
+              <h4 id="modelTitle">Régression logistique</h4>
+    
+              <p id="modelDesc">
+                Modèle très pertinent ici car il combine bonne performance et forte interprétabilité.
+              </p>
+            </div>
+    
+            <div class="model-score-block">
+              <div class="model-score">
+                <span id="modelScore">83,22 %</span>
+                <small>taux moyen de bonne classification</small>
+              </div>
+    
+              <div class="mini-bar">
+                <div id="modelBar" style="width:83.22%"></div>
+              </div>
+            </div>
+    
+            <p class="model-insight" id="modelInsight">
+              Il permet d’expliquer directement l’influence de l’humour et de la sincérité sur la probabilité de match.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="valorisation" class="section container reveal">
+      <div class="section-title">
+        <div>
+          <div class="caps">04 / Valorisation</div>
+          <h2>Rendre lisible un phénomène relationnel</h2>
+        </div>
+        <p>
+          Le cœur du projet : traduire un résultat statistique en interprétation claire.
+        </p>
+      </div>
+
+      <div class="mag-grid">
+        <div class="text-block">
+          <p>
+            La valeur du projet repose sur la capacité à transformer des résultats statistiques en une lecture claire
+            du comportement des individus. Les modèles servent ici de support, mais le cœur de l’analyse reste
+            l’interprétation des résultats.
+          </p>
+
+          <p>
+            Cette démarche montre qu’une étude quantitative peut être utilisée pour éclairer un phénomène humain,
+            sans le réduire à une simple prédiction.
+          </p>
+        </div>
+
+        <div class="text-block">
+          <p>
+            L’humour et la sincérité apparaissent comme deux dimensions centrales de la compatibilité perçue.
+            Ces critères sont immédiatement compréhensibles et permettent de relier les résultats à une logique
+            proche des usages réels, notamment dans le cadre d’applications de recommandation.
+          </p>
+        </div>
+      </div>
+
+      
+    </section>
+
+    <section id="resultats" class="section container reveal">
+      <div class="section-title">
+        <div>
+          <div class="caps">05 / Résultats</div>
+          <h2>Enseignements principaux</h2>
+        </div>
+        <p>
+          Les résultats deviennent intéressants parce qu’ils sont interprétables et communicables.
+        </p>
+      </div>
+
+      <div class="result-grid">
+        <article class="result-card">
+          <strong>Facteur clé</strong>
+          <span>Humour</span>
+          <p>Une variable centrale pour expliquer la compatibilité perçue.</p>
+        </article>
+
+        <article class="result-card">
+          <strong>Second facteur</strong>
+          <span>Sincérité</span>
+          <p>Un critère utile pour donner une lecture humaine aux résultats.</p>
+        </article>
+
+        <article class="result-card">
+          <strong>Performance</strong>
+          <span>≈ 83 %</span>
+          <p>Un niveau cohérent pour appuyer l’analyse sans surinterpréter.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="limites" class="section container reveal">
+      <div class="section-title">
+        <div>
+          <div class="caps">06 / Limites & recul</div>
+          <h2>Ce que l’analyse ne dit pas entièrement</h2>
+        </div>
+        <p>
+          Un projet statistique sur un phénomène humain doit toujours rester prudent dans son interprétation.
+        </p>
+      </div>
+
+      <div class="limits-grid">
+        <article class="limit-card">
+          <h3>Phénomène complexe</h3>
+          <p>
+            La compatibilité ne peut pas être réduite à quelques variables : le contexte, l’attitude et la subjectivité jouent aussi un rôle.
+          </p>
+        </article>
+
+        <article class="limit-card">
+          <h3>Données déclaratives</h3>
+          <p>
+            Les préférences exprimées par les participants peuvent différer de leurs comportements réels au moment de la rencontre.
+          </p>
+        </article>
+
+        <article class="limit-card">
+          <h3>Interprétation prudente</h3>
+          <p>
+            Le score de classification appuie l’analyse, mais il ne suffit pas à expliquer entièrement une décision relationnelle.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section id="bilan" class="learning-panel reveal">
+      <div class="container">
+        <div class="learning-inner">
+          <h2>07 / Bilan du projet</h2>
+
+          <div class="learning-grid">
+            <div>
+              <p>
+                Les résultats montrent que l’humour et la sincérité constituent deux variables particulièrement
+                utiles pour expliquer la compatibilité perçue. Leur intérêt ne vient pas seulement de leur pouvoir
+                prédictif, mais surtout de leur capacité à produire une interprétation claire du phénomène étudié.
+              </p>
+
+              <p>
+                Le projet illustre donc une démarche de valorisation : transformer une étude statistique en un récit
+                compréhensible, en reliant les résultats numériques à des critères psychologiques et relationnels
+                facilement interprétables.
+              </p>
+            </div>
+
+            <div>
+              <div class="caps" style="color: rgba(237,228,217,0.65); margin-bottom: 18px;">
+                Compétences mobilisées
+              </div>
+
+              <ul>
+                <li>Nettoyage et sélection de variables</li>
+                <li>Valorisation d’un sujet scientifique et humain</li>
+                <li>Interprétation de résultats statistiques</li>
+                <li>Construction d’une restitution claire et accessible</li>
+                <li>Communication de résultats techniques de manière accessible</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="project-footer">
+    <div class="container">
+  
+      <div class="footer-top">
+        <div>
+          <div class="caps">Continuer l’exploration</div>
+          <h2>Navigation projets</h2>
+        </div>
+  
+        <a href="index.html#competences" class="footer-link">
+          Tous les projets
+        </a>
+      </div>
+  
+      <div class="footer-nav">
+  
+        <a href="methode_echan.html" class="footer-card nav-prev">
+          <span>Projet précédent</span>
+          <h3>Méthodes d’échantillonnage</h3>
+        </a>
+  
+        <a href="index.html#competences" class="footer-card nav-all">
+          <span>Portfolio</span>
+          <h3>Retour aux compétences & réalisations</h3>
+        </a>
+  
+        <a href="paymatch.html" class="footer-card nav-next">
+          <span>Projet suivant</span>
+          <h3>Paymatch</h3>
+        </a>
+  
+      </div>
+  
+      <div class="footer-bottom">
+        Projet détaillé · Portfolio d’Ilona Saunier · Sciences des Données
+      </div>
+  
+    </div>
+  </footer>
+
+  <script>
+    const progressBar = document.getElementById("progressBar");
+
+    function updateProgress() {
+      const scrollTop = window.scrollY;
+      const pageHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = pageHeight > 0 ? (scrollTop / pageHeight) * 100 : 0;
+      progressBar.style.width = progress + "%";
+    }
+
+    window.addEventListener("scroll", updateProgress, { passive: true });
+    updateProgress();
+
+    const reveals = document.querySelectorAll(".reveal");
+
+    const revealObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.14 });
+
+    reveals.forEach(element => revealObserver.observe(element));
+
+    const sections = document.querySelectorAll("main section[id]");
+    const navItems = document.querySelectorAll(".nav-links a");
+
+    const sectionObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const id = entry.target.getAttribute("id");
+
+        navItems.forEach(link => {
+          link.classList.toggle("active", link.getAttribute("href") === "#" + id);
+        });
+      });
+    }, { rootMargin: "-45% 0px -50% 0px", threshold: 0.01 });
+
+    sections.forEach(section => sectionObserver.observe(section));
+    
+    const counters = document.querySelectorAll("[data-counter]");
+
+    const counterObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+    
+        const el = entry.target;
+        const target = Number(el.dataset.counter);
+        const duration = 900;
+        const start = performance.now();
+    
+        function animate(now) {
+          const progress = Math.min((now - start) / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          el.textContent = Math.round(target * eased);
+    
+          if (progress < 1) requestAnimationFrame(animate);
+        }
+    
+        requestAnimationFrame(animate);
+        counterObserver.unobserve(el);
+      });
+    }, { threshold: 0.7 });
+    
+    counters.forEach(counter => counterObserver.observe(counter));
+    
+
+    const modelData = {
+      reg: {
+        title: "Régression logistique",
+        score: "83,22 %",
+        width: "83.22%",
+        desc: "Modèle très pertinent ici car il combine bonne performance et forte interprétabilité.",
+        insight: "Il permet d’expliquer directement l’influence de l’humour et de la sincérité sur la probabilité de match."
+      },
+      nbnp: {
+        title: "Naive Bayes non paramétrique",
+        score: "83,23 %",
+        width: "83.23%",
+        desc: "Modèle flexible qui ne suppose pas de forme précise pour les distributions.",
+        insight: "Il confirme que les deux variables retenues structurent bien la décision de match."
+      },
+      p: {
+        title: "Perceptron",
+        score: "83,27 %",
+        width: "83.27%",
+        desc: "Méthode non paramétrique capable de modéliser une séparation plus souple entre les classes.",
+        insight: "Son score proche des autres modèles montre que la sélection des variables compte plus que la complexité du modèle."
+      },
+      svm: {
+        title: "SVM",
+        score: "83,25 %",
+        width: "83.25%",
+        desc: "Modèle à noyau radial utilisé pour capturer d’éventuelles relations non linéaires.",
+        insight: "Il reste performant, mais n’apporte pas de gain majeur par rapport aux modèles plus simples."
+      },
+      nb: {
+        title: "Naive Bayes",
+        score: "83,00 %",
+        width: "83%",
+        desc: "Modèle probabiliste simple basé sur une hypothèse d’indépendance conditionnelle.",
+        insight: "Malgré son hypothèse forte, il obtient un résultat stable grâce à la pertinence du couple humour / sincérité."
+      },
+      skew: {
+        title: "Loi normale asymétrique",
+        score: "82,98 %",
+        width: "82.98%",
+        desc: "Modèle plus fin qui prend en compte une possible asymétrie des distributions.",
+        insight: "Le BIC est meilleur, mais cela ne se traduit pas par une amélioration nette de la prédiction."
+      },
+      regm: {
+        title: "Régression multinomiale",
+        score: "47,89 %",
+        width: "47.89%",
+        desc: "Modèle moins adapté dans ce cadre car il devient instable avec davantage de classes et de variables.",
+        insight: "Ce résultat montre qu’un modèle plus complexe n’est pas forcément plus performant."
+      }
+    };
+
+    const modelTabs = document.querySelectorAll(".model-tab");
+    const modelTitle = document.getElementById("modelTitle");
+    const modelScore = document.getElementById("modelScore");
+    const modelBar = document.getElementById("modelBar");
+    const modelDesc = document.getElementById("modelDesc");
+    const modelInsight = document.getElementById("modelInsight");
+    const modelDisplay = document.querySelector(".model-display");
+    
+    modelTabs.forEach(tab => {
+      tab.addEventListener("click", () => {
+        const key = tab.dataset.model;
+        const model = modelData[key];
+    
+        modelTabs.forEach(t => t.classList.remove("active"));
+        tab.classList.add("active");
+    
+        modelDisplay.style.opacity = 0;
+        modelDisplay.style.transform = "translateY(6px)";
+    
+        setTimeout(() => {
+          modelTitle.textContent = model.title;
+          modelScore.textContent = model.score;
+          modelBar.style.width = model.width;
+          modelDesc.textContent = model.desc;
+          modelInsight.textContent = model.insight;
+    
+          modelDisplay.style.opacity = 1;
+          modelDisplay.style.transform = "translateY(0)";
+        }, 160);
+      });
+    });
+
+    
+    const humourSlider = document.getElementById("humourSlider");
+    const sinceriteSlider = document.getElementById("sinceriteSlider");
+    const humourValue = document.getElementById("humourValue");
+    const sinceriteValue = document.getElementById("sinceriteValue");
+    const scoreValue = document.getElementById("scoreValue");
+    const scoreFill = document.getElementById("scoreFill");
+    const scoreText = document.getElementById("scoreText");
+    
+    function updateCompatibilityScore(){
+      if(!humourSlider || !sinceriteSlider) return;
+    
+      const humour = Number(humourSlider.value);
+      const sincerite = Number(sinceriteSlider.value);
+    
+      humourValue.textContent = humour;
+      sinceriteValue.textContent = sincerite;
+    
+      const rawScore = (humour * 0.55) + (sincerite * 0.45);
+    
+      // Score volontairement plafonné : le modèle donne une tendance, pas une certitude.
+      const score = Math.round(18 + (rawScore / 100) * 65);
+    
+      scoreValue.textContent = score;
+      scoreFill.style.width = score + "%";
+    
+      if(score < 35){
+        scoreText.textContent = "Compatibilité estimée faible : les signaux observés restent limités.";
+      } else if(score < 58){
+        scoreText.textContent = "Compatibilité estimée modérée : certains critères sont favorables, mais l’incertitude reste importante.";
+      } else if(score < 75){
+        scoreText.textContent = "Compatibilité estimée plutôt élevée : humour et sincérité soutiennent la décision observée.";
+      } else {
+        scoreText.textContent = "Compatibilité estimée élevée, mais non certaine : le modèle indique une tendance, pas une garantie.";
+      }
+    }
+    
+    humourSlider?.addEventListener("input", updateCompatibilityScore);
+    sinceriteSlider?.addEventListener("input", updateCompatibilityScore);
+    updateCompatibilityScore();
+    
+    const criteriaTexts = {
+      humour: "L’humour est un critère relationnel facilement interprétable : il peut rendre une interaction plus positive et favoriser l’envie de revoir la personne.",
+      sincerite: "La sincérité donne une lecture plus qualitative de la compatibilité : elle renvoie à la confiance et à l’authenticité perçue.",
+      prediction: "Le modèle ne prédit pas une vérité absolue : il donne une tendance à partir des variables observées dans les données.",
+      limite: "La compatibilité humaine reste complexe. Le contexte, l’attitude, l’apparence ou la subjectivité peuvent aussi influencer la décision."
+    };
+    
+    const criteriaNote = document.getElementById("criteriaNote");
+    
+    document.querySelectorAll("[data-criterion]").forEach(button => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll("[data-criterion]").forEach(btn => btn.classList.remove("active"));
+        button.classList.add("active");
+    
+        criteriaNote.style.opacity = 0;
+    
+        setTimeout(() => {
+          criteriaNote.textContent = criteriaTexts[button.dataset.criterion];
+          criteriaNote.style.opacity = 1;
+        }, 150);
+      });
+    });
+  </script>
+</body>
+</html>

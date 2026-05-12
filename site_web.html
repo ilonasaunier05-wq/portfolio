@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Projet — Site touristique</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#fcfaf7;
+      --paper:#fffdf9;
+      --deep:#1a3c40;
+      --accent:#417d7a;
+      --sand:#ede4d9;
+      --text:#1d1d1d;
+      --muted:#666;
+      --line:rgba(26,60,64,.13);
+      --shadow:0 30px 90px rgba(0,0,0,.18);
+      --ease:cubic-bezier(.16,1,.3,1);
+    }
+
+    *{box-sizing:border-box}
+
+    html{
+      scroll-behavior:smooth;
+      background:var(--bg);
+    }
+
+    body{
+      margin:0;
+      font-family:'Montserrat',sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(65,125,122,.12), transparent 34vw),
+        var(--bg);
+      overflow-x:hidden;
+      line-height:1.7;
+    }
+
+    h1,h2,h3{
+      font-family:'Cormorant Garamond',serif;
+      font-weight:600;
+      line-height:1.05;
+      margin:0;
+      color:var(--deep);
+    }
+
+    p{margin-top:0}
+    a{text-decoration:none;color:inherit}
+
+    .container{
+      width:min(1180px, calc(100% - 48px));
+      margin:0 auto;
+    }
+
+    .caps{
+      text-transform:uppercase;
+      letter-spacing:.16em;
+      font-size:.72rem;
+      font-weight:800;
+      color:var(--accent);
+    }
+
+    .progress-bar{
+      position:fixed;
+      top:0;
+      left:0;
+      height:3px;
+      width:0%;
+      background:var(--accent);
+      z-index:999;
+    }
+
+    nav{
+      position:sticky;
+      top:0;
+      z-index:300;
+      background:rgba(252,250,247,.9);
+      backdrop-filter:blur(16px);
+      border-bottom:1px solid var(--line);
+    }
+
+    .nav-inner{
+      min-height:74px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:24px;
+    }
+
+    .nav-logo{
+      font-family:'Cormorant Garamond',serif;
+      font-size:1.8rem;
+      font-style:italic;
+      font-weight:700;
+      color:var(--deep);
+    }
+
+    .nav-links{
+      display:flex;
+      flex-wrap:wrap;
+      gap:18px;
+      justify-content:flex-end;
+    }
+
+    .nav-links a{
+      font-size:.69rem;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      transition:.25s;
+    }
+
+    .nav-links a:hover{
+      color:var(--accent);
+    }
+
+    .hero{
+      min-height:calc(100svh - 74px);
+      display:grid;
+      align-items:center;
+      padding:70px 0;
+      border-bottom:1px solid var(--line);
+      position:relative;
+      overflow:hidden;
+    }
+
+    .hero::after{
+      content:"TOURISME";
+      position:absolute;
+      right:-70px;
+      top:50%;
+      transform:translateY(-50%) rotate(90deg);
+      font-family:'Cormorant Garamond',serif;
+      font-size:clamp(5rem,12vw,11rem);
+      color:rgba(26,60,64,.045);
+      white-space:nowrap;
+      pointer-events:none;
+    }
+
+    .hero-grid{
+      display:grid;
+      grid-template-columns:1.05fr .95fr;
+      gap:clamp(38px,6vw,76px);
+      align-items:center;
+      position:relative;
+      z-index:1;
+    }
+
+    .hero h1{
+      font-size:clamp(3.3rem,7vw,6.6rem);
+      letter-spacing:-.055em;
+      margin:18px 0 24px;
+    }
+
+    .hero-text{
+      max-width:720px;
+      color:var(--muted);
+      font-size:1.02rem;
+    }
+
+    .hero-quote{
+      margin:28px 0;
+      padding-left:18px;
+      border-left:3px solid var(--accent);
+      font-family:'Cormorant Garamond',serif;
+      font-size:clamp(1.25rem,2vw,1.6rem);
+      font-style:italic;
+      color:var(--deep);
+      line-height:1.35;
+    }
+
+    .btn{
+      display:inline-block;
+      margin-top:18px;
+      font-size:.75rem;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:.1em;
+      color:var(--accent);
+      border-bottom:2px solid currentColor;
+      transition:.3s var(--ease);
+    }
+
+    .btn:hover{
+      transform:translateY(-3px);
+    }
+
+    .project-card{
+      background:var(--deep);
+      color:var(--sand);
+      padding:clamp(30px,4vw,46px);
+      min-height:430px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      position:relative;
+      overflow:hidden;
+      box-shadow:0 24px 70px rgba(26,60,64,.15);
+    }
+
+    .project-card::before{
+      content:"";
+      position:absolute;
+      inset:18px;
+      border:1px solid rgba(237,228,217,.18);
+      pointer-events:none;
+    }
+
+    .project-card h3{
+      color:var(--sand);
+      font-size:2.25rem;
+      margin-bottom:26px;
+    }
+
+    .meta{
+      border-top:1px solid rgba(237,228,217,.2);
+    }
+
+    .meta div{
+      display:grid;
+      grid-template-columns:120px 1fr;
+      gap:18px;
+      padding:16px 0;
+      border-bottom:1px solid rgba(237,228,217,.15);
+    }
+
+    .meta strong{
+      color:rgba(237,228,217,.6);
+      font-size:.65rem;
+      text-transform:uppercase;
+      letter-spacing:.14em;
+    }
+
+    .meta span{
+      color:rgba(237,228,217,.92);
+      font-weight:600;
+      font-size:.92rem;
+    }
+
+    .section{
+      padding:clamp(82px,9vw,112px) 0;
+      border-bottom:1px solid var(--line);
+    }
+
+    .section-title{
+      display:grid;
+      grid-template-columns:.85fr 1.15fr;
+      gap:50px;
+      align-items:end;
+      margin-bottom:58px;
+    }
+
+    .section-title h2{
+      margin-top:14px;
+      font-size:clamp(2.5rem,5vw,4rem);
+      letter-spacing:-.03em;
+    }
+
+    .section-title p{
+      color:var(--muted);
+      max-width:660px;
+      margin:0;
+    }
+
+    .cards{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:24px;
+    }
+
+    .card{
+      background:var(--paper);
+      border:1px solid var(--line);
+      padding:30px;
+      transition:.35s var(--ease);
+    }
+
+    .card:hover{
+      transform:translateY(-6px);
+      box-shadow:0 18px 45px rgba(26,60,64,.09);
+    }
+
+    .card span{
+      display:block;
+      color:var(--accent);
+      font-size:.68rem;
+      font-weight:800;
+      letter-spacing:.15em;
+      text-transform:uppercase;
+      margin-bottom:16px;
+    }
+
+    .card h3{
+      font-size:1.8rem;
+      margin-bottom:14px;
+    }
+
+    .card p{
+      color:var(--muted);
+      font-size:.92rem;
+      margin:0;
+    }
+
+    .immersive{
+      background:#0e1718;
+      padding:clamp(82px,9vw,112px) 0;
+      height:auto;
+      position:relative;
+    }
+    
+    .immersive-sticky{
+      position:relative;
+      top:auto;
+      min-height:auto;
+      display:grid;
+      place-items:center;
+      padding:clamp(24px,4vw,56px);
+      overflow:hidden;
+    }
+    
+    .browser-wrap{
+      width:min(1180px,94vw);
+      transform:none !important;
+      position:relative;
+      z-index:2;
+    }
+
+    .immersive-bg-text{
+      position:absolute;
+      inset:auto auto 8vh 5vw;
+      font-family:'Cormorant Garamond',serif;
+      font-size:clamp(4rem,12vw,12rem);
+      color:rgba(237,228,217,.045);
+      pointer-events:none;
+      white-space:nowrap;
+    }
+
+    .browser-label{
+      color:rgba(237,228,217,.78);
+      display:flex;
+      justify-content:space-between;
+      gap:20px;
+      align-items:end;
+      margin-bottom:18px;
+    }
+
+    .browser-label h2{
+      color:var(--sand);
+      font-size:clamp(2rem,4vw,3.4rem);
+    }
+
+    .browser-label p{
+      max-width:430px;
+      margin:0;
+      color:rgba(237,228,217,.66);
+      font-size:.9rem;
+    }
+
+    .browser{
+      background:#111;
+      border:1px solid rgba(237,228,217,.14);
+      border-radius:22px;
+      overflow:hidden;
+      box-shadow:var(--shadow);
+    }
+
+    .browser-top{
+      height:48px;
+      background:#1d2425;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:0 18px;
+      border-bottom:1px solid rgba(237,228,217,.1);
+    }
+
+    .dots{
+      display:flex;
+      gap:8px;
+    }
+
+    .dots span{
+      width:11px;
+      height:11px;
+      border-radius:50%;
+      background:rgba(237,228,217,.35);
+      display:block;
+    }
+
+    .url{
+      width:min(520px,52vw);
+      height:28px;
+      border-radius:999px;
+      background:rgba(255,255,255,.08);
+      color:rgba(237,228,217,.58);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:.72rem;
+      font-weight:600;
+      overflow:hidden;
+      white-space:nowrap;
+      padding:0 14px;
+    }
+
+    .open-site{
+      color:rgba(237,228,217,.78);
+      font-size:.68rem;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:.12em;
+      border-bottom:1px solid rgba(237,228,217,.35);
+    }
+
+    .site-frame{
+      width:100%;
+      height:min(72vh,760px);
+      border:0;
+      display:block;
+      background:white;
+    }
+
+    .note{
+      margin-top:16px;
+      color:rgba(237,228,217,.55);
+      text-align:center;
+      font-size:.78rem;
+    }
+
+    .bilan{
+      background:
+        linear-gradient(135deg, rgba(237,228,217,.85), rgba(245,238,230,.5)),
+        var(--bg);
+    }
+
+    .bilan-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:50px;
+      align-items:start;
+    }
+
+    .bilan p,
+    .bilan li{
+      color:var(--muted);
+    }
+
+    .bilan ul{
+      margin:0;
+      padding-left:18px;
+    }
+
+    footer{
+      background:var(--deep);
+      color:var(--sand);
+      padding:80px 0 42px;
+    }
+
+    .footer-top{
+      display:flex;
+      justify-content:space-between;
+      gap:28px;
+      align-items:end;
+      margin-bottom:42px;
+    }
+
+    footer h2{
+      color:var(--sand);
+      font-size:clamp(2.4rem,5vw,4rem);
+      margin-top:12px;
+    }
+
+    .footer-link{
+      color:rgba(237,228,217,.78);
+      font-size:.75rem;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:.1em;
+      border-bottom:2px solid rgba(237,228,217,.4);
+      padding-bottom:6px;
+    }
+
+    .footer-bottom{
+      padding-top:24px;
+      border-top:1px solid rgba(237,228,217,.1);
+      color:rgba(237,228,217,.55);
+      font-size:.82rem;
+    }
+
+    .reveal{
+      opacity:0;
+      transform:translateY(26px);
+      transition:opacity .75s var(--ease), transform .75s var(--ease);
+    }
+
+    .reveal.visible{
+      opacity:1;
+      transform:translateY(0);
+    }
+
+    @media(max-width:950px){
+      .hero-grid,
+      .section-title,
+      .cards,
+      .bilan-grid{
+        grid-template-columns:1fr;
+      }
+
+      .browser-label{
+        display:block;
+      }
+
+      .browser-label p{
+        margin-top:12px;
+      }
+
+      .site-frame{
+        height:70vh;
+      }
+    }
+
+    @media(max-width:720px){
+      .container{
+        width:min(100% - 34px,1180px);
+      }
+
+      .nav-inner{
+        flex-direction:column;
+        align-items:flex-start;
+        padding:16px 0;
+      }
+
+      .hero{
+        min-height:auto;
+      }
+
+      .project-card{
+        min-height:auto;
+      }
+
+      .meta div{
+        grid-template-columns:1fr;
+        gap:5px;
+      }
+
+      .immersive{
+        height:auto;
+      }
+
+      .immersive-sticky{
+        position:relative;
+        min-height:auto;
+      }
+
+      .browser-wrap{
+        transform:none !important;
+      }
+
+      .site-frame{
+        height:68vh;
+      }
+
+      .url{
+        display:none;
+      }
+
+      .footer-top{
+        display:block;
+      }
+
+      .footer-link{
+        display:inline-block;
+        margin-top:20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="progress-bar" id="progressBar"></div>
+
+  <nav>
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo">Ilona Saunier</a>
+
+      <div class="nav-links">
+        <a href="index.html">Portfolio</a>
+        <a href="#objectif">Objectif</a>
+        <a href="#immersion">Explorer</a>
+        <a href="#competences">Compétences</a>
+        <a href="#bilan">Bilan</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="container hero-grid">
+      <div class="reveal">
+        <div class="caps">Projet web · Tourisme</div>
+        <h1>Site web touristique</h1>
+
+        <p class="hero-text">
+          Conception d’un site web dédié au tourisme, pensé comme une expérience immersive pour présenter
+          des destinations, des offres et des activités de manière claire, visuelle et attractive.
+        </p>
+
+        <p class="hero-quote">
+          Objectif : créer une interface complète, cohérente et navigable, proche d’un véritable site vitrine touristique.
+        </p>
+
+        <a href="#immersion" class="btn">Explorer le site intégré</a>
+      </div>
+
+      <aside class="project-card reveal">
+        <div>
+          <h3>Fiche projet</h3>
+
+          <div class="meta">
+            <div>
+              <strong>Type</strong>
+              <span>Site vitrine multi-pages</span>
+            </div>
+
+            <div>
+              <strong>Domaine</strong>
+              <span>Tourisme · Voyage · Découverte</span>
+            </div>
+
+            <div>
+              <strong>Outils</strong>
+              <span>HTML · CSS · JavaScript</span>
+            </div>
+
+            <div>
+              <strong>Focus</strong>
+              <span>UX/UI · Responsive · Navigation</span>
+            </div>
+          </div>
+        </div>
+
+        <a href="globexplore2/index.html" target="_blank" class="btn" style="color:var(--sand);border-color:var(--sand);">
+          Ouvrir le site
+        </a>
+      </aside>
+    </div>
+  </header>
+
+  <main>
+    <section id="objectif" class="section container reveal">
+      <div class="section-title">
+        <div>
+          <div class="caps">01 / Objectif</div>
+          <h2>Créer une expérience web touristique</h2>
+        </div>
+
+        <p>
+          Ce projet m’a permis de travailler la conception d’un site complet : organisation des contenus,
+          cohérence graphique, navigation entre plusieurs pages et adaptation aux différents formats d’écran.
+        </p>
+      </div>
+
+      <div class="cards">
+        <article class="card">
+          <span>Design</span>
+          <h3>Ambiance visuelle</h3>
+          <p>
+            Mise en valeur du thème du voyage à travers des visuels immersifs, une hiérarchie claire et une identité cohérente.
+          </p>
+        </article>
+
+        <article class="card">
+          <span>Navigation</span>
+          <h3>Parcours utilisateur</h3>
+          <p>
+            Organisation du site en plusieurs pages afin de rendre l’exploration des contenus simple et naturelle.
+          </p>
+        </article>
+
+        <article class="card">
+          <span>Responsive</span>
+          <h3>Adaptation écran</h3>
+          <p>
+            Construction d’une interface pensée pour rester lisible sur ordinateur, tablette et mobile.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section id="immersion" class="immersive">
+      <div class="immersive-sticky">
+        <div class="immersive-bg-text">EXPÉRIENCE</div>
+
+        <div class="browser-wrap" id="browserWrap">
+          <div class="browser-label">
+            <div>
+              <div class="caps" style="color:rgba(237,228,217,.62);">02 / Immersion</div>
+              <h2>Explorer le site sans quitter le portfolio</h2>
+            </div>
+
+            <p>
+              Cette section intègre directement le projet : il est possible de naviguer dans le site touristique
+              comme dans une vraie fenêtre web.
+            </p>
+          </div>
+
+          <div class="browser">
+            <div class="browser-top">
+              <div class="dots">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+
+              <div class="url">portfolio.local / tourisme / index.html</div>
+
+              <a href="globexplore2/index.html" target="_blank" class="open-site">Plein écran</a>
+            </div>
+
+            <iframe
+              class="site-frame"
+              src="globexplore2/index.html"
+              title="Aperçu interactif du site touristique">
+            </iframe>
+          </div>
+
+          <div class="note">
+            Astuce : tu peux cliquer dans la fenêtre pour naviguer dans le projet.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="competences" class="section container reveal">
+      <div class="section-title">
+        <div>
+          <div class="caps">03 / Compétences</div>
+          <h2>Ce que le projet met en avant</h2>
+        </div>
+
+        <p>
+          Même réalisé dans un cadre étudiant, ce projet montre une capacité à concevoir une interface complète,
+          structurée et agréable à parcourir.
+        </p>
+      </div>
+
+      <div class="cards">
+        <article class="card">
+          <span>HTML</span>
+          <h3>Structure de pages</h3>
+          <p>
+            Création de pages organisées, reliées entre elles et pensées pour présenter clairement les contenus.
+          </p>
+        </article>
+
+        <article class="card">
+          <span>CSS</span>
+          <h3>Mise en page</h3>
+          <p>
+            Travail des sections, des grilles, des espacements, des couleurs et de la cohérence visuelle globale.
+          </p>
+        </article>
+
+        <article class="card">
+          <span>JavaScript</span>
+          <h3>Interactions</h3>
+          <p>
+            Ajout de comportements interactifs pour rendre l’expérience plus dynamique et plus engageante.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section id="bilan" class="section bilan reveal">
+      <div class="container">
+        <div class="section-title">
+          <div>
+            <div class="caps">04 / Bilan</div>
+            <h2>Un projet web complémentaire à mes projets data</h2>
+          </div>
+
+          <p>
+            Ce site touristique complète mon portfolio en montrant une compétence différente :
+            la capacité à concevoir et intégrer une interface web lisible, esthétique et fonctionnelle.
+          </p>
+        </div>
+
+        <div class="bilan-grid">
+          <div>
+            <p>
+              Ce projet m’a permis de mieux comprendre la construction d’un site web complet :
+              choix de l’identité visuelle, organisation des pages, navigation, responsive design
+              et expérience utilisateur.
+            </p>
+
+            <p>
+              Il montre aussi ma capacité à valoriser un contenu de manière claire et attractive,
+              ce qui est essentiel pour présenter des projets, des données ou des résultats à un public.
+            </p>
+          </div>
+
+          <div>
+            <div class="caps" style="margin-bottom:18px;">Apprentissages</div>
+            <ul>
+              <li>Structurer un site web multi-pages</li>
+              <li>Créer une interface cohérente et agréable</li>
+              <li>Travailler la navigation utilisateur</li>
+              <li>Adapter une mise en page aux différents écrans</li>
+              <li>Présenter un projet web dans une logique de portfolio</li>
+            </ul>
+
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+  
+      <div class="footer-top">
+        <div>
+          <div class="caps" style="color:rgba(237,228,217,.62);">
+            Retour portfolio
+          </div>
+  
+          <h2>Continuer l’exploration</h2>
+  
+          <p style="
+            color:rgba(237,228,217,.68);
+            max-width:540px;
+            margin-top:18px;
+          ">
+            Revenir à l’accueil du portfolio pour découvrir les autres projets,
+            les visualisations data et les expériences web développées.
+          </p>
+        </div>
+  
+        <a href="index.html#extra-projects" class="footer-link">
+          Voir les autres projets
+        </a>
+      </div>
+  
+      <div class="footer-bottom">
+        Projet web touristique · HTML · CSS · JavaScript · Portfolio d’Ilona Saunier
+      </div>
+  
+    </div>
+  </footer>
+
+  <script>
+    const progressBar = document.getElementById("progressBar");
+
+    function updateProgress(){
+      const scrollTop = window.scrollY;
+      const pageHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = pageHeight > 0 ? (scrollTop / pageHeight) * 100 : 0;
+      progressBar.style.width = progress + "%";
+    }
+
+    window.addEventListener("scroll", updateProgress, { passive:true });
+    updateProgress();
+
+    const reveals = document.querySelectorAll(".reveal");
+
+    const revealObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting){
+          entry.target.classList.add("visible");
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold:.14 });
+
+    reveals.forEach(el => revealObserver.observe(el));
+
+    const browserWrap = document.getElementById("browserWrap");
+    const immersive = document.getElementById("immersion");
+
+    function animateBrowser(){
+      if(!browserWrap || !immersive) return;
+
+      const rect = immersive.getBoundingClientRect();
+      const total = rect.height - window.innerHeight;
+      const passed = Math.min(Math.max(-rect.top, 0), total);
+      const progress = total > 0 ? passed / total : 0;
+
+      const scale = 0.9 + progress * 0.1;
+      browserWrap.style.transform = `scale(${scale})`;
+    }
+
+    window.addEventListener("scroll", animateBrowser, { passive:true });
+    animateBrowser();
+  </script>
+</body>
+</html>

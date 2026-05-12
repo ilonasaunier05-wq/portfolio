@@ -1,0 +1,1749 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projet — Population active, emploi et chômage</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#fcfaf7;
+      --paper:#fffdf9;
+      --deep:#1a3c40;
+      --accent:#417d7a;
+      --sand:#ede4d9;
+      --sand2:#f5eee6;
+      --text:#1d1d1d;
+      --muted:#666;
+      --line:rgba(26,60,64,.13);
+      --shadow:0 24px 70px rgba(26,60,64,.12);
+      --ease:cubic-bezier(.16,1,.3,1);
+    }
+
+    *{box-sizing:border-box}
+
+    html{scroll-behavior:smooth;background:var(--bg)}
+
+    body{
+      margin:0;
+      font-family:Montserrat,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top left,rgba(65,125,122,.12),transparent 34vw),
+        var(--bg);
+      line-height:1.7;
+      overflow-x:hidden;
+    }
+
+    h1,h2,h3,h4{
+      font-family:"Cormorant Garamond",serif;
+      font-weight:600;
+      line-height:1.05;
+      margin:0;
+      color:var(--deep);
+    }
+
+    p{margin-top:0;color:var(--muted)}
+    a{text-decoration:none;color:inherit}
+    button{font:inherit}
+
+    .container{
+      width:min(1180px,calc(100% - 48px));
+      margin:auto;
+    }
+
+    .caps{
+      text-transform:uppercase;
+      letter-spacing:.16em;
+      font-size:.72rem;
+      font-weight:800;
+      color:var(--accent);
+    }
+
+    .progress-bar{
+      position:fixed;
+      top:0;
+      left:0;
+      height:3px;
+      width:0;
+      background:var(--accent);
+      z-index:999;
+    }
+
+    nav{
+      position:sticky;
+      top:0;
+      z-index:300;
+      background:rgba(252,250,247,.9);
+      backdrop-filter:blur(16px);
+      border-bottom:1px solid var(--line);
+    }
+
+    .nav-inner{
+      min-height:74px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:24px;
+    }
+
+    .nav-logo{
+      font-family:"Cormorant Garamond",serif;
+      font-size:1.8rem;
+      font-style:italic;
+      font-weight:700;
+      color:var(--deep);
+      white-space:nowrap;
+    }
+
+    .nav-links{
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      gap:18px;
+    }
+
+    .nav-links a{
+      font-size:.69rem;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      transition:.25s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active{color:var(--accent)}
+
+    .hero{
+      min-height:calc(100svh - 74px);
+      display:grid;
+      align-items:center;
+      padding:clamp(50px,7vh,80px) 0;
+      border-bottom:1px solid var(--line);
+      background:
+        linear-gradient(90deg,transparent 0 64%,rgba(237,228,217,.62) 64% 100%),
+        var(--bg);
+      position:relative;
+      overflow:hidden;
+    }
+
+    .hero::after{
+      content:"INSEE DATA";
+      position:absolute;
+      right:-60px;
+      top:50%;
+      transform:translateY(-50%) rotate(90deg);
+      font-family:"Cormorant Garamond",serif;
+      font-size:clamp(5rem,11vw,10rem);
+      color:rgba(26,60,64,.045);
+      pointer-events:none;
+      white-space:nowrap;
+    }
+
+    .hero-layout{
+      display:grid;
+      grid-template-columns:minmax(0,1.08fr) minmax(320px,.82fr);
+      gap:clamp(36px,5vw,70px);
+      align-items:center;
+      position:relative;
+      z-index:1;
+    }
+
+    .hero h1{
+      font-size:clamp(3rem,6.4vw,5.8rem);
+      letter-spacing:-.055em;
+      margin:18px 0 22px;
+      max-width:850px;
+    }
+
+    .hero p{
+      max-width:700px;
+      font-size:clamp(.98rem,1.15vw,1.08rem);
+    }
+
+    .hero-angle {
+      margin: 28px 0 28px;
+      padding-left: 18px;
+      border-left: 3px solid var(--accent);
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: clamp(1.25rem, 2vw, 1.55rem) !important;
+      color: var(--deep-teal) !important;
+      line-height: 1.35 !important;
+    }
+
+    .btn-mag{
+      display:inline-block;
+      margin-top:18px;
+      font-size:.75rem;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:.1em;
+      color:var(--accent);
+      border-bottom:2px solid currentColor;
+      transition:.3s var(--ease);
+    }
+
+    .btn-mag:hover{transform:translateY(-3px)}
+
+    .hero-card{
+      background:var(--deep);
+      color:var(--sand);
+      padding:clamp(30px,4vw,44px);
+      min-height:clamp(380px,53vh,480px);
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .hero-card::before{
+      content:"";
+      position:absolute;
+      inset:18px;
+      border:1px solid rgba(237,228,217,.18);
+      pointer-events:none;
+    }
+
+    .hero-card h3{
+      color:var(--sand);
+      font-size:clamp(1.8rem,3vw,2.25rem);
+      margin-bottom:24px;
+    }
+
+    .meta-list{border-top:1px solid rgba(237,228,217,.22)}
+
+    .meta-item{
+      display:grid;
+      grid-template-columns:120px 1fr;
+      gap:18px;
+      padding:16px 0;
+      border-bottom:1px solid rgba(237,228,217,.16);
+    }
+
+    .meta-item strong{
+      color:rgba(237,228,217,.62);
+      font-size:.65rem;
+      text-transform:uppercase;
+      letter-spacing:.14em;
+    }
+
+    .meta-item span{
+      color:rgba(237,228,217,.9);
+      font-weight:600;
+      font-size:.92rem;
+    }
+
+    .hero-stats{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      margin-top:30px;
+      border-top:1px solid rgba(237,228,217,.18);
+      border-bottom:1px solid rgba(237,228,217,.18);
+    }
+
+    .hero-stats div{
+      padding:18px 14px 16px 0;
+      border-right:1px solid rgba(237,228,217,.16);
+    }
+
+    .hero-stats div:not(:first-child){padding-left:14px}
+    .hero-stats div:last-child{border-right:0}
+
+    .hero-stats strong{
+      display:block;
+      font-family:"Cormorant Garamond",serif;
+      font-size:2rem;
+      line-height:1;
+      color:var(--sand);
+    }
+
+    .hero-stats span{
+      display:block;
+      margin-top:8px;
+      color:rgba(237,228,217,.68);
+      font-size:.62rem;
+      text-transform:uppercase;
+      letter-spacing:.1em;
+      line-height:1.4;
+    }
+
+    .section{
+      padding:clamp(82px,9vw,112px) 0;
+      border-bottom:1px solid var(--line);
+      scroll-margin-top:95px;
+    }
+
+    .section-title{
+      display:grid;
+      grid-template-columns:.85fr 1.15fr;
+      gap:50px;
+      align-items:end;
+      margin-bottom:58px;
+    }
+
+    .section-title h2{
+      margin-top:14px;
+      font-size:clamp(2.6rem,5vw,4rem);
+      letter-spacing:-.03em;
+    }
+
+    .section-title p{
+      max-width:650px;
+      margin:0;
+    }
+
+    .data-panel{
+      background:linear-gradient(135deg,var(--sand),rgba(245,238,230,.65));
+    }
+
+    .cards{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:24px;
+    }
+
+    .card{
+      background:var(--paper);
+      border:1px solid var(--line);
+      padding:30px;
+      box-shadow:0 16px 45px rgba(26,60,64,.06);
+      transition:.3s var(--ease);
+    }
+
+    .card:hover{
+      transform:translateY(-5px);
+      box-shadow:0 22px 55px rgba(26,60,64,.1);
+    }
+
+    .card span{
+      display:block;
+      color:var(--accent);
+      font-size:.68rem;
+      font-weight:800;
+      letter-spacing:.15em;
+      text-transform:uppercase;
+      margin-bottom:16px;
+    }
+
+    .card h3{
+      font-size:1.8rem;
+      margin-bottom:14px;
+    }
+
+    .visual-lab{
+      display:grid;
+      grid-template-columns:minmax(230px,.42fr) minmax(0,1fr);
+      gap:28px;
+      align-items:start;
+    }
+
+    .tab-list{
+      display:grid;
+      gap:10px;
+      position:sticky;
+      top:100px;
+    }
+
+    .tab-list button{
+      border:1px solid var(--line);
+      background:rgba(255,253,249,.78);
+      padding:18px;
+      text-align:left;
+      cursor:pointer;
+      transition:.28s var(--ease);
+    }
+
+    .tab-list button:hover,
+    .tab-list button.active{
+      background:var(--deep);
+      color:var(--sand);
+      transform:translateX(4px);
+    }
+
+    .tab-list strong{
+      display:block;
+      font-family:"Cormorant Garamond",serif;
+      font-size:1.55rem;
+      line-height:1;
+      margin-bottom:8px;
+    }
+
+    .tab-list span{
+      display:block;
+      font-size:.82rem;
+      line-height:1.55;
+      opacity:.76;
+    }
+
+    .visual-panel{
+      background:var(--paper);
+      border:1px solid var(--line);
+      padding:clamp(22px,3vw,34px);
+      box-shadow:var(--shadow);
+      min-width:0;
+    }
+
+    .chart-head{
+      display:flex;
+      justify-content:space-between;
+      gap:18px;
+      align-items:flex-start;
+      margin-bottom:22px;
+    }
+
+    .chart-head h3{
+      font-size:clamp(2rem,3.8vw,3rem);
+    }
+
+    .mini-controls{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      justify-content:flex-end;
+    }
+
+    .mini-controls button,
+    .mini-controls select{
+      border:1px solid var(--line);
+      background:white;
+      color:var(--deep);
+      padding:9px 11px;
+      font-size:.68rem;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      cursor:pointer;
+    }
+
+    .mini-controls button.active{
+      background:var(--deep);
+      color:var(--sand);
+    }
+
+    .chart-wrap{
+      min-height:420px;
+      display:grid;
+      align-items:center;
+    }
+
+    .bars{
+      display:grid;
+      gap:12px;
+    }
+
+    .bar-row{
+      display:grid;
+      grid-template-columns:190px 1fr 72px;
+      gap:14px;
+      align-items:center;
+      font-size:.86rem;
+      color:var(--muted);
+    }
+
+    .bar-track{
+      height:18px;
+      background:rgba(26,60,64,.08);
+      overflow:hidden;
+    }
+
+    .bar-fill{
+      height:100%;
+      width:0%;
+      background:var(--accent);
+      transition:width .8s var(--ease);
+    }
+
+    .bar-value{
+      color:var(--deep);
+      font-weight:800;
+      text-align:right;
+    }
+
+    .donuts{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:22px;
+    }
+
+    .donut-card{
+      border:1px solid var(--line);
+      background:rgba(245,238,230,.35);
+      padding:24px;
+      display:grid;
+      place-items:center;
+      text-align:center;
+    }
+
+    .donut{
+      width:210px;
+      height:210px;
+      border-radius:50%;
+      position:relative;
+      margin:14px auto;
+      background:conic-gradient(var(--accent) 0deg, var(--accent) 180deg, #d9afa8 180deg 360deg);
+    }
+
+    .donut::after{
+      content:"";
+      position:absolute;
+      inset:54px;
+      border-radius:50%;
+      background:var(--paper);
+    }
+
+    .donut-label{
+      position:absolute;
+      inset:0;
+      display:grid;
+      place-items:center;
+      z-index:1;
+      font-family:"Cormorant Garamond",serif;
+      color:var(--deep);
+      font-size:2.2rem;
+      line-height:1;
+    }
+
+    .legend{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      justify-content:center;
+      margin-top:10px;
+      color:var(--muted);
+      font-size:.85rem;
+    }
+
+    .legend i{
+      display:inline-block;
+      width:10px;
+      height:10px;
+      margin-right:6px;
+      background:var(--accent);
+    }
+
+    .legend i.alt{background:#d9afa8}
+
+    .group-bars{
+      display:grid;
+      gap:18px;
+    }
+
+    .group-line{
+      display:grid;
+      grid-template-columns:90px 1fr;
+      gap:14px;
+      align-items:center;
+    }
+
+    .group-title{
+      color:var(--deep);
+      font-weight:800;
+      font-size:.82rem;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+    }
+
+    .group-pair{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:8px;
+    }
+
+    .small-bar{
+      display:grid;
+      gap:5px;
+    }
+
+    .small-bar span{
+      font-size:.75rem;
+      color:var(--muted);
+    }
+
+    .map-layout{
+      display:grid;
+      grid-template-columns:minmax(0,1.15fr) minmax(280px,.85fr);
+      gap:28px;
+      align-items:stretch;
+    }
+
+    .map-box{
+      background:white;
+      border:1px solid var(--line);
+      min-height:620px;
+      overflow:hidden;
+      position:relative;
+    }
+
+    #franceMap{
+      width:100%;
+      height:620px;
+      display:block;
+      background:
+        radial-gradient(circle at center,rgba(65,125,122,.07),transparent 28rem),
+        #fffdf9;
+    }
+
+    .map-box path{
+      stroke:#fff;
+      stroke-width:.75;
+      cursor:pointer;
+      transition:.2s ease;
+    }
+
+    .map-box path:hover,
+    .map-box path.active{
+      stroke:var(--deep);
+      stroke-width:2;
+      filter:drop-shadow(0 6px 12px rgba(26,60,64,.22));
+    }
+
+    .map-info{
+      background:var(--deep);
+      color:var(--sand);
+      padding:30px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+    }
+
+    .map-info h3{
+      color:var(--sand);
+      font-size:clamp(2.2rem,4vw,3.2rem);
+      margin:10px 0 18px;
+    }
+
+    .map-info p,
+    .map-info li{
+      color:rgba(237,228,217,.82);
+    }
+
+    .map-details{
+      display:grid;
+      gap:12px;
+      margin-top:24px;
+    }
+
+    .map-details div{
+      border:1px solid rgba(237,228,217,.18);
+      padding:16px;
+    }
+
+    .map-details b{
+      display:block;
+      color:rgba(237,228,217,.62);
+      font-size:.65rem;
+      text-transform:uppercase;
+      letter-spacing:.14em;
+      margin-bottom:5px;
+    }
+
+    .map-details span{
+      color:var(--sand);
+      font-weight:700;
+    }
+
+    .legend-scale{
+      display:flex;
+      gap:0;
+      height:14px;
+      margin-top:28px;
+      border:1px solid rgba(237,228,217,.16);
+    }
+
+    .legend-scale i{flex:1}
+
+    .result-grid,
+    .limits-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:24px;
+    }
+    
+    .learning-grid{
+      display:grid;
+      grid-template-columns:1.15fr .85fr;
+      gap:40px;
+    }
+
+    .result-card{
+      background:rgba(255,253,249,.88);
+      border:1px solid rgba(26,60,64,.16);
+      padding:30px;
+      box-shadow:0 16px 42px rgba(26,60,64,.07);
+    
+      transition:
+        transform .55s cubic-bezier(.16,1,.3,1),
+        box-shadow .55s cubic-bezier(.16,1,.3,1),
+        border-color .45s ease,
+        background .45s ease;
+    
+      will-change: transform;
+    }
+    
+    .result-card:hover{
+      transform:translateY(-10px);
+      box-shadow:0 34px 80px rgba(26,60,64,.16);
+      border-color:rgba(65,125,122,.32);
+      background:#fffdfa;
+    }
+
+    .result-card strong{
+      display:block;
+      color:var(--accent);
+      font-size:.7rem;
+      text-transform:uppercase;
+      letter-spacing:.16em;
+      margin-bottom:18px;
+    }
+
+    .result-card span{
+      display:block;
+      font-family:"Cormorant Garamond",serif;
+      color:var(--deep);
+      font-size:2.25rem;
+      line-height:1.05;
+    }
+
+    .limit-card{
+      border-top:3px solid var(--deep);
+      padding-top:22px;
+    }
+
+    .limit-card h3{
+      font-size:1.7rem;
+      margin-bottom:12px;
+    }
+
+    .bilan{
+      background:rgba(26,60,64,.08);
+    }
+
+    .bilan-inner{
+      background:rgba(26,60,64,.92);
+      color:var(--sand);
+      padding:clamp(38px,6vw,64px);
+    }
+
+    .bilan-inner h2{color:var(--sand);font-size:clamp(2.4rem,5vw,3.7rem);margin-bottom:30px}
+    .bilan-inner p,.bilan-inner li{color:rgba(237,228,217,.88)}
+    .bilan-inner ul{margin:0;padding-left:18px}
+
+    footer{
+      background:#10282b;
+      color:var(--sand);
+      padding:85px 0 42px;
+    }
+
+    footer h2{
+      color:var(--sand);
+      font-size:clamp(2.4rem,5vw,4rem);
+      margin-top:12px;
+    }
+
+    .footer-top{
+      display:flex;
+      justify-content:space-between;
+      gap:30px;
+      align-items:end;
+      margin-bottom:45px;
+    }
+
+    .footer-link{
+      color:rgba(237,228,217,.78);
+      font-size:.75rem;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:.1em;
+      border-bottom:2px solid rgba(237,228,217,.4);
+      padding-bottom:6px;
+    }
+
+    .footer-bottom{
+      padding-top:24px;
+      border-top:1px solid rgba(237,228,217,.08);
+      color:rgba(237,228,217,.52);
+      font-size:.82rem;
+    }
+    
+    .project-footer{
+      background:#10282b;
+      color:var(--sand);
+      padding:90px 0 42px;
+      position:relative;
+      overflow:hidden;
+    }
+    
+    .project-footer::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:radial-gradient(circle at top right,rgba(65,125,122,.18),transparent 35%);
+      pointer-events:none;
+    }
+    
+    .footer-nav{
+      display:grid;
+      grid-template-columns:1fr 1.15fr 1fr;
+      gap:22px;
+    }
+    
+    .footer-card{
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(237,228,217,.08);
+      padding:34px;
+      min-height:220px;
+      display:flex;
+      flex-direction:column;
+      justify-content:flex-end;
+      transition:.45s var(--ease);
+      position:relative;
+      overflow:hidden;
+    }
+    
+    .footer-card::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(135deg,rgba(65,125,122,.95),rgba(26,60,64,.98));
+      opacity:0;
+      transition:.45s ease;
+    }
+    
+    .footer-card *{
+      position:relative;
+      z-index:2;
+    }
+    
+    .footer-card span{
+      color:rgba(237,228,217,.6);
+      font-size:.68rem;
+      font-weight:800;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      margin-bottom:14px;
+    }
+    
+    .footer-card h3{
+      color:var(--sand);
+      font-size:2rem;
+      line-height:1.1;
+    }
+    
+    .footer-card:hover{
+      transform:translateY(-8px);
+      border-color:rgba(237,228,217,.16);
+      box-shadow:0 26px 60px rgba(0,0,0,.28);
+    }
+    
+    .footer-card:hover::before{
+      opacity:1;
+    }
+    
+    @media(max-width:950px){
+      .footer-nav{
+        grid-template-columns:1fr;
+      }
+    
+      .footer-top{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+    }
+
+    .tooltip{
+      position:fixed;
+      pointer-events:none;
+      z-index:1000;
+      background:rgba(26,60,64,.94);
+      color:var(--sand);
+      padding:9px 11px;
+      font-size:.78rem;
+      opacity:0;
+      transform:translate(-50%,-110%);
+      transition:opacity .15s ease;
+      max-width:240px;
+    }
+
+    .reveal{
+      opacity:0;
+      transform:translateY(24px);
+      transition:opacity .75s var(--ease),transform .75s var(--ease);
+    }
+
+    .reveal.visible{opacity:1;transform:none}
+
+    @media(max-width:1000px){
+      .hero-layout,
+      .section-title,
+      .visual-lab,
+      .map-layout,
+      .result-grid,
+      .limits-grid,
+      .learning-grid{
+        grid-template-columns:1fr;
+      }
+
+      .cards{grid-template-columns:1fr 1fr}
+      .tab-list{position:static}
+      .map-info{min-height:auto}
+    }
+
+    @media(max-width:720px){
+      .container{
+        width:100%;
+        padding-left:22px;
+        padding-right:22px;
+      }
+
+      .nav-inner{
+        flex-direction:column;
+        align-items:flex-start;
+        padding:16px 0;
+      }
+
+      .nav-links{
+        justify-content:flex-start;
+        gap:12px;
+      }
+
+      .nav-links a{font-size:.62rem}
+
+      .hero{
+        min-height:auto;
+        padding:62px 0 55px;
+        background:var(--bg);
+      }
+
+      .hero::after{display:none}
+
+      .cards,
+      .donuts,
+      .group-pair{
+        grid-template-columns:1fr;
+      }
+
+      .meta-item,
+      .hero-stats,
+      .bar-row,
+      .group-line{
+        grid-template-columns:1fr;
+      }
+
+      .hero-stats div{
+        border-right:0;
+        border-bottom:1px solid rgba(237,228,217,.16);
+        padding-left:0!important;
+      }
+
+      .chart-head{
+        display:block;
+      }
+
+      .mini-controls{
+        justify-content:flex-start;
+        margin-top:16px;
+      }
+
+      .map-box,
+      #franceMap{
+        height:460px;
+        min-height:460px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="progress-bar" id="progressBar"></div>
+  <div class="tooltip" id="tooltip"></div>
+
+  <nav>
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo">Ilona Saunier</a>
+      <div class="nav-links">
+        <a href="index.html">Portfolio</a>
+        <a href="#contexte">Contexte</a>
+        <a href="#graphiques">Graphiques</a>
+        <a href="#carte">Carte</a>
+        <a href="#resultats">Résultats</a>
+        <a href="#bilan">Bilan</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="container hero-layout">
+      <div class="reveal">
+        <div class="caps">Projet · Analyse, reporting et datavisualisation</div>
+        <h1>Population active, emploi et chômage en France</h1>
+        <p>
+          Analyse de données INSEE autour de la population active, de l’emploi et du chômage
+          entre 2014 et 2020. Les graphiques sont générés directement dans cette page à partir du fichier JSON exporté depuis R.
+        </p>
+        <p class="hero-angle">
+          Objectif : transformer plusieurs fichiers statistiques en une lecture visuelle des dynamiques d’emploi sur le territoire.
+        </p>
+        <a href="#graphiques" class="btn-mag">Explorer les graphiques</a>
+      </div>
+
+      <aside class="hero-card reveal">
+        <div>
+          <h3>Fiche projet</h3>
+          <div class="meta-list">
+            <div class="meta-item"><strong>Type</strong><span>Analyse & reporting</span></div>
+            <div class="meta-item"><strong>Données</strong><span>INSEE · 2014 à 2020</span></div>
+            <div class="meta-item"><strong>Axes</strong><span>Démographie · géographie · temporalité</span></div>
+            <div class="meta-item"><strong>Production</strong><span>Datavisualisation web interactive</span></div>
+          </div>
+        </div>
+
+        <div class="hero-stats">
+          <div><strong data-counter="8">0</strong><span>fichiers INSEE</span></div>
+          <div><strong data-counter="7">0</strong><span>années étudiées</span></div>
+          <div><strong data-counter="3">0</strong><span>axes visuels</span></div>
+        </div>
+      </aside>
+    </div>
+  </header>
+
+  <main>
+    <section id="contexte" class="section container reveal">
+      <div class="section-title">
+        <div>
+          <div class="caps">01 / Contexte</div>
+          <h2>Explorer les transformations de l’emploi</h2>
+        </div>
+        <p>
+          Le projet combine données démographiques, lecture géographique et analyse de l’évolution des emplois.
+          Le JSON généré depuis R sert de passerelle entre le traitement statistique et la visualisation web.
+        </p>
+      </div>
+
+      <div class="cards">
+        <article class="card">
+          <span>Données</span>
+          <h3>Sources INSEE</h3>
+          <p>Fichiers sur population active, statut, catégories professionnelles et secteurs d’activité.</p>
+        </article>
+        <article class="card">
+          <span>Méthode</span>
+          <h3>Export JSON</h3>
+          <p>Les agrégations sont réalisées dans R, puis envoyées au site sous forme de données lisibles par JavaScript.</p>
+        </article>
+        <article class="card">
+          <span>Résultat</span>
+          <h3>Graphiques interactifs</h3>
+          <p>La page permet de changer d’année, de thème et de département sans images fixes.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="graphiques" class="section data-panel reveal">
+      <div class="container">
+        <div class="section-title">
+          <div>
+            <div class="caps">02 / Visualisations</div>
+            <h2>Lire les tendances directement dans le site</h2>
+          </div>
+          <p>
+            Les graphiques sont construits avec du HTML, du CSS et du JavaScript, à partir de `analyse_pop_data.json`.
+          </p>
+        </div>
+
+        <div class="visual-lab">
+          <div class="tab-list">
+            <button class="active" data-view="sexe">
+              <strong>Répartition H/F</strong>
+              <span>Comparer la structure hommes/femmes en 2014 et 2020.</span>
+            </button>
+            <button data-view="statut">
+              <strong>Statut par sexe</strong>
+              <span>Comparer salariés et chômeurs selon le sexe.</span>
+            </button>
+            <button data-view="categorie">
+              <strong>Catégories nationales</strong>
+              <span>Voir les catégories professionnelles les plus représentées.</span>
+            </button>
+            <button data-view="region">
+              <strong>Régions ciblées</strong>
+              <span>Agriculture, santé et ingénierie par région.</span>
+            </button>
+          </div>
+
+          <div class="visual-panel">
+            <div class="chart-head">
+              <div>
+                <div class="caps" id="chartKicker">Graphique actif</div>
+                <h3 id="chartTitle">Répartition hommes / femmes</h3>
+                <p id="chartText">Comparaison des proportions selon l’année.</p>
+              </div>
+
+              <div class="mini-controls" id="controls"></div>
+            </div>
+
+            <div class="chart-wrap" id="chartWrap"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="carte" class="section container reveal">
+      <div class="section-title">
+        <div>
+          <div class="caps">03 / Carte interactive</div>
+          <h2>Population active par département</h2>
+        </div>
+        <p>
+          La carte utilise le GeoJSON inclus dans ton fichier JSON. Clique sur un département pour lire ses indicateurs.
+        </p>
+      </div>
+
+      <div class="map-layout">
+        <div class="map-box">
+          <svg id="franceMap" viewBox="0 0 800 800" role="img" aria-label="Carte des départements français"></svg>
+        </div>
+
+        <aside class="map-info">
+          <div>
+            <div class="caps" style="color:rgba(237,228,217,.62)">Département sélectionné</div>
+            <h3 id="mapTitle">Clique sur la carte</h3>
+            <p id="mapText">Sélectionne un département pour afficher la part de population active et la catégorie dominante.</p>
+
+            <div class="map-details">
+              <div><b>Population active</b><span id="mapActive">—</span></div>
+              <div><b>Taux population active</b><span id="mapRate">—</span></div>
+              <div><b>Catégorie dominante</b><span id="mapCategory">—</span></div>
+              <div><b>Part de cette catégorie</b><span id="mapCategoryRate">—</span></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="legend-scale" id="legendScale"></div>
+            <p style="margin-top:10px;font-size:.82rem">Couleur foncée = taux plus élevé dans les données exportées.</p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="resultats" class="section data-panel reveal">
+      <div class="container">
+        <div class="section-title">
+          <div>
+            <div class="caps">04 / Résultats</div>
+            <h2>Ce que le projet met en avant</h2>
+          </div>
+          <p>
+            Le résultat principal est une chaîne complète : données brutes, agrégations dans R, export JSON,
+            restitution web interactive.
+          </p>
+        </div>
+
+        <div class="result-grid">
+          <article class="result-card">
+            <strong>Données</strong>
+            <span>Multi-sources</span>
+            <p>Plusieurs fichiers INSEE reliés pour produire des indicateurs cohérents.</p>
+          </article>
+          <article class="result-card">
+            <strong>Lecture</strong>
+            <span>2014 — 2020</span>
+            <p>Comparaisons temporelles pour visualiser les évolutions.</p>
+          </article>
+          <article class="result-card">
+            <strong>Interface</strong>
+            <span>Interactive</span>
+            <p>Graphiques et carte générés directement dans le site.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section container reveal">
+      <div class="section-title">
+        <div>
+          <div class="caps">05 / Limites</div>
+          <h2>Ce que l’analyse doit nuancer</h2>
+        </div>
+        <p>
+          Les visualisations simplifient la lecture, mais elles dépendent des agrégations choisies dans le script R.
+        </p>
+      </div>
+
+      <div class="limits-grid">
+        <article class="limit-card">
+          <h3>Codes métiers</h3>
+          <p>Certains graphiques utilisent encore des codes NA38, NA5 ou CS3_29 : ils peuvent être remplacés par des libellés.</p>
+        </article>
+        <article class="limit-card">
+          <h3>Carte</h3>
+          <p>La carte dépend du GeoJSON et des départements présents dans le JSON final.</p>
+        </article>
+        <article class="limit-card">
+          <h3>Interprétation</h3>
+          <p>Un indicateur visuel doit toujours être relié au contexte économique et social.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="bilan" class="section bilan reveal">
+      <div class="container">
+        <div class="bilan-inner">
+          <h2>06 / Bilan du projet</h2>
+
+          <div class="learning-grid">
+            <div>
+              <p>
+                Ce projet montre une démarche complète : préparer les données dans R, produire des agrégations fiables,
+                exporter un JSON, puis construire une interface qui rend les résultats plus intuitifs.
+              </p>
+              <p>
+                Le passage d’images fixes à des graphiques générés dans le site rend la page plus professionnelle,
+                plus dynamique et plus facile à adapter.
+              </p>
+            </div>
+
+            <div>
+              <div class="caps" style="color:rgba(237,228,217,.65);margin-bottom:18px">Compétences mobilisées</div>
+              <ul>
+                <li>Préparation et agrégation de données avec R</li>
+                <li>Export de données en JSON</li>
+                <li>Datavisualisation web avec JavaScript</li>
+                <li>Carte SVG à partir d’un GeoJSON</li>
+                <li>Interprétation d’indicateurs démographiques</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="project-footer">
+    <div class="container">
+  
+      <div class="footer-top">
+        <div>
+          <div class="caps" style="color:rgba(237,228,217,.62)">Continuer l’exploration</div>
+          <h2>Navigation projets</h2>
+        </div>
+  
+        <a href="index.html#competences" class="footer-link">
+          Tous les projets
+        </a>
+      </div>
+  
+      <div class="footer-nav">
+  
+        <a href="reconnaissance-langue.html" class="footer-card nav-prev">
+          <span>Projet précédent</span>
+          <h3>Reconnaissance automatique de langue</h3>
+        </a>
+  
+        <a href="index.html#competences" class="footer-card nav-all">
+          <span>Portfolio</span>
+          <h3>Retour aux compétences & réalisations</h3>
+        </a>
+  
+        <a href="data_challenge.html" class="footer-card nav-next">
+          <span>Projet suivant</span>
+          <h3>Data challenge climat</h3>
+        </a>
+  
+      </div>
+  
+      <div class="footer-bottom">
+        Projet détaillé · Population active, emploi et chômage · Portfolio d’Ilona Saunier
+      </div>
+  
+    </div>
+  </footer>
+
+  <script>
+  const progressBar = document.getElementById("progressBar");
+  const tooltip = document.getElementById("tooltip");
+  
+  let appData = null;
+  let currentView = "sexe";
+  let currentYear = "2020";
+  let currentCategory = "agriculture";
+  
+  function formatNumber(value) {
+    const n = Number(value);
+    if (Number.isNaN(n)) return "—";
+    return new Intl.NumberFormat("fr-FR").format(Math.round(n));
+  }
+  
+  function formatPercent(value) {
+    const n = Number(value);
+    if (Number.isNaN(n)) return "—";
+    return n.toFixed(2).replace(".", ",") + " %";
+  }
+  
+  function updateProgress() {
+    const pageHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = pageHeight > 0 ? (window.scrollY / pageHeight) * 100 : 0;
+    if (progressBar) progressBar.style.width = progress + "%";
+  }
+  
+  window.addEventListener("scroll", updateProgress, { passive: true });
+  updateProgress();
+  
+  const revealObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("visible");
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.14 });
+  
+  document.querySelectorAll(".reveal").forEach(el => revealObserver.observe(el));
+  
+  document.querySelectorAll(".tab-list button").forEach(button => {
+    button.addEventListener("click", () => {
+      document.querySelectorAll(".tab-list button").forEach(btn => btn.classList.remove("active"));
+      button.classList.add("active");
+      currentView = button.dataset.view;
+      renderCurrentView();
+    });
+  });
+  
+  function getRate(row) {
+    return Number(
+      row?.taux_population_active ??
+      row?.pourcentage_pop_active ??
+      row?.part_population_active_nationale ??
+      row?.part_population_active ??
+      row?.pourcentage_pop
+    );
+  }
+  
+  function getColor(value) {
+    const n = Number(value);
+    if (Number.isNaN(n)) return "#ece7df";
+  
+    if (n > 7) return "#08306b";
+    if (n > 6) return "#08519c";
+    if (n > 5) return "#2171b5";
+    if (n > 4) return "#4292c6";
+    if (n > 3) return "#6baed6";
+    if (n > 2) return "#9ecae1";
+    if (n > 1) return "#c6dbef";
+    return "#deebf7";
+  }
+  
+  function setControls(type) {
+    const controls = document.getElementById("controls");
+    if (!controls) return;
+  
+    if (type === "region") {
+      controls.innerHTML = `
+        <button class="${currentYear === "2014" ? "active" : ""}" data-year="2014">2014</button>
+        <button class="${currentYear === "2020" ? "active" : ""}" data-year="2020">2020</button>
+        <select id="categorySelect">
+          <option value="agriculture">Agriculture</option>
+          <option value="sante">Santé</option>
+          <option value="ingenierie">Ingénierie</option>
+        </select>
+      `;
+  
+      document.getElementById("categorySelect").value = currentCategory;
+  
+      document.getElementById("categorySelect").addEventListener("change", event => {
+        currentCategory = event.target.value;
+        renderCurrentView();
+      });
+    } else {
+      controls.innerHTML = `
+        <button class="${currentYear === "2014" ? "active" : ""}" data-year="2014">2014</button>
+        <button class="${currentYear === "2020" ? "active" : ""}" data-year="2020">2020</button>
+      `;
+    }
+  
+    controls.querySelectorAll("[data-year]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        currentYear = btn.dataset.year;
+        renderCurrentView();
+      });
+    });
+  }
+  
+  function renderCurrentView() {
+    if (!appData) return;
+  
+    setControls(currentView);
+  
+    if (currentView === "sexe") renderSexe();
+    if (currentView === "statut") renderStatut();
+    if (currentView === "categorie") renderCategoriesNationales();
+    if (currentView === "region") renderRegionCategory();
+  }
+  
+  function renderSexe() {
+    const data = appData.sexe?.[currentYear] || [];
+    const chartWrap = document.getElementById("chartWrap");
+  
+    document.getElementById("chartTitle").textContent = "Répartition hommes / femmes";
+    document.getElementById("chartText").textContent = `Proportions observées pour l’année ${currentYear}.`;
+  
+    chartWrap.innerHTML = `
+      <div class="donuts">
+        ${data.map(item => {
+          const angle = Number(item.proportion) * 3.6;
+          const color = item.sexe.toLowerCase().includes("hom") ? "var(--accent)" : "#d9afa8";
+  
+          return `
+            <article class="donut-card">
+              <h4>${item.sexe}</h4>
+              <div class="donut" style="background:conic-gradient(${color} 0 ${angle}deg, rgba(26,60,64,.08) ${angle}deg 360deg)">
+                <div class="donut-label">${String(item.proportion).replace(".", ",")}%</div>
+              </div>
+              <p>${formatNumber(item.total)} personnes</p>
+            </article>
+          `;
+        }).join("")}
+      </div>
+    `;
+  }
+  
+  function renderStatut() {
+    const data = appData.statut_sexe?.[currentYear] || [];
+    const chartWrap = document.getElementById("chartWrap");
+  
+    document.getElementById("chartTitle").textContent = "Statut par sexe";
+    document.getElementById("chartText").textContent = `Comparaison salariés / chômeurs en ${currentYear}.`;
+  
+    const max = Math.max(...data.map(d => Number(d.total || 0)), 1);
+    const sexes = [...new Set(data.map(d => d.sexe))];
+  
+    chartWrap.innerHTML = `
+      <div class="group-bars">
+        ${sexes.map(sexe => {
+          const rows = data.filter(d => d.sexe === sexe);
+          return `
+            <div class="group-line">
+              <div class="group-title">${sexe}</div>
+              <div class="group-pair">
+                ${rows.map(row => `
+                  <div class="small-bar">
+                    <span>${row.statut} · ${formatNumber(row.total)}</span>
+                    <div class="bar-track">
+                      <div class="bar-fill" style="width:${(Number(row.total) / max) * 100}%"></div>
+                    </div>
+                  </div>
+                `).join("")}
+              </div>
+            </div>
+          `;
+        }).join("")}
+      </div>
+    `;
+  }
+  
+  function renderCategoriesNationales() {
+    const data = (appData.categories_nationales?.[currentYear] || []).slice(0, 12);
+  
+    renderBarChart(
+      data.map(d => ({
+        label: "NA38 " + d.categorie,
+        value: Number(d.total)
+      })),
+      "Catégories professionnelles nationales",
+      `Top catégories professionnelles en ${currentYear}.`
+    );
+  }
+  
+  function renderRegionCategory() {
+    const data = appData.categories_region?.[currentCategory]?.[currentYear] || [];
+  
+    const labels = {
+      agriculture: "Agriculture",
+      sante: "Santé",
+      ingenierie: "Ingénierie"
+    };
+  
+    renderBarChart(
+      data.map(d => ({
+        label: d.region,
+        value: Number(d.proportion),
+        suffix: "%"
+      })),
+      `${labels[currentCategory]} par région`,
+      `Proportion régionale en ${currentYear}.`
+    );
+  }
+  
+  function renderBarChart(rows, title, text) {
+    const chartWrap = document.getElementById("chartWrap");
+  
+    document.getElementById("chartTitle").textContent = title;
+    document.getElementById("chartText").textContent = text;
+  
+    const max = Math.max(...rows.map(d => d.value), 1);
+  
+    chartWrap.innerHTML = `
+      <div class="bars">
+        ${rows.map(row => `
+          <div class="bar-row">
+            <div title="${row.label}">${row.label}</div>
+            <div class="bar-track">
+              <div class="bar-fill" data-width="${(row.value / max) * 100}"></div>
+            </div>
+            <div class="bar-value">
+              ${row.suffix === "%" ? formatPercent(row.value) : formatNumber(row.value)}
+            </div>
+          </div>
+        `).join("")}
+      </div>
+    `;
+  
+    requestAnimationFrame(() => {
+      chartWrap.querySelectorAll(".bar-fill").forEach(bar => {
+        bar.style.width = bar.dataset.width + "%";
+      });
+    });
+  }
+  
+  function showTooltip(event, text) {
+    if (!tooltip) return;
+    tooltip.innerHTML = text;
+    tooltip.style.left = event.clientX + "px";
+    tooltip.style.top = event.clientY + "px";
+    tooltip.style.opacity = 1;
+  }
+  
+  function hideTooltip() {
+    if (tooltip) tooltip.style.opacity = 0;
+  }
+  
+  function getDepartmentData(code) {
+    const rows = appData.map?.departements || [];
+    return rows.find(row => String(row.DEP).padStart(2, "0") === String(code).padStart(2, "0"));
+  }
+  
+  function projectPoint(lon, lat, bounds, width, height, padding) {
+    const x = padding + ((lon - bounds.minX) / (bounds.maxX - bounds.minX)) * (width - padding * 2);
+    const y = padding + ((bounds.maxY - lat) / (bounds.maxY - bounds.minY)) * (height - padding * 2);
+    return [x, y];
+  }
+  
+  function ringToPath(ring, bounds, width, height, padding) {
+    return ring.map((coord, index) => {
+      const [x, y] = projectPoint(coord[0], coord[1], bounds, width, height, padding);
+      return `${index === 0 ? "M" : "L"}${x.toFixed(2)},${y.toFixed(2)}`;
+    }).join(" ") + " Z";
+  }
+  
+  function geometryToPath(geometry, bounds, width, height, padding) {
+    if (!geometry) return "";
+  
+    if (geometry.type === "Polygon") {
+      return geometry.coordinates.map(ring => ringToPath(ring, bounds, width, height, padding)).join(" ");
+    }
+  
+    if (geometry.type === "MultiPolygon") {
+      return geometry.coordinates
+        .map(poly => poly.map(ring => ringToPath(ring, bounds, width, height, padding)).join(" "))
+        .join(" ");
+    }
+  
+    return "";
+  }
+  
+  function collectCoords(geometry, coords = []) {
+    if (!geometry) return coords;
+  
+    if (geometry.type === "Polygon") {
+      geometry.coordinates.flat().forEach(c => coords.push(c));
+    }
+  
+    if (geometry.type === "MultiPolygon") {
+      geometry.coordinates.flat(2).forEach(c => coords.push(c));
+    }
+  
+    return coords;
+  }
+  
+  function renderLegend() {
+    const legend = document.getElementById("legendScale");
+    if (!legend) return;
+  
+    const colors = [
+      "#deebf7",
+      "#c6dbef",
+      "#9ecae1",
+      "#6baed6",
+      "#4292c6",
+      "#2171b5",
+      "#08519c",
+      "#08306b"
+    ];
+  
+    legend.innerHTML = colors.map(color => `<i style="background:${color}"></i>`).join("");
+  }
+  
+  function updateMapPanel(row) {
+    const rate = getRate(row);
+  
+    document.getElementById("mapTitle").textContent = row?.libelle || "Département";
+    document.getElementById("mapText").textContent = row
+      ? `Département ${row.DEP}, données issues de l’export R.`
+      : "Données non disponibles pour ce département.";
+  
+    document.getElementById("mapActive").textContent = row ? formatNumber(row.population_active) : "—";
+    document.getElementById("mapRate").textContent = row ? formatPercent(rate) : "—";
+    document.getElementById("mapCategory").textContent = row?.categorie_dominante || "—";
+    document.getElementById("mapCategoryRate").textContent = row ? formatPercent(row.pourcentage_categorie) : "—";
+  }
+  
+  function renderMap() {
+    const svg = document.getElementById("franceMap");
+    const geojson = appData.map?.geojson;
+    const departments = appData.map?.departements || [];
+  
+    if (!svg) return;
+  
+    if (!geojson || !geojson.features) {
+      svg.innerHTML = `<text x="30" y="60" fill="#1a3c40">GeoJSON absent du fichier JSON.</text>`;
+      return;
+    }
+  
+    renderLegend();
+  
+    const width = 800;
+    const height = 800;
+    const padding = 34;
+  
+    const allCoords = geojson.features.flatMap(feature => collectCoords(feature.geometry));
+    const xs = allCoords.map(c => c[0]);
+    const ys = allCoords.map(c => c[1]);
+  
+    const bounds = {
+      minX: Math.min(...xs),
+      maxX: Math.max(...xs),
+      minY: Math.min(...ys),
+      maxY: Math.max(...ys)
+    };
+  
+    svg.innerHTML = "";
+  
+    geojson.features.forEach(feature => {
+      const code = String(feature.properties.code).padStart(2, "0");
+      const row = getDepartmentData(code);
+      const rate = getRate(row);
+  
+      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  
+      path.setAttribute("d", geometryToPath(feature.geometry, bounds, width, height, padding));
+      path.setAttribute("fill", getColor(rate));
+      path.dataset.code = code;
+  
+      path.addEventListener("mousemove", event => {
+        showTooltip(
+          event,
+          `<b>${row?.libelle || feature.properties.nom || code}</b><br>${row ? formatPercent(rate) : "Donnée indisponible"}`
+        );
+      });
+  
+      path.addEventListener("mouseleave", hideTooltip);
+  
+      path.addEventListener("click", () => {
+        svg.querySelectorAll("path").forEach(p => p.classList.remove("active"));
+        path.classList.add("active");
+        updateMapPanel(row);
+      });
+  
+      svg.appendChild(path);
+    });
+  
+    const first = departments.find(row => !Number.isNaN(getRate(row)));
+    if (first) updateMapPanel(first);
+  }
+  
+  async function init() {
+    try {
+      const response = await fetch("analyse_pop_data.json");
+      if (!response.ok) throw new Error("JSON introuvable");
+  
+      appData = await response.json();
+  
+      renderCurrentView();
+      renderMap();
+    } catch (error) {
+      document.getElementById("chartWrap").innerHTML = `
+        <p style="color:#1a3c40;font-weight:800">
+          Impossible de charger analyse_pop_data.json. Vérifie qu’il est dans le même dossier que ce fichier HTML.
+        </p>
+      `;
+      console.error(error);
+    }
+  }
+  
+  const sections = document.querySelectorAll("main section[id], header[id]");
+  const navItems = document.querySelectorAll(".nav-links a[href^='#']");
+  
+  const sectionObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+  
+      const id = entry.target.getAttribute("id");
+  
+      navItems.forEach(link => {
+        link.classList.toggle("active", link.getAttribute("href") === "#" + id);
+      });
+    });
+  }, { rootMargin: "-45% 0px -50% 0px", threshold: 0.01 });
+  
+  sections.forEach(section => sectionObserver.observe(section));
+  
+  
+  
+  function animateCounters() {
+    const counters = document.querySelectorAll("[data-counter]");
+  
+    counters.forEach(counter => {
+      const target = Number(counter.dataset.counter);
+      let current = 0;
+  
+      const duration = 900;
+      const start = performance.now();
+  
+      function updateCounter(time) {
+        const progress = Math.min((time - start) / duration, 1);
+        current = Math.floor(progress * target);
+  
+        counter.textContent = current;
+  
+        if (progress < 1) {
+          requestAnimationFrame(updateCounter);
+        } else {
+          counter.textContent = target;
+        }
+      }
+  
+      requestAnimationFrame(updateCounter);
+    });
+  }
+  
+  const counterObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        animateCounters();
+        counterObserver.disconnect();
+      }
+    });
+  }, { threshold: 0.4 });
+  
+  const statsBlock = document.querySelector(".hero-stats");
+  
+  if (statsBlock) {
+    counterObserver.observe(statsBlock);
+  }
+  init();
+  </script>
+</body>
+</html>
