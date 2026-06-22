@@ -1387,209 +1387,209 @@
     }
     
     
-    /* VERSION PC PORTABLE : même design, juste réduit et rangé */
-    @media (min-width: 901px) {
+    /* =====================================================
+   RESPONSIVE DESKTOP FINAL
+   - PC portable : 901px à 1899px
+   - Grand écran fixe : 1900px et +
+===================================================== */
+
+    
+    /* =====================================================
+       PC PORTABLE 15–17 POUCES
+    ===================================================== */
+    @media (min-width: 901px) and (max-width: 1899px) {
+    
       .container {
-        width: min(1080px, calc(100% - 64px));
+        width: min(1180px, calc(100% - 72px));
       }
     
       nav .nav-inner {
-        padding: 12px 0;
+        padding: 10px 0;
       }
     
       .nav-logo {
-        font-size: 1.55rem;
+        font-size: 1.5rem;
       }
     
       .nav-links {
-        gap: 14px;
+        gap: 13px;
       }
     
       .nav-links a {
-        font-size: 0.62rem;
+        font-size: 0.6rem;
       }
     
       .hero {
-        min-height: calc(100svh - 70px);
-        padding: 24px 0;
+        min-height: calc(100svh - 64px);
+        padding: 28px 0 24px;
         align-items: center;
       }
     
       .hero-layout {
-        grid-template-columns: 1fr 0.68fr;
-        gap: 42px;
+        grid-template-columns: minmax(0, 1fr) 390px;
+        gap: clamp(36px, 4vw, 60px);
         align-items: center;
       }
     
       .hero-kicker {
-        margin-bottom: 18px;
+        margin-bottom: 14px;
+      }
+    
+      .availability {
+        font-size: 0.68rem;
+        padding: 6px 10px;
       }
     
       .hero-text h1 {
-        font-size: clamp(3rem, 5vw, 4.9rem);
-        line-height: 0.95;
-        margin-bottom: 18px;
-        max-width: 720px;
+        font-size: clamp(3rem, 4.7vw, 4.45rem);
+        line-height: 0.92;
+        margin-bottom: 14px;
+        max-width: 800px;
       }
     
       .hero-lead {
-        font-size: 0.95rem;
-        line-height: 1.55;
-        max-width: 600px;
-        margin-bottom: 22px;
+        font-size: 0.9rem;
+        line-height: 1.48;
+        max-width: 650px;
+        margin-bottom: 16px;
+        padding-left: 18px;
       }
     
       .hero-actions {
-        margin-bottom: 24px;
+        margin-bottom: 18px;
+        gap: 10px;
+      }
+    
+      .btn-filled,
+      .btn-ghost {
+        padding: 12px 16px;
+        font-size: 0.66rem;
       }
     
       .hero-metrics {
-        max-width: 600px;
+        max-width: 610px;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
       }
     
       .metric-card {
-        padding: 15px 14px 14px 0;
+        padding: 10px 12px 10px 0;
       }
     
       .metric-card:nth-child(2),
       .metric-card:last-child {
-        padding-left: 14px;
+        padding-left: 12px;
       }
     
       .metric-card strong {
-        font-size: 2rem;
+        font-size: 1.7rem;
+      }
+    
+      .metric-plus {
+        font-size: 1.7rem !important;
+      }
+    
+      .metric-plus span {
+        font-size: inherit !important;
       }
     
       .metric-card span {
-        font-size: 0.65rem;
+        font-size: 0.56rem;
+        line-height: 1.24;
+        margin-top: 5px;
       }
     
+      /* Carte bleue */
       .hero-panel {
-        padding: 24px;
-        max-width: 460px;
+        width: 390px;
+        max-width: 390px;
+        padding: 20px;
         justify-self: end;
+        align-self: center;
+      }
+    
+      .hero-panel::before {
+        display: none;
+      }
+    
+      .hero-panel::after {
+        inset: 14px;
       }
     
       .panel-top {
-        padding-bottom: 18px;
+        padding-bottom: 13px;
       }
     
       .panel-photo {
-        margin: 12px 0 16px;
+        width: 77%;
+        height: 190px;
+        margin: 8px auto 13px;
+        overflow: hidden;
       }
     
       .panel-photo img {
-        height: clamp(180px, 25svh, 235px);
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center 30%;
+      }
+    
+      .panel-photo:hover img {
+        transform: none;
       }
     
       .panel-name {
-        font-size: clamp(2.3rem, 3vw, 3.1rem);
-        margin-bottom: 10px;
+        font-size: clamp(2rem, 2.5vw, 2.55rem);
+        line-height: 0.9;
+        margin-bottom: 7px;
+      }
+    
+      .panel-top .caps {
+        font-size: 0.6rem;
+        letter-spacing: 0.13em;
       }
     
       .panel-body {
-        margin-top: 8px;
+        margin-top: 7px;
       }
     
       .panel-row {
-        grid-template-columns: 92px 1fr;
-        gap: 14px;
-        padding: 9px 0;
+        grid-template-columns: 78px 1fr;
+        gap: 12px;
+        padding: 6px 0;
       }
     
       .panel-row span {
-        font-size: 0.6rem;
+        font-size: 0.5rem;
+        letter-spacing: 0.1em;
       }
     
       .panel-row p {
-        font-size: 0.8rem;
-        line-height: 1.4;
+        font-size: 0.7rem;
+        line-height: 1.28;
+      }
+    
+      .panel-row:last-child {
+        padding-bottom: 7px;
       }
     
       .section {
         padding: 88px 0;
       }
-      
-       /* Agrandir uniquement le +10 */
-      .metric-plus {
-        font-size: 2rem !important;
-      }
-      
-      .metric-plus span {
-        font-size: inherit !important;
-      }
     }
     
+    
     /* =====================================================
-            GRANDS ÉCRANS / ÉCRANS HDMI
+       GRAND ÉCRAN FIXE / HDMI
     ===================================================== */
-    @media (min-width: 1600px) {
+    @media (min-width: 1900px) {
     
       .container {
         width: min(1450px, calc(100% - 120px));
       }
     
-      .hero {
-        min-height: calc(100vh - 90px);
-        padding: 40px 0;
-      }
-    
-      .hero-layout {
-        grid-template-columns: 1.15fr 0.85fr;
-        gap: 90px;
-        align-items: center;
-      }
-    
-      .hero-text h1 {
-        font-size: clamp(5rem, 6vw, 7rem);
-        max-width: 980px;
-        line-height: 0.92;
-      }
-    
-      .hero-lead {
-        font-size: 1.15rem;
-        line-height: 1.75;
-        max-width: 760px;
-      }
-    
-      .hero-actions {
-        margin-bottom: 40px;
-      }
-    
-      .hero-metrics {
-        max-width: 760px;
-      }
-    
-      .metric-card strong {
-        font-size: 2.8rem;
-      }
-    
-      .metric-card span {
-        font-size: 0.8rem;
-      }
-    
-      .hero-panel {
-        max-width: 620px;
-        padding: 34px;
-      }
-    
-      .panel-photo img {
-        height: 340px;
-      }
-    
-      .panel-name {
-        font-size: 4rem;
-      }
-    
-      .panel-row {
-        grid-template-columns: 120px 1fr;
-        gap: 24px;
+      nav .nav-inner {
         padding: 16px 0;
-      }
-    
-      .panel-row p {
-        font-size: 0.95rem;
-        line-height: 1.6;
       }
     
       .nav-logo {
@@ -1603,18 +1603,131 @@
       .nav-links a {
         font-size: 0.74rem;
       }
+    
+      .hero {
+        min-height: calc(100vh - 88px);
+        padding: 40px 0;
+        align-items: center;
+      }
+    
+      .hero-layout {
+        grid-template-columns: minmax(0, 1.1fr) 560px;
+        gap: 90px;
+        align-items: center;
+      }
+    
+      .hero-text h1 {
+        font-size: clamp(5rem, 6vw, 7rem);
+        max-width: 980px;
+        line-height: 0.92;
+        margin-bottom: 24px;
+      }
+    
+      .hero-lead {
+        font-size: 1.12rem;
+        line-height: 1.7;
+        max-width: 760px;
+        margin-bottom: 34px;
+      }
+    
+      .hero-actions {
+        margin-bottom: 36px;
+      }
+    
+      .hero-metrics {
+        max-width: 760px;
+      }
+    
+      .metric-card strong {
+        font-size: 2.75rem;
+      }
+    
+      .metric-plus {
+        font-size: 2.75rem !important;
+      }
+    
+      .metric-plus span {
+        font-size: inherit !important;
+      }
+    
+      .metric-card span {
+        font-size: 0.78rem;
+      }
+    
+      /* Carte bleue grand écran */
+      .hero-panel {
+        width: 560px;
+        max-width: 560px;
+        padding: 34px;
+        justify-self: end;
+        align-self: center;
+      }
+    
+      .hero-panel::before {
+        display: block;
+        bottom: 24px;
+        left: 28px;
+      }
+    
+      .hero-panel::after {
+        inset: 18px;
+      }
+    
+      .panel-top {
+        padding-bottom: 24px;
+      }
+    
+      .panel-photo {
+        width: 84%;
+        height: 315px;
+        margin: 16px auto 22px;
+        overflow: hidden;
+      }
       
-       /* Agrandir uniquement le +10 */
-    .metric-plus {
-      font-size: 2.8rem !important;
-    }
+      .panel-photo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center 25%;
+      }
     
-    .metric-plus span {
-      font-size: inherit !important;
-    }
-    }
+      .panel-photo:hover img {
+        transform: scale(1.02);
+      }
     
-
+      .panel-name {
+        font-size: 3.8rem;
+        line-height: 0.9;
+        margin-bottom: 14px;
+      }
+    
+      .panel-top .caps {
+        font-size: 0.72rem;
+      }
+    
+      .panel-body {
+        margin-top: 14px;
+      }
+    
+      .panel-row {
+        grid-template-columns: 120px 1fr;
+        gap: 24px;
+        padding: 14px 0;
+      }
+    
+      .panel-row span {
+        font-size: 0.66rem;
+      }
+    
+      .panel-row p {
+        font-size: 0.92rem;
+        line-height: 1.55;
+      }
+    
+      .panel-row:last-child {
+        padding-bottom: 22px;
+      }
+    }
     
   </style>
 </head>
@@ -2029,6 +2142,7 @@
             <strong>Cube Iris · Base de données</strong>
             <p>Traitement, intégration et gestion de données dans une base relationnelle orientée décisionnel.</p>
           </a>
+        
           
           <!--
           <a href="tourisme_powerbi.html" class="extra-card">
@@ -2041,9 +2155,9 @@
             <span>13</span>
             <strong>Mise en place de sondage</strong>
             <p>Construction d’une enquête, réflexion sur l’échantillonnage et exploitation des résultats.</p>
-          </a> 
-          --> 
-  
+          </a>
+          -->
+          
         </div>
       </div>
     </section>
