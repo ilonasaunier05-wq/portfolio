@@ -1295,52 +1295,54 @@
 </header>
 
   <main>
-    <section id="contexte" class="section container reveal">
-      <div class="section-title">
-        <div>
-          <div class="caps">01 / Contexte</div>
-          <h2>Comprendre et distinguer les objets célestes</h2>
-        </div>
-        <p>
-          Le projet repose sur des données astronomiques réelles afin de prédire la catégorie d’un objet observé :
-          galaxie, étoile ou quasar.
-        </p>
-      </div>
-
-      <div class="mag-grid">
-        <div class="text-block">
-          <p>
-            Les données proviennent du Sloan Digital Sky Survey et décrivent différents objets célestes observés à
-            travers plusieurs variables photométriques, spectrales et contextuelles. La variable cible correspond à la
-            classe de l’objet, avec trois catégories : GALAXY, STAR et QSO.
-          </p>
-
-          <p>
-            Le projet consistait à analyser ces données, à comparer plusieurs méthodes de classification et à comprendre
-            quelles variables contribuent le plus à différencier les classes.
-          </p>
-        </div>
-
-        <aside class="side-box">
-          <h3>Objectif d’analyse</h3>
-
-          <p>
-            Certaines variables purement identifiantes ont été retirées afin de conserver uniquement les informations
-            utiles à la prédiction. L’analyse s’est appuyée sur un échantillonnage répété apprentissage/test afin
-            d’obtenir des résultats stables et comparables entre modèles.
-          </p>
-
-          <div class="oval-grid">
-            <span>Classification multiclasse</span>
-            <span>Comparaison de modèles</span>
-            <span>Sélection de variables</span>
-            <span>Validation répétée</span>
+    <section id="contexte" class="section reveal">
+      <div class="container">
+        <div class="section-title">
+          <div>
+            <div class="caps">01 / Contexte</div>
+            <h2>Comprendre et distinguer les objets célestes</h2>
           </div>
-        </aside>
+          <p>
+            Le projet repose sur des données astronomiques réelles afin de prédire la catégorie d’un objet observé :
+            galaxie, étoile ou quasar.
+          </p>
+        </div>
+  
+        <div class="mag-grid">
+          <div class="text-block">
+            <p>
+              Les données proviennent du Sloan Digital Sky Survey et décrivent différents objets célestes observés à
+              travers plusieurs variables photométriques, spectrales et contextuelles. La variable cible correspond à la
+              classe de l’objet, avec trois catégories : GALAXY, STAR et QSO.
+            </p>
+  
+            <p>
+              Le projet consistait à analyser ces données, à comparer plusieurs méthodes de classification et à comprendre
+              quelles variables contribuent le plus à différencier les classes.
+            </p>
+          </div>
+  
+          <aside class="side-box">
+            <h3>Objectif d’analyse</h3>
+  
+            <p>
+              Certaines variables purement identifiantes ont été retirées afin de conserver uniquement les informations
+              utiles à la prédiction. L’analyse s’est appuyée sur un échantillonnage répété apprentissage/test afin
+              d’obtenir des résultats stables et comparables entre modèles.
+            </p>
+  
+            <div class="oval-grid">
+              <span>Classification multiclasse</span>
+              <span>Comparaison de modèles</span>
+              <span>Sélection de variables</span>
+              <span>Validation répétée</span>
+            </div>
+          </aside>
+        </div>
       </div>
     </section>
 
-    <section id="methodes" class="section method-section reveal">
+    <section id="methodes" class="section reveal">
       <div class="container">
         <div class="section-title">
           <div>
@@ -1511,113 +1513,119 @@
       </div>
     </section>
 
-    <section id="lecture" class="section container reveal">
-      <div class="section-title">
-        <div>
-          <div class="caps">03 / Lecture des résultats</div>
-          <h2>Ce que l’analyse met en évidence</h2>
-        </div>
-        <p>
-          Les meilleurs modèles combinent performance, stabilité et capacité d’interprétation.
-        </p>
-      </div>
-
-      <div class="mag-grid">
-        <div class="text-block">
+    <section id="lecture" class="section reveal">
+      <div class="container">
+        <div class="section-title">
+          <div>
+            <div class="caps">03 / Lecture des résultats</div>
+            <h2>Ce que l’analyse met en évidence</h2>
+          </div>
           <p>
-            Les méthodes pénalisées, en particulier LASSO et Elastic Net, obtiennent les meilleurs résultats. Elles
-            offrent un bon compromis entre performance prédictive et interprétabilité, en réduisant l’effet des
-            variables peu informatives et en sélectionnant les plus pertinentes.
-          </p>
-
-          <p>
-            Le redshift ressort comme une variable majeure pour distinguer les quasars des étoiles, tandis que plusieurs
-            variables photométriques confirment leur importance dans la caractérisation physique des objets célestes.
+            Les meilleurs modèles combinent performance, stabilité et capacité d’interprétation.
           </p>
         </div>
-
-        <div class="text-block">
-          <p>
-            L’analyse de la variabilité des accuracies montre que les modèles LASSO et Elastic Net ne sont pas seulement
-            performants, mais également robustes. Leur dispersion plus faible sur les répétitions traduit une bonne
-            stabilité face aux variations de l’échantillonnage.
-          </p>
-
-          <p>
-            À l’inverse, le modèle basé sur GLASSO semble moins adapté à la structure de ces données, ce qui souligne
-            l’importance de choisir une méthode cohérente avec la nature du jeu de données.
-          </p>
+  
+        <div class="mag-grid">
+          <div class="text-block">
+            <p>
+              Les méthodes pénalisées, en particulier LASSO et Elastic Net, obtiennent les meilleurs résultats. Elles
+              offrent un bon compromis entre performance prédictive et interprétabilité, en réduisant l’effet des
+              variables peu informatives et en sélectionnant les plus pertinentes.
+            </p>
+  
+            <p>
+              Le redshift ressort comme une variable majeure pour distinguer les quasars des étoiles, tandis que plusieurs
+              variables photométriques confirment leur importance dans la caractérisation physique des objets célestes.
+            </p>
+          </div>
+  
+          <div class="text-block">
+            <p>
+              L’analyse de la variabilité des accuracies montre que les modèles LASSO et Elastic Net ne sont pas seulement
+              performants, mais également robustes. Leur dispersion plus faible sur les répétitions traduit une bonne
+              stabilité face aux variations de l’échantillonnage.
+            </p>
+  
+            <p>
+              À l’inverse, le modèle basé sur GLASSO semble moins adapté à la structure de ces données, ce qui souligne
+              l’importance de choisir une méthode cohérente avec la nature du jeu de données.
+            </p>
+          </div>
         </div>
-      </div>
-    </section>
-
-    <section id="resultats" class="section container reveal">
-      <div class="section-title">
-        <div>
-          <div class="caps">04 / Résultats</div>
-          <h2>Comparaison des performances</h2>
-        </div>
-        <p>
-          Les résultats montrent une supériorité des méthodes pénalisées, notamment LASSO et Elastic Net.
-        </p>
-      </div>
-
-      <div class="result-grid">
-        <article class="result-card best">
-          <strong>LASSO</strong>
-          <span>94,2 %</span>
-          <div class="bar"><div data-width="94.2%"></div></div>
-          <p>Meilleur équilibre entre performance et interprétabilité.</p>
-        </article>
-
-        <article class="result-card">
-          <strong>Elastic Net</strong>
-          <span>93,7 %</span>
-          <div class="bar"><div data-width="93.7%"></div></div>
-          <p>Très robuste, avec une bonne stabilité sur les répétitions.</p>
-        </article>
-
-        <article class="result-card">
-          <strong>Naive Bayes</strong>
-          <span>90,8 %</span>
-          <div class="bar"><div data-width="90.8%"></div></div>
-          <p>Modèle simple servant de base de comparaison.</p>
-        </article>
       </div>
     </section>
 
-    <section id="limites" class="section container reveal">
-      <div class="section-title">
-        <div>
-          <div class="caps">05 / Limites & améliorations</div>
-          <h2>Prendre du recul sur l’analyse</h2>
+    <section id="resultats" class="section reveal">
+      <div class="container">
+    
+        <div class="section-title">
+          <div>
+            <div class="caps">04 / Résultats</div>
+            <h2>Comparaison des performances</h2>
+          </div>
+          <p>
+            Les résultats montrent une supériorité des méthodes pénalisées, notamment LASSO et Elastic Net.
+          </p>
         </div>
-        <p>
-          Une bonne analyse ne se limite pas aux résultats : elle doit aussi identifier ses limites et ses pistes d’amélioration.
-        </p>
-      </div>
+  
+        <div class="result-grid">
+          <article class="result-card best">
+            <strong>LASSO</strong>
+            <span>94,2 %</span>
+            <div class="bar"><div data-width="94.2%"></div></div>
+            <p>Meilleur équilibre entre performance et interprétabilité.</p>
+          </article>
+  
+          <article class="result-card">
+            <strong>Elastic Net</strong>
+            <span>93,7 %</span>
+            <div class="bar"><div data-width="93.7%"></div></div>
+            <p>Très robuste, avec une bonne stabilité sur les répétitions.</p>
+          </article>
+  
+          <article class="result-card">
+            <strong>Naive Bayes</strong>
+            <span>90,8 %</span>
+            <div class="bar"><div data-width="90.8%"></div></div>
+            <p>Modèle simple servant de base de comparaison.</p>
+          </article>
+        </div>
+    </section>
 
-      <div class="limits-grid">
-        <article class="limit-card">
-          <h3>Choix des modèles</h3>
+    <section id="limites" class="section reveal">
+      <div class="container">
+        <div class="section-title">
+          <div>
+            <div class="caps">05 / Limites & améliorations</div>
+            <h2>Prendre du recul sur l’analyse</h2>
+          </div>
           <p>
-            Des modèles non testés, comme Random Forest ou Gradient Boosting, pourraient être comparés pour enrichir l’analyse.
+            Une bonne analyse ne se limite pas aux résultats : elle doit aussi identifier ses limites et ses pistes d’amélioration.
           </p>
-        </article>
-
-        <article class="limit-card">
-          <h3>Interprétation</h3>
-          <p>
-            Certaines méthodes plus performantes peuvent être moins lisibles. Il faut garder un équilibre entre précision et explicabilité.
-          </p>
-        </article>
-
-        <article class="limit-card">
-          <h3>Stabilité</h3>
-          <p>
-            La validation répétée améliore la robustesse, mais les résultats pourraient être complétés par une validation croisée.
-          </p>
-        </article>
+        </div>
+  
+        <div class="limits-grid">
+          <article class="limit-card">
+            <h3>Choix des modèles</h3>
+            <p>
+              Des modèles non testés, comme Random Forest ou Gradient Boosting, pourraient être comparés pour enrichir l’analyse.
+            </p>
+          </article>
+  
+          <article class="limit-card">
+            <h3>Interprétation</h3>
+            <p>
+              Certaines méthodes plus performantes peuvent être moins lisibles. Il faut garder un équilibre entre précision et explicabilité.
+            </p>
+          </article>
+  
+          <article class="limit-card">
+            <h3>Stabilité</h3>
+            <p>
+              La validation répétée améliore la robustesse, mais les résultats pourraient être complétés par une validation croisée.
+            </p>
+          </article>
+        </div>
       </div>
     </section>
 
