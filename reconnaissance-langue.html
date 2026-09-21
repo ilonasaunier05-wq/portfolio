@@ -363,10 +363,6 @@
       letter-spacing: -0.03em;
     }
 
-    section.section.container.reveal {
-      padding-top: 105px !important;
-      padding-bottom: 105px !important;
-    }
 
     .mag-grid {
       display: grid;
@@ -1191,111 +1187,117 @@
       </div>
     </section>
 
-    <section id="choix" class="section container reveal">
-      <div class="section-title">
-        <div class="caps">03 / Choix méthodologiques</div>
-        <h2>Ce que ce projet montre</h2>
-      </div>
-
-      <div class="mag-grid">
-        <div class="text-block">
-          <p>
-            Ce travail montre ma capacité à passer d’un problème textuel à une problématique statistique exploitable.
-            J’ai mobilisé des notions de représentation de données, de réduction de dimension, de régularisation et de
-            classification afin de comparer plusieurs approches sur un même objectif de prédiction.
-          </p>
+    <section id="choix" class="section reveal">
+      <div class="container">
+        <div class="section-title">
+          <div class="caps">03 / Choix méthodologiques</div>
+          <h2>Ce que ce projet montre</h2>
         </div>
-
-        <div class="text-block">
-          <p>
-            Il met également en avant une réflexion méthodologique importante : la complexité d’un modèle n’est pas
-            toujours synonyme de meilleure performance. Ici, une bonne construction des variables s’est révélée
-            déterminante pour obtenir d’excellents résultats.
-          </p>
-        </div>
-      </div>
-      
-      <div class="demo-card">
-        <div class="caps">Mini démonstration</div>
-        <h3>Tester une phrase</h3>
-    
-        <p>
-          Cette version simplifiée illustre le principe : comparer un texte à des mots caractéristiques.
-        </p>
-    
-        <div class="language-demo" aria-label="Démonstration de reconnaissance de langue">
-          <label for="languageInput" class="demo-label">Entrer une phrase</label>
-    
-          <div class="demo-input-row">
-            <input id="languageInput" type="text" placeholder="Ex : Hello, how are you?" autocomplete="off" />
-            <span class="demo-lang" id="demoLang">--</span>
+  
+        <div class="mag-grid">
+          <div class="text-block">
+            <p>
+              Ce travail montre ma capacité à passer d’un problème textuel à une problématique statistique exploitable.
+              J’ai mobilisé des notions de représentation de données, de réduction de dimension, de régularisation et de
+              classification afin de comparer plusieurs approches sur un même objectif de prédiction.
+            </p>
           </div>
-    
-          <p class="demo-result" id="demoResult">La langue détectée apparaîtra ici.</p>
+  
+          <div class="text-block">
+            <p>
+              Il met également en avant une réflexion méthodologique importante : la complexité d’un modèle n’est pas
+              toujours synonyme de meilleure performance. Ici, une bonne construction des variables s’est révélée
+              déterminante pour obtenir d’excellents résultats.
+            </p>
+          </div>
+        </div>
+        
+        <div class="demo-card">
+          <div class="caps">Mini démonstration</div>
+          <h3>Tester une phrase</h3>
+      
+          <p>
+            Cette version simplifiée illustre le principe : comparer un texte à des mots caractéristiques.
+          </p>
+      
+          <div class="language-demo" aria-label="Démonstration de reconnaissance de langue">
+            <label for="languageInput" class="demo-label">Entrer une phrase</label>
+      
+            <div class="demo-input-row">
+              <input id="languageInput" type="text" placeholder="Ex : Hello, how are you?" autocomplete="off" />
+              <span class="demo-lang" id="demoLang">--</span>
+            </div>
+      
+            <p class="demo-result" id="demoResult">La langue détectée apparaîtra ici.</p>
+          </div>
         </div>
       </div>
     </section>
 
-    <section id="resultats" class="section container reveal">
-      <div class="section-title">
-        <div class="caps">04 / Résultats</div>
-        <h2>Performances observées</h2>
-      </div>
-
-      <div class="result-grid">
-        <article class="result-card best">
-          <strong>Naive Bayes</strong>
-          <span>98,23 %</span>
-          <div class="bar"><div data-width="98.23%"></div></div>
-          <p>Meilleur compromis entre précision, simplicité et interprétabilité.</p>
-        </article>
-        
-        <article class="result-card">
-          <strong>Ridge</strong>
-          <span>97,3 %</span>
-          <div class="bar"><div data-width="97.3%"></div></div>
-          <p>Très bonne performance avec régularisation stable.</p>
-        </article>
-        
-        <article class="result-card">
-          <strong>Random Forest</strong>
-          <span>96,5 %</span>
-          <div class="bar"><div data-width="96.5%"></div></div>
-          <p>Modèle performant mais moins lisible que Naive Bayes.</p>
-        </article>
+    <section id="resultats" class="section reveal">
+      <div class="container">
+        <div class="section-title">
+          <div class="caps">04 / Résultats</div>
+          <h2>Performances observées</h2>
+        </div>
+  
+        <div class="result-grid">
+          <article class="result-card best">
+            <strong>Naive Bayes</strong>
+            <span>98,23 %</span>
+            <div class="bar"><div data-width="98.23%"></div></div>
+            <p>Meilleur compromis entre précision, simplicité et interprétabilité.</p>
+          </article>
+          
+          <article class="result-card">
+            <strong>Ridge</strong>
+            <span>97,3 %</span>
+            <div class="bar"><div data-width="97.3%"></div></div>
+            <p>Très bonne performance avec régularisation stable.</p>
+          </article>
+          
+          <article class="result-card">
+            <strong>Random Forest</strong>
+            <span>96,5 %</span>
+            <div class="bar"><div data-width="96.5%"></div></div>
+            <p>Modèle performant mais moins lisible que Naive Bayes.</p>
+          </article>
+        </div>
       </div>
     </section>
     
-    <section id="limites" class="section container reveal">
-      <div class="section-title">
-        <div class="caps">05 / Limites & recul</div>
-        <h2>Prendre du recul sur la performance</h2>
-      </div>
-    
-      <div class="limits-grid">
-        <article class="limit-card">
-          <h3>Jeu de données maîtrisé</h3>
-          <p>
-            Les résultats élevés peuvent être liés à des textes bien séparables selon la langue. Sur des textes très courts,
-            bruités ou mélangés, la performance pourrait diminuer.
-          </p>
-        </article>
-    
-        <article class="limit-card">
-          <h3>Représentation des textes</h3>
-          <p>
-            La matrice terme-document fonctionne bien ici, mais elle reste sensible au vocabulaire présent dans l’échantillon.
-            Des approches par n-grammes pourraient mieux gérer les mots inconnus.
-          </p>
-        </article>
-    
-        <article class="limit-card">
-          <h3>Généralisation</h3>
-          <p>
-            Le modèle gagnerait à être testé sur d’autres corpus, avec davantage de langues et des textes issus de contextes
-            variés pour confirmer sa robustesse.
-          </p>
-        </article>
+    <section id="limites" class="section reveal">
+      <div class="container">
+        <div class="section-title">
+          <div class="caps">05 / Limites & recul</div>
+          <h2>Prendre du recul sur la performance</h2>
+        </div>
+      
+        <div class="limits-grid">
+          <article class="limit-card">
+            <h3>Jeu de données maîtrisé</h3>
+            <p>
+              Les résultats élevés peuvent être liés à des textes bien séparables selon la langue. Sur des textes très courts,
+              bruités ou mélangés, la performance pourrait diminuer.
+            </p>
+          </article>
+      
+          <article class="limit-card">
+            <h3>Représentation des textes</h3>
+            <p>
+              La matrice terme-document fonctionne bien ici, mais elle reste sensible au vocabulaire présent dans l’échantillon.
+              Des approches par n-grammes pourraient mieux gérer les mots inconnus.
+            </p>
+          </article>
+      
+          <article class="limit-card">
+            <h3>Généralisation</h3>
+            <p>
+              Le modèle gagnerait à être testé sur d’autres corpus, avec davantage de langues et des textes issus de contextes
+              variés pour confirmer sa robustesse.
+            </p>
+          </article>
+        </div>
       </div>
     </section>
 
