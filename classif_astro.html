@@ -1468,46 +1468,49 @@
         </div>
       </div>
     </section>
-    
-    <section id="comparateur" class="section container reveal">
-      <div class="section-title">
-        <div>
-          <div class="caps">03 / Comparateur interactif</div>
-          <h2>Comparer les modèles autrement</h2>
+
+    <section id="comparateur" class="section reveal">
+      <div class="container">
+   
+        <div class="section-title">
+          <div>
+            <div class="caps">03 / Comparateur interactif</div>
+            <h2>Comparer les modèles autrement</h2>
+          </div>
+          <p>
+            Cette section permet de comparer les modèles selon trois critères : performance,
+            stabilité et interprétabilité.
+          </p>
         </div>
-        <p>
-          Cette section permet de comparer les modèles selon trois critères : performance,
-          stabilité et interprétabilité.
-        </p>
-      </div>
-    
-      <div class="compare-layout">
-        <aside class="compare-panel">
-          <h3>Choisir un modèle</h3>
-    
-          <div class="compare-buttons">
-            <button class="active" data-astro-model="lasso">LASSO</button>
-            <button data-astro-model="elastic">Elastic Net</button>
-            <button data-astro-model="bayes">Naive Bayes</button>
-            <button data-astro-model="ridge">Ridge</button>
-          </div>
-    
-          <div class="compare-text">
-            <div class="caps">Lecture</div>
-            <h4 id="astroModelTitle">LASSO</h4>
-            <p id="astroModelText">
-              Le LASSO obtient le meilleur équilibre entre performance et interprétabilité.
-            </p>
-          </div>
-        </aside>
-    
-        <div class="radar-card">
-          <svg id="radarChart" viewBox="0 0 420 420" aria-label="Radar de comparaison des modèles"></svg>
-    
-          <div class="radar-legend">
-            <span>Performance</span>
-            <span>Stabilité</span>
-            <span>Interprétabilité</span>
+      
+        <div class="compare-layout">
+          <aside class="compare-panel">
+            <h3>Choisir un modèle</h3>
+      
+            <div class="compare-buttons">
+              <button class="active" data-astro-model="lasso">LASSO</button>
+              <button data-astro-model="elastic">Elastic Net</button>
+              <button data-astro-model="bayes">Naive Bayes</button>
+              <button data-astro-model="ridge">Ridge</button>
+            </div>
+      
+            <div class="compare-text">
+              <div class="caps">Lecture</div>
+              <h4 id="astroModelTitle">LASSO</h4>
+              <p id="astroModelText">
+                Le LASSO obtient le meilleur équilibre entre performance et interprétabilité.
+              </p>
+            </div>
+          </aside>
+      
+          <div class="radar-card">
+            <svg id="radarChart" viewBox="0 0 420 420" aria-label="Radar de comparaison des modèles"></svg>
+      
+            <div class="radar-legend">
+              <span>Performance</span>
+              <span>Stabilité</span>
+              <span>Interprétabilité</span>
+            </div>
           </div>
         </div>
       </div>
