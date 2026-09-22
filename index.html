@@ -1049,6 +1049,88 @@
       font-weight: 800;
     }
 
+    /* =========================
+       EXPÉRIENCES
+    ========================= */
+    
+    .experience-section {
+      background: var(--sand-2);
+    }
+    
+    .experience-list {
+      border-top: 1px solid var(--line);
+    }
+    
+    .experience-item {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: clamp(40px, 7vw, 90px);
+      padding: 48px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    
+    .experience-side {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .experience-label {
+      color: var(--accent);
+      font-size: 0.7rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+    }
+    
+    .experience-company {
+      font-family: 'Cormorant Garamond', serif;
+      color: var(--deep-teal);
+      font-size: 1.7rem;
+      line-height: 1.1;
+    }
+    
+    .experience-main h3 {
+      color: var(--deep-teal);
+      font-size: clamp(2.3rem, 4vw, 3.3rem);
+      margin-bottom: 18px;
+    }
+    
+    .experience-main p {
+      max-width: 720px;
+      color: var(--muted);
+    }
+    
+    .experience-intro {
+      color: var(--text) !important;
+      font-weight: 600;
+      font-size: 1.05rem;
+    }
+    
+    .experience-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 25px 0;
+    }
+    
+    .experience-tags span {
+      padding: 7px 11px;
+      background: var(--accent-soft);
+      color: var(--deep-teal);
+      font-size: 0.65rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+    }
+    
+    @media (max-width: 760px) {
+      .experience-item {
+        grid-template-columns: 1fr;
+        gap: 22px;
+      }
+    }
+
     .transverse-section {
       position: relative;
       border-top: 1px solid var(--line);
@@ -1770,7 +1852,7 @@
           </h1>
 
           <p class="hero-lead">
-            Je suis Ilona Saunier, étudiante en BUT Sciences des Données, parcours Exploration et Modélisation Statistique. Je conçois des analyses fiables, des modèles interprétables et des restitutions visuelles pensées pour faciliter la prise de décision.
+            Étudiante ingénieure Data à l’ENSAI, après un BUT Sciences des Données spécialisé en Exploration et Modélisation Statistique, je m’intéresse à l’analyse, la modélisation statistique et au data engineering.
           </p>
 
           <div class="hero-actions">
@@ -2160,6 +2242,64 @@
           -->
           
         </div>
+      </div>
+    </section>
+
+    <section id="experiences" class="section experience-section">
+      <div class="container">
+    
+        <div class="section-title reveal">
+          <div>
+            <div class="caps">04 / Expériences</div>
+            <h2>La data en contexte professionnel</h2>
+          </div>
+    
+          <p>
+            Des expériences qui m'ont permis de confronter mes compétences
+            techniques à des problématiques réelles d'entreprise.
+          </p>
+        </div>
+    
+        <div class="experience-list">
+    
+          <article class="experience-item reveal">
+    
+            <div class="experience-side">
+              <span class="experience-label">Stage R&D</span>
+              <span class="experience-company">CBA Informatique Libérale</span>
+            </div>
+    
+            <div class="experience-main">
+              <h3>Data Engineering & automatisation</h3>
+    
+              <p class="experience-intro">
+                Conception d'un pipeline de traitement et de rapprochement
+                automatique de flux financiers hétérogènes.
+              </p>
+    
+              <p>
+                Travail sur la préparation et la normalisation des données,
+                leur stockage et l'automatisation des traitements afin de
+                construire une chaîne reproductible et exploitable.
+              </p>
+    
+              <div class="experience-tags">
+                <span>Python</span>
+                <span>PostgreSQL</span>
+                <span>Airflow</span>
+                <span>Docker</span>
+                <span>ETL</span>
+              </div>
+    
+              <a href="paymatch.html" class="btn-mag">
+                Découvrir le projet Paymatch →
+              </a>
+            </div>
+    
+          </article>
+    
+        </div>
+    
       </div>
     </section>
 
